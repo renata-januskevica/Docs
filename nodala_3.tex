@@ -1,0 +1,34 @@
+﻿Šajā nodaļā tiek aplūkotas divas problēmas, kuru pētīšanai darba praktiskajā daļā tiks piedāvāta atkļūdošanas metode.
+
+\section{Atmiņas noplūde}
+Atmiņas noplūde ir viena no bieži sastopamām problēmām. 
+Par atmiņas noplūdi var nosaukt procesu, kurā laikā atmiņas adreses kļūst nepieejamas, pazaudētas. To var salīdzināt ar dārglietām, kas apraktās mežā, neatzīmējot tās atrašanas vietu kartē. 
+Arī atmiņā, programmētāju kļūdu dēļ, var tikt izveidots liels atmiņas apgabals bez norādēm, kurš vairāk nebūs pieejams.
+Tā kā atmiņas noplūdes pazīmes bieži paliek nemanāmas \cite{surv_of_dist}, tad ir vērts rūpīgi izpētīt doto problēmu, lai zinātu problēmas cēloņus, pazīmes, pētīšanas metodikas un rīkus. 
+Tāpēc šajā sadaļā tiks izklāstīta atmiņas noplūdes problēma.
+
+
+
+%\subsection{Lietotāju atmiņas pārvaldība C un C++}
+
+
+
+\subsection{Atmiņas noplūdes pazīmes un sekas}
+
+Atmiņas noplūde ir problēma, kas nav vēlama sekojošos gadījumos: 
+ 
+\begin{itemize}
+\item { Programmas darbībai ir nepieciešams izdalīt daudz dinamiskās atmiņas resursu, }
+\item { Servera vai citas programmas, kuras darbojās visu laiku bez apstājas, }
+\item { Reālā laikā sistēmās, jo ir svarīgi iegūt rezultātu ierobežotā laikā. }
+\end{itemize}
+
+Viena no svarīgākam atmiņas noplūdes pazīmēm, ko var novērot lietotājs, ir noplūdi izraisošā procesa un pārējo procesu palēnināšana. 
+Tas notiek, jo operatīvajā atmiņā pietrūkst vieta un dati šajā brīdī tiek pārnesti (swapped out) cietajā diskā.
+Bet, procesa pārnešana ir laikietilpīga operācija. 
+Kaut kāda brīdī, kad tiks izsmelti visi resursi, katrs malloc pieprasījums būs neveiksmīgs un sekas var būt ļoti dažādas, atkarībā no sistēmas. 
+Novēršot problēmu programma kļūs pirmām kārtām uzticamāka, ātrāka un kvalitatīvāka.
+
+\section{Datu struktūru integritātes problēma}
+\section{Pētīšanas metodes}
+\section{Izmantojamie rīki}

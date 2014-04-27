@@ -1,0 +1,242 @@
+\documentclass[12pt]{report}
+
+\usepackage{graphicx}
+\usepackage{polyglossia}
+\usepackage{mathtools}
+\usepackage{todonotes}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{xltxtra}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage[top=20mm, left=30mm, bottom=20mm, right=20mm]{geometry}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{color}
+\usepackage{etoolbox}
+\usepackage{lastpage}
+\usepackage{totcount}
+\usepackage{titlesec}
+\usepackage{blindtext}
+\usepackage{indentfirst}
+\usepackage[font=small]{caption}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\setlength{\parindent}{1cm}
+\linespread{1.3}%It is 1,5 spacing in Word
+
+\lstset{frame=tb,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\scriptsize\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=2
+}
+
+%For Figure exact  placement with tag H
+\usepackage[
+bookmarks=true,
+colorlinks=true,
+linkcolor=black,
+urlcolor=black,
+citecolor=black,
+hyperindex=false,
+hyperfootnotes=false
+%meta tagi pdfaa
+pdftitle={Bakalaura darbs},
+pdfsubject={Atmiņas izmetes datu shēmu pielietošana atkļūdošanas metodes izstrādei},
+pdfauthor={Renata Januškeviča},
+pdfkeywords={},
+]{hyperref}
+
+\graphicspath{{./figures/}}
+
+\setdefaultlanguage{latvian}
+\setotherlanguages{english,russian}
+\setmainfont{Times New Roman}
+\usepackage{fixlatvian}
+
+\newcounter{totfigures}
+\newcounter{tottables}
+
+\providecommand\totfig{} 
+\providecommand\tottab{}
+
+\makeatletter
+\AtEndDocument{%
+  \addtocounter{totfigures}{\value{figure}}%
+  \addtocounter{tottables}{\value{table}}%
+  \immediate\write\@mainaux{%
+    \string\gdef\string\totfig{\number\value{totfigures}}%
+    \string\gdef\string\tottab{\number\value{tottables}}%
+  }%
+}
+
+
+\pretocmd{\chapter}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
+\pretocmd{\chapter}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
+\renewcommand{\thefigure}{\emph{\arabic{chapter}.\arabic{figure}}}
+\renewcommand{\thetable}{\emph{\arabic{chapter}.\arabic{table}}}
+\renewcommand\p@figure{\thechapter\arabic{figure}\expandafter\@gobble}
+\renewcommand\p@table{\thechapter\arabic{table}\expandafter\@gobble}
+\newtotcounter{citenum}
+\def\oldcite{}
+\let\oldcite=\bibcite
+\def\bibcite{\stepcounter{citenum}\oldcite}
+
+
+% Nodalas, sadaļas
+\titleformat{\chapter}
+   {\large\filcenter}{\thechapter}{1em}{\MakeUppercase}
+\titlespacing*{\chapter}{0pt}{10pt}{10pt}
+\titleformat{\section}
+   {\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{10pt}{10pt}
+
+% Saturs
+\usepackage{tocloft}
+\renewcommand{\cftchapfont}{\normalfont}
+\renewcommand{\cftchappagefont}{\normalfont}
+\renewcommand{\cftdotsep}{1}
+\renewcommand{\cftchapleader}{\upshape\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforesecskip}{8pt}
+\setlength\cftbeforechapskip{8pt}
+\setlength{\cftbeforesubsecskip}{8pt}
+\renewcommand{\cftchapaftersnum}{\vspace{0pt}} 
+\addtocontents{toc}{\linespread{0}\selectfont} 
+\renewcommand{\cfttoctitlefont}{\large\hfil\MakeUppercase}
+\setlength{\cftaftertoctitleskip}{10pt}
+\setlength{\cftbeforetoctitleskip}{15pt}
+\cftsetindents{section}{1cm}{1cm}
+
+% Nodalu numerācija ar punktu
+\renewcommand{\thechapter}{\arabic{chapter}.}
+\renewcommand{\thesection}{\thechapter\arabic{section}.}
+\renewcommand\thesubsection{\thesection\arabic{subsection}}
+\renewcommand\thesubsubsection{\thesubsection\arabic{subsubsection}.}
+\renewcommand\theparagraph{\thesubsubsection\arabic{paragraph}.}
+\renewcommand\thesubparagraph{\theparagraph\arabic{subparagraph}.}
+\renewcommand{\p@chapter}{\arabic{chapter}\expandafter\@gobble} 
+\renewcommand{\p@section}{\arabic{chapter}.\arabic{section}\expandafter\@gobble} 
+
+% Saraksts
+\newlength{\wideitemsep}
+\setlength{\wideitemsep}{.5\itemsep}
+\addtolength{\wideitemsep}{-7pt}
+\let\olditem\item
+\renewcommand{\item}{\setlength{\itemsep}{\wideitemsep}\olditem}
+
+
+% Global definitions
+\include{global}
+
+% Tabula
+\DeclareCaptionLabelSeparator{period1@}{\@\space}
+\captionsetup[table]{justification=raggedleft,singlelinecheck=off,labelsep=period1@}
+
+% Kods
+\definecolor{lbcolor}{rgb}{0.95,0.95,0.95}
+
+\lstset{
+	backgroundcolor=\color{lbcolor},
+    language=C++,
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+    frame=lines,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    keywordstyle=\color{red}\bfseries,
+    stringstyle=\color{green!50!black},
+    commentstyle=\color{gray}\itshape,
+    numbers=left,
+	numberstyle=\color{gray}\footnotesize,
+    captionpos=t,
+    escapeinside={\%*}{*)}
+}
+
+\begin{document}
+\include{nosaukums}
+\setcounter{secnumdepth}{-1}
+\input{anotacija}
+\clearpage
+
+
+\tableofcontents
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+\setcounter{page}{0}
+\setcounter{secnumdepth}{-1}
+\chapter{Apzīmējumu saraksts}
+\input{saisinajumi}
+
+
+\setcounter{secnumdepth}{-1}
+\chapter{Ievads}
+\input{ievads}
+
+\setcounter{secnumdepth}{2}
+\setcounter{chapter}{0}
+\chapter{Jēdzieni, uz kuriem balstās metode}
+\input{nodala_1}
+
+\chapter{Atmiņas iedalīšana, organizācija un pārvaldība}\label{chap:chapter_2} % 
+\input{nodala_2}
+
+\chapter{Problēmu apraksts}\label{chap:chapter_3} % 
+\input{nodala_3}
+
+\chapter{Atkļūšanas metodes apraksts}\label{chap:chapter_4} % 
+\input{nodala_4}
+
+\chapter{Metodes realizācijas apraksts}\label{chap:chapter_5}
+\input{nodala_5}
+
+%\chapter{Klasterizēta divu līmeņu sistēma}\label{chap:chapter_3}
+%\input{chapter_3_cor}
+%
+%\chapter{Bez sadursmju iekš-klasteru komunikācija} \label{chap:chapter_4}
+%\input{chapter_4_cor}
+%
+%\chapter{Vartēju sistēmas slānis. Klasteru autonomā formēšana} \label{chap:chapter_5}
+%\input{chapter_5_cor}
+%
+%\chapter{Divu līmeņu sistēmas modelis. Tīkla skaitļošana} \label{chap:chapter_6}
+%\input{chapter_6_cor}
+%
+\setcounter{secnumdepth}{-1}
+\chapter{Galvenie rezultāti un secinājumi} \label{chap:Secinajumi}
+\input{secinajumi}
+
+%Izmantotā literatūra un avoti 
+\nocite{SySML}
+
+\bibliographystyle{acm}
+\bibliography{biblio}
+\addcontentsline{toc}{chapter}{Izmantotā literatūra un avoti}
+
+\include{dokument_lapa}
+%\setcounter{secnumdepth}{-1}
+%\chapter{Pielikums 1} \label{chap:Prilozenie_1}
+%\input{prilozenie_1}
+%
+%\setcounter{secnumdepth}{-1}
+%\chapter{Pielikums 2} \label{chap:Prilozenie_2}
+%\input{prilozenie_2}
+%
+%\setcounter{secnumdepth}{-1}
+%\chapter{Pielikums 3} \label{chap:Prilozenie_3}
+%\input{prilozenie_3}
+\end{document}

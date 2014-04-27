@@ -1,0 +1,130 @@
+﻿%Šajā nodaļā tiek aplūkoti atmiņas izmetes un balstītās uz tās atkļūdošanas metodes pamatjēdzieni, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
+
+\section{Atmiņas izmete}
+
+Sistēmās, kuras atbalsta POSIX standartus, ir signāli \cite {USP}, kuri, pēc noklusētās apstrādes, izraisa atmiņas izmetes ģenerēšanu un pārtrauc procesa darbību. 
+Šos signālus var atrast  \texttt{man 7 signal} komandas izvadā. 
+Signāliem, kuri izraisa izmetes ģenerēšanu, signālu tabulā \cite{signal} ir lauks ar vērtību core, kas atrodas ailē ar nosaukumu darbība (Action). 
+Uzģenerētā atmiņas izmete iekļauj sevī procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, piemēram, CPU reģistrus un steka vērtības katram pavedienam, globālos un statiskos mainīgos. 
+Atmiņas izmeti var ielādēt atkļūdotājā, tāda kā gdb, lai  apskatītu programmas stāvokli uz brīdi, kad atnāca operētājsistēmas signāls \cite {core}.
+Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas, pat tad, ja nav piekļuves sistēmai. 
+
+
+Eksistē vairākas iespējas kā var uzģenerēt atmiņas izmeti.  To var izdarīt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora. 
+Turpmāk katra no iespējam tiks apskatīta sīkāk.
+
+\subsection{Atmiņas izmetes ģenerēšana no koda}
+
+Ģenerējot atmiņas izmeti no programmas koda, ir divas iespējas: process var turpināties vai beigt savu darbu pēc signāla nosūtīšanas.
+
+\begin{figure}[h]
+\begin{lstlisting}
+#include <signal.h>
+
+int main ()  
+{
+    raise(SIGSEGV); /* Signal for Invalid memory reference */
+	
+    return 0;
+}
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, pārtraucot procesa darbību}}}
+\end{figure}
+
+Ja nav nepieciešams, lai process turpinātu darbību, tad var izmantot funkcijas raise(), abort(), kā arī var apzināti pieļaut kļūdu kodā.
+Tādas kļūdas kā dalīšana ar nulli nosūta SIGFPE signālu, bet vēršanās pēc rādītāja ar null vērtību - SIGSEGV signālu.
+Izmantojot funkciju raise(), ir iespējams norādīt atmiņas izmeti izraisošo signālu.
+Piemērā (sk. 1.1. attēls) ir redzams C kods, kur funkcija raise() nosūta SIGSEGV signālu izpildāmai programmai. 
+Pēc šī izsaukuma izpildes tiek izvadīts ziņojums: Segmentation fault (core dumped).
+Atmiņas izmeti var atrast darba mapē, jo Linux operētājsistēmā tā ir noklusēta atmiņas izmetes atrašanas vieta, bet noklusētais atmiņas izmetes nosaukums ir core.
+
+Ir iespējams uzģenerēt atmiņas izmeti, nepārtraucot procesa darbību (sk. 1.2. attēls). 
+To var panākt ar fork() funkcijas palīdzību. Funkcija fork() izveido bērna procesu, kas ir vecāka procesa kopija.
+Funkcijas fork() veiksmīgas izpildes gadījumā, bērnu procesam atgriež 0 vērtību. 
+Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izmeti. Vecāks process turpina izpildi.
+
+
+\begin{figure}[h]
+\begin{lstlisting}
+ #include <stdlib.h>
+
+ int main ()
+ {
+     int child = fork();
+     if (child == 0) {
+         abort(); /* Child */
+     }
+     return 0;
+ }
+ \end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, turpinot procesa darbību}}}
+\end{figure}
+
+\subsection{Atmiņas izmetes ģenerēšana no gdb}
+Izsaukumi no koda nav vienīga iespēja kā varētu iegūt atmiņas izmeti. 
+Var izmantot gdb komandas: \texttt{generate-core-file [file]}(sk. 1.3. attēls) vai \texttt{gcore [file]}. Šīs komandas izveido gdb pakļautā procesa atmiņas izmeti. 
+Izmantojot gdb, var uzģenerēt atmiņas izmeti, kura atbilst kādam pārtraukuma punkta stāvoklim. 
+Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī gdb komanda ir realizēta GNU/Linux, FreeBSD, Solaris and S390 sistēmās \cite {gdb_gen_core}.
+
+\begin{figure}[h]
+\begin{lstlisting}
+(gdb) attach <pid>
+(gdb) generate-core-file <filename>
+(gdb) detach
+(gdb) quit
+ \end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, izmantojot gdb}}}
+\end{figure}
+
+\subsection{Atmiņas izmetes ģenerēšana no komandrindas interpretatora}
+Trešā iespēja ir nosūtīt signālu, izmantojot komandrindas interpretatoru. 
+Komanda kill var nosūtīt jebkuru signālu procesam.
+Pēc komandas  \texttt{kill -<SIGNAL\_NUMBER> <PID>}, signāls ar numuru  SIGNAL\_NUMBER tiks nosūtīts procesam ar norādītu PID vērtību.
+Izmantojot shell komandrindas interpretatoru ir  iespējams izmantot signālu īsinājumtaustiņus. 
+Nospiežot Control + $\backslash$ tiks nosūtīts SIGQUIT signāls procesam, kas pašreiz ir palaists (sk. 1.4. attēls). 
+Šajā piemēra ziņojumu - Quit (core dumped), izdruka shell. 
+Šīs komandrindas interpretators noteic, ka  sleep procesu (shell bērnu) pārtrauca SIGQUIT signāls. 
+Pēc šī signāla nosūtīšanās darba mapē tiek uzģenerēta atmiņas izmete. 
+
+\begin{figure}[h]
+\begin{lstlisting}
+$ ulimit –c unlimited
+$ sleep 30
+Type Control +\
+^\Quit (core dumped)
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, izmantojot īsinājumtaustiņus}}}
+\end{figure}
+
+\subsection{Atmiņas izmetes ģenerēšanas nosacījumi}
+Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījumiem \cite {nosacijumi}:
+%\vspace{-6pt}
+\begin{itemize}
+	\item   ir jānodrošina atļauja procesam rakstīt core datni darba mapē,
+	\item 	ja datne, ar vienādu nosaukumu jau eksistē, tad ir jābūt ne vairāk kā vienai stingrai saitei, 
+	\item 	izvēlētai darba mapei ir jābūt reālai un jāatrodas norādītajā vietā, 
+	\item 	Linux core datnes izmēra robežai {RLIMIT\_CORE} jāpārsniedz ģenerējamā faila izmēru, { RLIMIT\_FSIZE} robežai jāļauj procesam izveidot atmiņas izmeti,
+	\item 	ir  jāatļauj lasīt bināro datni, kura ir palaista,
+	\item 	failu sistēmai, kurā atrodas darba mape, ir jābūt uzmontētai priekš rakstīšanas, tai nav jābūt pilnai un ir jāsatur brīvie indeksa deskriptori,
+	\item 	bināro datni jāizpilda lietotājam, kurš ir datnes īpašnieks (group owner).
+\end{itemize} 
+
+
+
+\section{Atkļūdošana, izmantojot atmiņas izmeti}
+Core datne var būt izmantota, lai veiktu lietotnes atkļūdošanu. 
+
+
+\subsection{Simboli un atkļūdošanas informācija}
+
+Struktūras un objekti ir tikai abstrakcijas, kuras tiek interpretētas kā nobīdes atmiņā. Kompilators pārveido austa līmeņa kodu mašīnkodā. 
+Kopā ar mašīnkodu kompilators var uzģenerēt atkļūdošanas informāciju, kura attēlo saistību starp izpildāmo programmu un oriģinālo pirmkodu.
+Atkļūdošanas informācija tiek iekodēta kāda iepriekš-definētā formātā. Viens no šādiem formātiem ir DWARF, kurš tiek izmantots ELF datnēs.
+DWARF ir komplicēts formāts, kurš bija veidots priekš dažādām arhitektūram un operētājsistēmām.
+
+ELF formāts satur patvaļīgas sadaļas, kuras var būt iekļautas jebkurā objektu datnē. Sadaļu tabulā atrodas visu eksistējošo sadaļu nosaukumi.
+Komanda \texttt{objdump -h} ļauj apskatīt sadaļas ar nosaukumiem. Nosaukumi, kuri sākas ar \texttt{.debug\_} ir DWARF atkļūdošanas sadaļas.
+Dažādi rīki var apstrādāt ELF datnes.
+
+
+
