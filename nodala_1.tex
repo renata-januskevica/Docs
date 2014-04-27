@@ -143,10 +143,11 @@ $ gdb <path/to/the/binary> <path/to/the/core>
 %$
 
 Gdb ļauj iegūt svarīgus datus no atmiņas izmetes. Komanda \texttt{info files} ļauj apskatīt procesa segmentus. 
-Katram segmentam ir adrešu apgabals ar nosaukumu. Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze, koplietošanas atmiņa.
-Tā kā segmentu robežas ir zināmas, tad var izdrukāt atmiņas saturu, kas pieder segmentiem, uzzināt kuram segmentam pieder atmiņas adrese un kāda ir tā vērtība.
+Katram segmentam ir adrešu apgabals ar nosaukumu. 
+Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze, koplietošanas atmiņa.
+Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem, uzzināt kuram segmentam pieder atmiņas adrese un kādas ir vērtības.
 Lai izdrukātu atmiņas apgabalu ir nepieciešams norādīt atmiņas adresi (\texttt{addr}), no kura sākt atmiņas izdruku, formātu (\texttt{f}), apgabala lielumu (\texttt{n}) un norādīt vienības lielumu (\texttt{u}) (sk. 1.6. attēls). 
-Izmantojot doto komandas piemēru tiks izdrukāts \texttt{n} liels atmiņas apgabals, kurš sākas ar adresi \texttt{addr}, formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{gdb}. 
+Izmantojot doto piemēru tiks izdrukāts \texttt{n} liels atmiņas apgabals, kurš sākas ar adresi \texttt{addr}, formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{gdb}. 
 
 \begin{figure}[h]
 \begin{lstlisting}
@@ -158,19 +159,14 @@ Izmantojot doto komandas piemēru tiks izdrukāts \texttt{n} liels atmiņas apga
 Atmiņas izmetes analīze sākas ar backtrace izdrukāšanu. 
 Bactrace ir pārskats, kurš attēlo kā programma nonāca stāvoklī, kurā tagad atrodas.
 Katra rindiņa satur rāmi. Bactrace izdruka sākas ar rāmi, kurš iekļauj funkciju, kura bija izpildīta pēdēja. 
-Nākamais rāmis iekļauj funkciju, kas izsauca iepriekšēja rāmi iekļauto funkciju.
-Katrai baktrace rindiņai piešķirts rāmja numurs un funkcijas nosaukums. Katrs rāmis var iekļaut: pirmkoda nosaukumu, rindas numuru un funkcijas argumentus. 
+Nākamais rāmis iekļauj funkciju, kas izsauca iepriekšējā rāmī iekļauto funkciju.
+Katrai baktrace rindiņai piešķirts rāmja numurs. Katrs rāmis var iekļaut: funkcijas nosaukumu, pirmkoda datnes nosaukumu, rindas numuru un funkcijas argumentus. 
 Bactrace var tikt iegūts izmantojot gdb komandu \texttt{bactrace full}. 
-Pēc noklusējuma, daudzpavedienu lietotnēs gdb  rāda bactrace kārtējām pavedienam, bet pastāv iespēja iegūt arī citu pavedienu bactrace.
+Pēc noklusējuma, daudzpavedienu lietotnēs gdb  rāda bactrace kārtējām pavedienam, bet pastāv iespēja iegūt arī citu pavedienu bactrace izdruku.
 Ja programma bija nokompilēta ar optimizācijas opciju, tad bactrace varētu neiekļaut funkcijas argumentus. Tad tie varētu tikt nodoti caur reģistriem.
-Reģistru vērtības ir iespējams iegūt, izmantojot komandu \texttt{info registers}.
+Reģistru vērtības ir iespējams iegūt, izmantojot komandu \texttt{info registers}. Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis. 
+Tāpēc reģistru vērtības ir iespējams atjaunot no steka, ja pēc izjaukšanas (disassembling) ir redzams, kur tie bija saglabāti stekā.
 
-
-
-
-
-
-
-
-
+%Izjaukšana (disassembling) ļauj izdrukāt asamblera instrukcijas noraidītai funkcijai. 
+%Tas dod iespēju salīdzināt pirmkodu ar asamblera instrukcijām un atrast kļūdu kodā vai arī norāda, kur stekā tiek saglabātas reģistru vērtības.
 
