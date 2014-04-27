@@ -112,19 +112,65 @@ Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījum
 
 
 \section{Atkļūdošana, izmantojot atmiņas izmeti}
-Core datne var būt izmantota, lai veiktu lietotnes atkļūdošanu. 
+Atmiņas izmete var būt izmantota, lai veiktu lietotnes atkļūdošanu. 
+Atmiņas izmetes analīze ir efektīvs veids, kā var attālināti atrast un izlabot kļūdas bez tiešas piekļuves sistēmai. 
+Daudzos gadījumos, atmiņas izmete ir speciāli uzģenerēta datne, kura palīdz iegūt ātri atmiņas stāvokli uz konkrēto brīdi.
+
+Pirms sākt atmiņās izmetes analīze ir nepieciešams pārliecināties ka gdb ir pareizi nokonfigurēts priekš procesora arhitektūras, no kuras bija iegūta atmiņas izmete.
+To var identificēt uzreiz pēc gdb palaišanas, ar sekojošas rindiņas palīdzību: \texttt{This GDB was configured as i686-linux-gnu}.  
+Lai atmiņas izmete saturētu atkļūdošanas informāciju, ir jānorāda -g opcija kompilācijas laikā.
+Atkļūdošanas informācija ir uzglabāta objektu datnē un saglabā atbilstību starp izpildāmo datni un pirmkodu, ka arī mainīgo un funkciju datu tipus.
+Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad atmiņas izmetes var iekļaut sekojošo tekstu (sk. 1.5. attēls).
+
+\begin{figure}[h]
+\begin{lstlisting}
+(gdb) p main
+$ 1 = {<text variable, no debug info>} 0x80483e4 <main>
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmete nesatur atkļūdošanas informāciju}}}
+\end{figure}
+
+Kad atmiņas izmete ir uzģenerēta, tad to var apskatīt, izmantojot gdb atkļūdotāju (sk. 1.6. attēls). 
+Atkļūdotājam kā argumenti tiek padoti: izpildes fails un atmiņas izmete. 
+Izpildes failam ir jāatbilst atmiņas izmetei, lai varētu apskatīt korektus, nesabojātus datus.
+
+\begin{figure}[h]
+\begin{lstlisting}
+$ gdb <path/to/the/binary> <path/to/the/core>
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes atvēršana, izmantojot gdb atkļūdotāju}}}
+\end{figure}
+%$
+
+Gdb ļauj iegūt svarīgus datus no atmiņas izmetes. Komanda \texttt{info files} ļauj apskatīt procesa segmentus. 
+Katram segmentam ir adrešu apgabals ar nosaukumu. Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze, koplietošanas atmiņa.
+Tā kā segmentu robežas ir zināmas, tad var izdrukāt atmiņas saturu, kas pieder segmentiem, uzzināt kuram segmentam pieder atmiņas adrese un kāda ir tā vērtība.
+Lai izdrukātu atmiņas apgabalu ir nepieciešams norādīt atmiņas adresi (\texttt{addr}), no kura sākt atmiņas izdruku, formātu (\texttt{f}), apgabala lielumu (\texttt{n}) un norādīt vienības lielumu (\texttt{u}) (sk. 1.6. attēls). 
+Izmantojot doto komandas piemēru tiks izdrukāts \texttt{n} liels atmiņas apgabals, kurš sākas ar adresi \texttt{addr}, formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{gdb}. 
+
+\begin{figure}[h]
+\begin{lstlisting}
+(gdb) x/nfu addr
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas apgabala izdrukāšanas formāts}}}
+\end{figure}
+
+Atmiņas izmetes analīze sākas ar backtrace izdrukāšanu. 
+Bactrace ir pārskats, kurš attēlo kā programma nonāca stāvoklī, kurā tagad atrodas.
+Katra rindiņa satur rāmi. Bactrace izdruka sākas ar rāmi, kurš iekļauj funkciju, kura bija izpildīta pēdēja. 
+Nākamais rāmis iekļauj funkciju, kas izsauca iepriekšēja rāmi iekļauto funkciju.
+Katrai baktrace rindiņai piešķirts rāmja numurs un funkcijas nosaukums. Katrs rāmis var iekļaut: pirmkoda nosaukumu, rindas numuru un funkcijas argumentus. 
+Bactrace var tikt iegūts izmantojot gdb komandu \texttt{bactrace full}. 
+Pēc noklusējuma, daudzpavedienu lietotnēs gdb  rāda bactrace kārtējām pavedienam, bet pastāv iespēja iegūt arī citu pavedienu bactrace.
+Ja programma bija nokompilēta ar optimizācijas opciju, tad bactrace varētu neiekļaut funkcijas argumentus. Tad tie varētu tikt nodoti caur reģistriem.
+Reģistru vērtības ir iespējams iegūt, izmantojot komandu \texttt{info registers}.
 
 
-\subsection{Simboli un atkļūdošanas informācija}
 
-Struktūras un objekti ir tikai abstrakcijas, kuras tiek interpretētas kā nobīdes atmiņā. Kompilators pārveido austa līmeņa kodu mašīnkodā. 
-Kopā ar mašīnkodu kompilators var uzģenerēt atkļūdošanas informāciju, kura attēlo saistību starp izpildāmo programmu un oriģinālo pirmkodu.
-Atkļūdošanas informācija tiek iekodēta kāda iepriekš-definētā formātā. Viens no šādiem formātiem ir DWARF, kurš tiek izmantots ELF datnēs.
-DWARF ir komplicēts formāts, kurš bija veidots priekš dažādām arhitektūram un operētājsistēmām.
 
-ELF formāts satur patvaļīgas sadaļas, kuras var būt iekļautas jebkurā objektu datnē. Sadaļu tabulā atrodas visu eksistējošo sadaļu nosaukumi.
-Komanda \texttt{objdump -h} ļauj apskatīt sadaļas ar nosaukumiem. Nosaukumi, kuri sākas ar \texttt{.debug\_} ir DWARF atkļūdošanas sadaļas.
-Dažādi rīki var apstrādāt ELF datnes.
+
+
+
 
 
 

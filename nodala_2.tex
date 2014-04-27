@@ -46,7 +46,7 @@ Kad tiek izpildīta jebkura programma, atmiņa tiek pārvaldīta divos veidos: a
 \subsection{Kodola atmiņa}
 Operētājsistēmas kodols pārvalda  visus atmiņas pieprasījumus, kas attiecās uz programmu vai programmas instancēm.
 Kad lietotājs sāk programmas izpildi, tad kodols iedala atmiņas apgabalu tekošai programmai.
-Pēc tam programma pārvalda iedalīto apgabalu, sadalot to vairākos apgabalos: 
+Pēc tam programma pārvalda iedalīto apgabalu, sadalot to vairākos segmentos: 
 %\vspace{-20 pt}
 \begin{itemize}
 	\item   Teksts - uzglabāti dati, kuri tiek izmantoti tikai lasīšanai. Tās ir koda instrukcijas. 
@@ -103,9 +103,7 @@ If( ptrl != NULL )
 
 Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams operētājsistēmai atmiņas daudzums ar laiku samazinās.
 Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
-Lielākas iespējas pieļaut atmiņas noplūdi ir C valodā. 
-Programmēšanas valodā C++ ir iespēja izmantot konstruktorus un destruktorus, lai iedalītu un atbrīvotu atmiņu.
-Šīs piegājiens ļauj izsekot atmiņas iedalīšanu un atbrīvošanu, ka arī samazina atmiņas noplūdi izraisošo kļūdu parādīšanās varbūtību.
+
 
 
 
@@ -163,7 +161,7 @@ Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īp
 
 Top chunk ir atmiņas gabals, kurš ierobežo pieejamās atmiņas daudzumu.
 Tas ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu.
-Top chunk nodrošina pēdējo iespēju nodrošināt pieprasīto atmiņas daudzumu.
+Top chunk nodrošina pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
 Top chunk var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top chunk struktūrai. 
 Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top chunk var paplašināties ar brk() palīdzību.
 Top chunk ir līdzīgs jebkuram citam atmiņas apgabalam. 
