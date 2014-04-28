@@ -172,8 +172,9 @@ Tas ir izmantots gadījumos, kad ir pieprasīts mazs atmiņas gabals, kas neatbi
 Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sadalīšanas, lai apmierinātu pieprasījumu pēc maza gabala  \cite {BLACKHAT}.
 
 \subsection{Atmiņas arēna}
+
 Lai uzlabotu veiktspēju vairākpavedienu procesiem, GNU C bibliotēkā tiek izmantotas vairākas atmiņas arēnas. 
-Katrs funkcijas malloc() izsaukums bloķē arēnu. Laikā, kad arēna ir nobloķēta notiek atmiņas apgabala iedalīšana.
+Katrs funkcijas malloc() izsaukums bloķē izmantoto arēnu. Laikā, kad arēna ir nobloķēta notiek atmiņas apgabala iedalīšana.
 Kad vairākiem pavedieniem ir nepieciešams vienlaicīgi iedalīt atmiņu no kaudzes, arēnas bloķēšana var būtiski samazināt veiktspēju.
 Gadījumos, kad pavedieni izmanto atmiņu no vairākām atsevišķām arēnām, tad vienas arēnas bloķēšana neietekmē atmiņas iedalīšanu parējās arēnās un atmiņas iedalīšana var notikt paralēli.
 GNU C bibliotēkā darbība ar arēnām notiek saskaņā ar sekojošo algoritmu: 
@@ -183,23 +184,22 @@ GNU C bibliotēkā darbība ar arēnām notiek saskaņā ar sekojošo algoritmu:
 \item ja arēna ir nobloķēta, tad malloc() vēršas pie nākamas izveidotās arēnas,
 \item ja nav piekļuves nevienai arēnai, tad tiek izveidota jauna arēna un malloc() vēršas pie tās.
 \end{enumerate}
+Vispirms atmiņas iedalīšana sākas no galvenās arēnas (main arena). 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.50]{threads}
+\end{center}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Arēnas GNU C bibliotēkā }}}
+\end{figure}
 
-Vispirms atmiņas iedalīšana sākas no galvenās arēnas. 
-Lai nodrošinātu labāku veiktspēju, tiek izmantots modelis: katram pavedienam - viena arēna (sk. 2.5. attēls) \cite{JCFVO}. 
+GNU C bibliotēkā ir globāls \texttt{malloc\_state} objekts - globāla arēna, kura atšķiras ar to, kā atmiņu no kodola iegūst, izmantojot brk() (sk. 2.5. attēls) \cite{AMM}. 
+Pārējas arēnas šīm nolūkam izmanto \texttt{mmap()} izsaukumu. 
+Ja kārtēja kaudze ir izlietota, tad tiek iedalīta jauna kaudze ar fiksēto 64 MB izmēru.
+Tāda veidā arēnas var tikt paplašinātas, pievienojot jaunās kaudzes un savienojot tās sava starpā.
+Lai nodrošinātu labāku veiktspēju, tiek izmantots modelis: katram pavedienam - viena arēna. 
 Ja malloc() pirmo reizi izsaukts pavedienā, tad neatkarībā no tā vai arēna bija nobloķēta vai nē, tiks izveidota jauna arēna.
-Rezultātā katrs pavediens izmanto savu atmiņas arēnu. 
 Arēnu skaits ir ierobežots atkarībā no kodolu skaita, 32 bitu vai 64 bitu arhitektūras un mainīga MALLOC\_ARENA\_MAX vērtības.
 Tā kā pavedienu skaits parasti nepārsniedz divkāršo kodolu skaitu, tad normālā gadījumā katrs pavediens izmanto atsevišķo arēnu. 
 
-\begin{figure}[h]
-\begin{center}
-\includegraphics[scale=0.35]{threads}
-\end{center}
-\caption{\textbf{\fontsize{11}{12}\selectfont {Arēnas un pavedieni }}}
-\end{figure}
-
- Savstarpēja izslēgšana (mutex) ir nepieciešama, lai nodrošinātu sinhronizētu piekļuvi datu struktūrām. 
- Bin masīvi norāda uz atbrīvotas atmiņas sarakstiem.
- Arēnas var tikt paplašinātas pievienojot jaunās kaudzes un savienojot tās sava starpā.
 
 
