@@ -133,8 +133,8 @@ Otrs iemesls kāpēc ir iedalīts lielāks atmiņas daudzums ir izlīdzināšana
 
 Atmiņas gabala fiziska struktūra ir vienāda gan normāliem (normal chunk), gan ātriem gabaliem (fast - chunk), bet ir atkarīga no stāvokļa un var tikt interpretēta dažādi (sk. 2.4. attēls).
 No kreisās pusēs attēlots atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
-Abos gadījumos rādītājs chunk attēlo atmiņas gabalu sākumu. Pēc šī radītāja var iegūt iepriekšēja gabala izmēru, ja tas ir atbrīvots.
-Gadījumā, kad gabals ir iedalīts, tad pēc chunk rādītāja atrodas daļa no iepriekšēja gabala lietotāja datiem. 
+Abos gadījumos rādītājs chunk attēlo atmiņas gabalu sākumu. Pēc šī radītāja var iegūt iepriekšēja gabala izmēru, ja iepriekšējais gabals bija atbrīvots.
+Gadījumā, kad iepriekšējais gabals ir iedalīts, tad pēc chunk rādītāja atrodas daļa no iepriekšēja gabala lietotāja datiem. 
 Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju. 
 Tā kā notiek izlīdzināšana 2*sizeof(INTERNAL\_SIZE\_T)  reizinājumam, tad 3 pēdējie biti netiek izmantoti izmēra glabāšanai. 
 Šos bitus izmanto kontroles zīmēm.
@@ -142,20 +142,24 @@ Biti palīdz noteikt vai kārtējais gabals nepieder main arēnai, vai apgabals 
 Rādītājs mem ir malloc() funkcijas atgriežamā vērtība. Iedalīts apgabals stiepjas līdz atmiņas gabala struktūras beigām.
 Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja tā ir atbrīvota, tad šeit tiks uzglabāti divi radītāji uz nākamo un iepriekšējo atbrīvotiem gabaliem, kas atrodas sarakstā. 
  
- \subsection{Bin saraksti}
+ \subsection{Bin saraksti ptmalloc2 versijā}
 Ja atmiņa bija atbrīvota, tad tā tiks uzglabāta saistītajā sarakstā uz kuru norāda bin masīvs.
 Sarakstā gabali ir sakārtoti, lai varētu ātrāk atrast piemērotu atmiņas gabalu.
-Atbrīvots atmiņas apgabals netiek atgriezts operētājsistēmai, bet ir ievietots sarakstā, lai tiktu vēlreiz iedalīts. Eksistē divi bin saraksti: fastbin un normal bin.
+Atbrīvots atmiņas apgabals netiek atgriezts operētājsistēmai, bet ir defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā, lai tiktu vēlreiz iedalīts. Eksistē divi bin saraksti: fastbin un normal bin.
 
 Atmiņas gabali, kuri paredzēti fastbin glabāšanai ir mazi. Pēc noklusējuma atmiņas gabalu izmērs ir 64 baiti, bet to var palielināt līdz 80 baitiem \cite {MALLOC}. 
-Atmiņas gabali atrodas vienvirzienu sarakstā un nav sakārtoti. Piekļuve tādiem atmiņas gabaliem ir ātrāka nekā piekļuve normāliem gabaliem.
+Atmiņas gabali atrodas vienvirzienu sarakstā un nav sakārtoti. 
+Lai samazinātu fragmentācijas iespējamību, programma, kad pieprasa vai atbrīvo lielus atmiņas gabalus mēdz sapludināt atmiņas gabalus, kuri atrodas fastbin sarakstā.
+Piekļuve tādiem atmiņas gabaliem ir ātrāka nekā piekļuve normāliem gabaliem. 
 Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb LIFO) kārtībā \cite {Binning}.
+Kad tiek pieprasīta atmiņas daudzums, kas mazāks par 64 baitiem, tad tas tiek atgriezts konstantā laikā  \cite {ACCA}.
 
 Normāla izmēra gabali var būt sadalīti 3 veidos. Pirmkārt, bin saraksts uzglabā nesakārtotus gabalus, kuri nesen bija atbrīvoti.  
 Pēc tam tie tiks novietoti vienā no atlikušiem bin sarakstiem: mazā vai lielā izmēra. 
 Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki par 512 baitiem. 
 Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
+Gabali, kuru izmērs ir lielāks par 128 kilobaitiem tiek iedalīti, izmantojot mmap().
 Lielā izmēra sarakstā elementi ir sakārtoti pēc izmēra un ir iedalīti pirmais iekšā, pirmais ārā (jeb FIFO) kārtībā \cite {Binning}. 
 Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme un tie netiek uzglabāti bin sarakstos. 
 
