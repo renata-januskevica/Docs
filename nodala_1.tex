@@ -23,7 +23,6 @@ Turpmāk katra no iespējam tiks apskatīta sīkāk.
 #include <signal.h>
 
 int main ()  {
-
     raise(SIGSEGV); /* Signal for Invalid memory reference */
 	
     return 0;
@@ -50,7 +49,6 @@ Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izm
  #include <stdlib.h>
 
  int main () {
- 
      int child = fork();
      if (child == 0) {
          abort(); /* Child */

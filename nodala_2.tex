@@ -80,10 +80,10 @@ var būt veikta izmantojot arī citas funkcijas, piemēram calloc() funkciju, ku
 \begin{figure}[h]
 \begin{lstlisting}
 int * ptrl = new int; // C++
-int * ptrl = (int *)malloc( sizeof(int) ); /* C */
+int * ptrl = (int *)malloc(sizeof(int)); /* C */
 
 char * str = new char[num_elements]; // C++
-char * str = (char *)malloc( sizeof(char) * num_elements ); /* C */
+char * str = (char *)malloc(sizeof(char) * num_elements); /* C */
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Dinamiskās atmiņas iedalīšana C un C++}}}
 \end{figure}
@@ -207,7 +207,8 @@ Pēc tam tie tiks novietoti vienā no atlikušiem bin sarakstiem: mazā vai liel
 Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki par 512 baitiem. 
 Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
-Gabali, kuru izmērs ir lielāks par 128 kilobaitiem netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap().
+Gabali, kuru izmērs ir lielāks par 128 kilobaitiem netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap(). 
+Sākot ar GNU C bibliotēkas 2.18 versiju, gabalu kurš tiek iedalīts ar mmap() var uzdot ar M\_MMAP\_THRESHOLD konstanti.
 Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti pirmais iekšā, pirmais ārā (jeb FIFO) kārtībā \cite {Binning}. 
 
 
@@ -302,6 +303,39 @@ Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja 
     \hline
 	\end{tabular}
 \end{table}
+
+Zinot atmiņas gabala struktūru var uzrakstīt kodu C valodā, kurš izdrukās iedalītā gabala izmēru (sk. 2.8. attēlu).
+Algoritms ir sekojošs: 
+\begin{enumerate}
+\item ar malloc() tiek iedalīts atmiņas apgabals,
+\item  iegūta size elementa adrese objektam ar malloc\_chunk struktūru,
+\item  atņemtas A, M, P kontroles zīmes 111 = 7,
+\item  atbrīvota atmiņa,
+\end{enumerate}
+\begin{figure}[h]
+\begin{lstlisting}
+ #include <stdio.h>
+ #include <malloc.h>
+
+ int main () {
+     char * ptrl;
+     int chunk_size;
+
+     ptrl = malloc(4);
+ 
+     /* get address of chunk size (the second mallo_chunk element) */
+     chunk_size = *((char *) ptrl - sizeof(size_t));
+     /* the lower 3-bits are used as metadata */
+     chunk_size = chunk_size - (chunk_size & 7);
+ 
+     printf("size = %d\n", chunk_size);
+     free(ptrl);
+ 
+     return 0;
+ }
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Izmēra noteikšana iedalītām apgabalam}}}
+\end{figure}
 
 Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
 Top chunk ir atmiņas gabals, kurš ierobežo pieejamās atmiņas daudzumu.
