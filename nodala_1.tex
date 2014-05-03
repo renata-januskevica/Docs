@@ -151,7 +151,7 @@ $ gdb <path/to/the/binary> <path/to/the/core>
 
 Gdb ļauj iegūt svarīgus datus no atmiņas izmetes. Komanda \texttt{info files} ļauj apskatīt procesa segmentus. 
 Katram segmentam ir adrešu apgabals ar nosaukumu. 
-Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze, koplietošanas atmiņa.
+Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.}, koplietošanas atmiņa.
 Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem, uzzināt kuram segmentam pieder konkrētā atmiņas adrese un kādas ir segmentu adrešu vērtības.
 
 Lai izdrukātu atmiņas apgabalu ir nepieciešams norādīt atmiņas adresi (\texttt{addr}), no kura sākt atmiņas izdruku, formātu (\texttt{f}), apgabala lielumu (\texttt{n}) un norādīt vienības lielumu (\texttt{u}) (sk. 1.7. attēlu). 
