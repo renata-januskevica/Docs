@@ -122,7 +122,7 @@ Atmiņas izmete ir ELF formāta datne.
 ELF formāts ir Linux un Unix standarts priekš izpildāmām datnēm, objektu datnēm, bibliotēkām un atmiņas izmetēm.
 Lai darbotos ar atmiņas izmetēm ir nepieciešams, lai rīks, kurš tika izvēlēts (bibliotēka, utilītprogramma vai atkļūdotājs) atbalstītu ELF formāta datnes.
 GNU gdb ir  Linux standarta atkļūdotājs \cite{MWMK}, kurš ir plaši pielietojams atmiņas izmešu analīzei. 
-Turpmāk tiek apskatīta atmiņas izmetes analīze ar gdb atkļūdotāju.
+Turpmāk tiek apskatīta atmiņas izmetes analīze ar gdb atkļūdotāja piemēru.
 
 \subsubsection{Atmiņas izmetes atkļūdošana, izmantojot gdb }
 Ja atmiņas izmetes analīzei tika izvēlēts GNU gdb atkļūdotājs, tad pirms sākt analīzi ir nepieciešams pārliecināties ka gdb ir pareizi nokonfigurēts priekš procesora arhitektūras, no kuras bija iegūta atmiņas izmete.
@@ -169,7 +169,6 @@ Izmantojot doto piemēru tiks izdrukāts \texttt{n} liels atmiņas apgabals, kur
 Atmiņas izmetes analīze sākas ar backtrace izdrukāšanu. 
 Bactrace ir pārskats, kurš attēlo kā programma nonāca stāvoklī, kurā pabeidza savu darbību.
 Tas palīdz ātri atrast instrukciju kura bija izpildīta pēdēja un daudzos gadījumos, tas palīdz ātri identificēt kļūdas cēloni.
-
 Katra rindiņa satur rāmi (frame). Bactrace izdruka sākas ar rāmi, kurš iekļauj funkciju, kura bija izpildīta pēdēja. 
 Nākamais rāmis iekļauj funkciju, kas izsauca iepriekšējā rāmī iekļauto funkciju.
 Katrai baktrace rindiņai piešķirts rāmja numurs. Katrs rāmis var iekļaut: funkcijas nosaukumu, pirmkoda datnes nosaukumu, pirmkodam atbilstošo rindiņas numuru un funkcijas argumentus. 
