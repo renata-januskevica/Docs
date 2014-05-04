@@ -1,2 +1,49 @@
-﻿\section{Pētīšanas metodes}
-\section{Izmantojamie rīki}
+﻿\section{Atmiņas noplūde}
+
+
+Atmiņas noplūde ir lietotnēs sastopamā problēma, ko bieži mēģina atkļūdot ar dažādu rīku palīdzību \cite{PUG, VAL}. 
+Atmiņas noplūde notiek, kad procesam iedalītās atmiņas adreses kļūst nepieejamas, pazaudētas.
+Tas var notikt dažādu iemeslu dēļ. 
+
+
+Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams operētājsistēmai atmiņas daudzums ar laiku samazinās.
+Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
+Lielākas iespējas pieļaut atmiņas noplūdi ir C valodā. 
+Tas ir atkarīgs no konkrētas realizācijas, taču C++ kodā ir iespēja izmantot konstruktorus un destruktorus, lai iedalītu un atbrīvotu atmiņu.
+Šīs piegājiens ļauj izsekot atmiņas iedalīšanu un atbrīvošanu, ka arī samazina kļūdu parādīšanās varbūtību, programmām, kas izstrādātas C++ valodā.
+Kaut arī eksistē valodās, kurās priekš atmiņās atbrīvošanas ir paredzēts drāzu savācējs un atbrīvošanas operācijas nav jāveic manuāli, piemēram: Java, C\#, Python un Ruby valodās. 
+Taču šajās valodās arī pastāv iespēja pieļaut atmiņas noplūdi izraisošās kļūdas. Šī problēma, kaut arī ir raksturīga C un C++ valodām, ir novērojamā arī citās valodās.
+
+Arī atmiņā, programmētāju kļūdu dēļ, var tikt izveidots liels nepieejams atmiņas apgabals bez norādēm.
+
+\subsection{Atmiņas noplūdes sekas}
+
+Atmiņas noplūde ir problēma, kas īpaši nav pieļaujama sekojošos gadījumos: 
+ 
+\begin{itemize}
+\item { Programmas darbībai ir nepieciešams izdalīt daudz dinamiskās atmiņas resursu, }
+\item { Servera vai citas programmas, kuras darbojās visu laiku bez apstājas, }
+\item { Reālā laikā sistēmās, jo ir svarīgi iegūt rezultātu ierobežotā laikā. }
+\end{itemize}
+
+Viena no svarīgākam atmiņas noplūdes pazīmēm, ko var novērot lietotājs, ir noplūdi izraisošā procesa un pārējo procesu palēnināšana. 
+Tas notiek, jo uz operatīvas atmiņas pietrūkst vietas un dati šajā brīdī tiek pārnesti (swapped out) cietajā diskā.
+Bet, procesa pārnešana ir laikietilpīga operācija. 
+Kaut kāda brīdī tiks izsmelti visi resursi, katrs malloc pieprasījums būs neveiksmīgs un sekas var būt ļoti dažādas, tas ir atkarīgs no sistēmas. 
+Novēršot problēmu programma kļūs pirmām kārtām uzticamāka, ātrāka un kvalitatīvāka.
+
+\subsection{Atmiņas noplūdes pazīmes}
+
+
+
+\section{Atmiņas nevienmērīga lietošana}
+\subsection{Atmiņas nevienmērīga lietošanas sekas}
+\subsection{Atmiņas nevienmērīga lietošanas pazīmes}
+
+\section{Fragmentēšana}
+\subsection{Fragmentēšanas sekas}
+\subsection{Fragmentēšanas pazīmes}
+
+\section{Kļūdas glibc bibliotēkā}
+\subsection{Kļūdas glibc sekas}
+\subsection{Kļūdas glibc pazīmes}

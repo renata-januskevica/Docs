@@ -1,5 +1,5 @@
-﻿Šajā nodalījumā ir aprakstīti atmiņas iedalīšanas paņēmieni, ir dots īss ieskāts atmiņas organizācijā un aprakstīta atmiņas pārvaldība, kuru var veikt kodols vai lietotājs.
-Nodalījumā ir iekļauta informācija, kura palīdz saprast kopējo atmiņas organizāciju un tās saistību ar atmiņas pieprasīšanu programmā. 
+﻿Šajā nodaļā ir aprakstīti atmiņas iedalīšanas paņēmieni, ir dots īss ieskāts atmiņas organizācijā un aprakstīta atmiņas pārvaldība, kuru var veikt kodols vai lietotājs.
+Nodaļā ir iekļauta informācija, kura palīdz saprast kopējo atmiņas organizāciju un tās saistību ar atmiņas pieprasīšanu programmā. 
 \section{Atmiņas iedalīšanas paņēmieni}
 %\label{sect:Motivation}
 
@@ -36,7 +36,7 @@ Intel x86 procesoros, 16 bitu režīmā reģistrs ir \texttt{SP}, 32 bitu režī
 Reģistrs uzglabā adresi, kurā atrodas pēdējā uzglabāta vērtība stekā.
 Steka pārpildīšana var notikt dažādu iemeslu dēļ, piemēram to var izraisīt dziļa rekursija.
  
- Kontrolētā atmiņas iedalīšana nozīme, ka programma var izvēlēties patvaļīgus, brīvus atmiņas apgabalus priekš programmas datiem. 
+Kontrolētā atmiņas iedalīšana nozīme, ka programma var izvēlēties patvaļīgus, brīvus atmiņas apgabalus priekš programmas datiem. 
 Kontrolētā jeb manuālā atmiņas iedalīšana tiek nodrošināta ar atmiņas arēnas un kaudzes palīdzību. 
 Šeit nav iespējams piekļūt datiem izmantojot vienu norādi un tās nobīdi. 
 Tagad katram iedalītam atmiņas apgabalam var piekļūt tikai tad, ja ir norāde uz šo iedalīto atmiņas apgabalu. 
@@ -66,7 +66,15 @@ Pēc tam programma pārvalda iedalīto apgabalu, sadalot to vairākos segmentos 
  Lai palielinātu atmiņas arēnas izmēru, tiek veikts brk() sistēmas izsaukums. Izsaukums uzstāda atmiņas arēnas segmenta jauno beigu robežu. 
  Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un arēnas segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezts -1 \cite{LINMAN}.
  Iedalīto adrešu intervālu stekam un atmiņas arēnai var atrast \texttt{/proc/<pid>/maps} datnē.
+ 
+ 
+ 
 \subsection{Lietotāja atmiņas pārvaldība}
+Lietotāja atmiņas pārvaldība ir realizēta veicot sistēmas izsaukumus un pārdalot iegūtos resursus mazākos gabalos. 
+Tas ļauj efektīvāk pārvaldīt no kodola iedalīto atmiņas apgabalu, nekā tas būtu nodrošināts, katru reizi pieprasot atmiņas apgabalu ar sistēmas izsaukumiem.
+Lietotāja atmiņas pārvaldība varētu būt realizēta, izmantojot dažādus atmiņas iedalītājus (allocator), piemēram, Hoard memory allocator, ptmalloc2, dlmalloc.
+Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība, izmantojot GNU C bibliotēkas funkciju palīdzību.
+
 Lietotājam iedalīta atmiņa atrodas kaudzē, kura tiek novietota atmiņas arēnā. 
 Atmiņās arēna C valodā tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
 C++ valodā ir izmantots operators new, lai pieprasītu atmiņu.   
@@ -118,13 +126,13 @@ Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apst
 \section{Atmiņas iedalīšana glibc bibliotēkā}
 Darbā tiks aplūkota GNU C bibliotēkas (versija 2.3) ptmalloc2 realizācija, kuru izstrādāja Wolfram Gloger, balstoties uz Doug Lea dlmalloc realizāciju. 
 Atmiņas iedalīšana sākas ar malloc() vai līdzīgo funkciju izsaukumiem no programmas koda un tiek nodrošināta ar GNU C bibliotēkas palīdzību. 
-GNU C bibliotēka ļauj efektīvāk pārvaldīt no kodola iedalīto atmiņas apgabalu, nekā tas būtu nodrošināts, katru reizi pieprasot atmiņas apgabalu ar sistēmas izsaukumiem.
+
 
 
 
 \subsection{Atmiņas arēna}
 
-Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā 2.4. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite {MALLOC} un vietnē nopublicēta shēma \cite{AMM}.}.
+Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā 2.4. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite {MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.}.
  Atmiņas arēnu  vienkāršotā veidā var attēlot kā viensaišu saistīto sarakstu, kurš sastāv no vienas vai vairākiem atmiņas kaudzēm. 
  Kaudze ir lineārās apgabals, kurš iekļauj sevī iedalītus vai atbrīvotus atmiņas gabalus (chunk of memory), kuri ir novietoti blakus viens otram.
  Atmiņas gabali sīkāk ir aprakstīti \ref{subsec:atminas_gabali} sadaļā.
@@ -167,30 +175,30 @@ GNU C bibliotēkā ir globāls \texttt{malloc\_state} objekts - galvenā arēna,
  \label{subsec:bin_saraksti}
 Realizācijā ptmalloc2 ir masīvi, kuri uzglabā norādes uz bin sarakstiem.
 Bin saraksti ir struktūras, kuras uzglabā atbrīvotus atmiņas gabalus arēnā, līdz brīdim, kad tie tiks iedalīti procesam atkārtoti.
-Atbrīvots atmiņas gabals netiek atgriezts operētājsistēmai, bet ir defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā. 
+Atbrīvots atmiņas gabals, ja tas nebija iedalīts ar mmap() izsaukumu, netiek atgriezts operētājsistēmai, bet ir defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā. 
 Ja atmiņa bija atbrīvota, tad atmiņas gabali tiks uzglabāti vienā no bin saistītiem sarakstiem.
 Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
 
-
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.29]{fastbins}
+\end{center}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Ātrais saraksts}}}
+\label{fig:fastbin}
+\end{figure}
 Ātrais saraksts ir paredzēts bieži izmantotu, mazu atmiņas gabalu glabāšanai.
 Pēc noklusējuma ātro atmiņas gabalu izmērs nepārsniedz 64 baitus (sk. 2.5. attēlu), bet to var palielināt līdz 80 baitiem \cite {MALLOC}. 
 Tas varētu būt nepieciešams, ja programma ir bieži izmantotas struktūras, kuru izmērs pārsniedz 64 baitus.
 Atmiņas gabali atrodas viensaišu sarakstā un nav sakārtoti, jo katrā bin sarakstā elementi ir ar vienādu izmēru.
 Lai samazinātu fragmentācijas iespējamību, programma, kad pieprasa vai atbrīvo lielus atmiņas gabalus var sapludināt atmiņas gabalus, kuri atrodas fastbin sarakstā.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[scale=0.35]{fastbins}
-\end{center}
-\caption{\textbf{\fontsize{11}{12}\selectfont {Ātrais saraksts}}}
-\label{fig:fastbin}
-\end{figure}
+
 Piekļuve tādiem atmiņas gabaliem ir ātrāka nekā piekļuve parastiem gabaliem. 
 Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb LIFO) kārtībā \cite {Binning}.
 Kad tiek pieprasīta atmiņa no fastbin saraksta, tad jebkurš atmiņas gabals tiek atgriezts konstantā laikā  \cite {ACCA}.
 
 Parastie saraksti var būt sadalīti 3 veidos. Pirmkārt, bin saraksts, kurš uzglabā nesakārtotus gabalus, kuri nesen bija atbrīvoti.  
 Pēc tam tie tiks novietoti vienā no atlikušiem bin sarakstiem: mazā vai lielā izmēra. 
-Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki par 512 baitiem. 
+Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki vai vienādi ar 512 baitiem. 
 Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
 Gabali, kuru izmērs ir lielāks par 128 kilobaitiem netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap(). 
@@ -200,10 +208,7 @@ Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti pirm
 
 \subsection{Atmiņas gabali}
 \label{subsec:atminas_gabali}
-Eksistē divu veidu atmiņas gabali: parastie (normal chunk) un ātrie (fast chunk) gabali. 
-Ātrie gabali ir mazā izmērā (parasti līdz 64 baitiem) un pieder ātrajām sarakstām, bet parastie gabali - parastajām sarakstam. 
-Ātrie un parastie gabali, tiek izmantoti, lai nodrošinātu atmiņas iedalīšanu no arēnas segmenta.
-Atmiņas gabala fiziska struktūra ir vienāda abu veidu gabaliem, bet ir atkarīga no stāvokļa un var tikt interpretēta dažādi.
+
 Atmiņa no kaudzēs tiek iedalīta, izmantojot malloc\_chunk struktūru (sk. 2.6. attēlu). 
 Sīkāk struktūras malloc\_chunk elementi ir aprakstīti tabulā 2.1.
 
@@ -240,6 +245,10 @@ struct malloc_chunk  {
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas gabala struktūra}}}
 \end{figure}
+Eksistē divu veidu atmiņas gabali: parastie (normal chunk) un ātrie (fast chunk) gabali. 
+Ātrie gabali ir mazā izmērā (parasti līdz 64 baitiem) un pieder ātrajām sarakstām, bet parastie gabali - parastajām sarakstam. 
+Ātrie un parastie gabali, tiek izmantoti, lai nodrošinātu atmiņas iedalīšanu no arēnas segmenta.
+Atmiņas gabala fiziska struktūra ir vienāda abu veidu gabaliem, bet ir atkarīga no stāvokļa un var tikt interpretēta dažādi.
 
 Katru reizi ir iedalīts lielāks atmiņas gabals nekā pieprasīts ar malloc() funkciju.
 Tas ir nepieciešams, lai varētu saglabāt uzturēšanai nepieciešamo informāciju. 
@@ -281,7 +290,7 @@ Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja 
 	  \hline
 	Kontroles zīme & Nozīme \\
 	\hline
-	  A & gabals nepieder galvenai arēnai \\
+	  A & gabals nepieder galvenajai arēnai \\
       \hline
       M & gabals tiek iedalīts ar mmap() sistēmas izsaukumu \\
       \hline
@@ -290,13 +299,35 @@ Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja 
 	\end{tabular}
 \end{table}
 
+
+
+Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
+Top chunk ir atmiņas gabals, kurš ierobežo pieejamās atmiņas daudzumu.
+Tas ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu.
+Top chunk nodrošina pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
+Top chunk var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top chunk objektam. 
+Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top chunk var paplašināties ar brk() palīdzību.
+Top chunk ir līdzīgs jebkuram citam atmiņas apgabalam. 
+Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, ka arī speciāla top chunk apstrāde, lai nodrošinātu, ka top chunk vienmēr eksistē.
+
+Last\_remainder ir vel viens atmiņas gabals ar īpašu nozīmi.
+Tas ir izmantots gadījumos, kad ir pieprasīts mazs atmiņas gabals, kas neatbilst nevienam bin saraksta elementam. 
+Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sadalīšanas, lai apmierinātu pieprasījumu pēc maza gabala  \cite {BLACKHAT}.
+
+
+%\section{Atmiņas statistika}
+
+%Linux nodrošina malloc\_stats() funkciju, kura izdrukā atmiņas statistiku standartā kļūdu plūsmā stderr. 
+%Katrai atmiņas arēnai  funkcija izdruka kopējo iedalītās atmiņas daudzumu \texttt{(system bytes)} un pašreiz izmantoto atmiņas daudzumu \texttt{(in use bytes)}.
+%Ir pieejama kopēja statistikā visām arēnām pēc abiem iepriekš minētiem parametriem, ka arī tiek izdrukāts maksimālais bloku un baitu daudzums, kurš bija iedalīts ar mmap() sistēmas izsaukumu. 
+
 Zinot atmiņas gabala struktūru var uzrakstīt kodu C valodā, kurš izdrukās iedalītā gabala izmēru (sk. 2.8. attēlu).
 Algoritms ir sekojošs: 
 \begin{enumerate}
 \item ar malloc() tiek iedalīts atmiņas apgabals,
-\item  iegūta size elementa adrese objektam ar malloc\_chunk struktūru,
-\item  atņemtas A, M, P kontroles zīmes 111 = 7,
-\item  atbrīvota atmiņa,
+\item  tiek iegūta size elementa adrese objektam ar malloc\_chunk struktūru,
+\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7,
+\item  tiek atbrīvota atmiņa,
 \end{enumerate}
 \begin{figure}[h]
 \begin{lstlisting}
@@ -322,23 +353,3 @@ Algoritms ir sekojošs:
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Izmēra noteikšana iedalītām gabalam}}}
 \end{figure}
-
-Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
-Top chunk ir atmiņas gabals, kurš ierobežo pieejamās atmiņas daudzumu.
-Tas ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu.
-Top chunk nodrošina pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
-Top chunk var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top chunk objektam. 
-Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top chunk var paplašināties ar brk() palīdzību.
-Top chunk ir līdzīgs jebkuram citam atmiņas apgabalam. 
-Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, ka arī speciāla top chunk apstrāde, lai nodrošinātu, ka top chunk vienmēr eksistē.
-
-Last\_remainder ir vel viens atmiņas gabals ar īpašu nozīmi.
-Tas ir izmantots gadījumos, kad ir pieprasīts mazs atmiņas gabals, kas neatbilst nevienam bin saraksta elementam. 
-Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sadalīšanas, lai apmierinātu pieprasījumu pēc maza gabala  \cite {BLACKHAT}.
-
-
-%\section{Atmiņas statistika}
-
-%Linux nodrošina malloc\_stats() funkciju, kura izdrukā atmiņas statistiku standartā kļūdu plūsmā stderr. 
-%Katrai atmiņas arēnai  funkcija izdruka kopējo iedalītās atmiņas daudzumu \texttt{(system bytes)} un pašreiz izmantoto atmiņas daudzumu \texttt{(in use bytes)}.
-%Ir pieejama kopēja statistikā visām arēnām pēc abiem iepriekš minētiem parametriem, ka arī tiek izdrukāts maksimālais bloku un baitu daudzums, kurš bija iedalīts ar mmap() sistēmas izsaukumu. 

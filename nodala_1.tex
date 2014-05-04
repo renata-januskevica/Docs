@@ -1,5 +1,5 @@
-﻿Šajā nodalījumā tiek aplūkots atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
-Nodalījumā ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
+﻿Šajā nodaļā tiek aplūkots atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
+Nodaļā ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
 Uz šiem pamatjēdzieniem, turpmāk tiks balstīta izstrādājamā kaudzes atkļūdošanas metode.
 \section{Atmiņas izmete}
 
@@ -11,8 +11,10 @@ Atmiņas izmeti var ielādēt atkļūdotājā, tāda kā gdb, lai  apskatītu pr
 Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas, pat tad, ja nav piekļuves sistēmai. 
 
 
-Eksistē vairākas iespējas kā var uzģenerēt atmiņas izmeti.  To var izdarīt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora. 
-Turpmāk katra no iespējam tiks apskatīta sīkāk.
+Reālajās sistēmās atmiņas izmetes tiek uzģenerētas atmiņas kļūdu dēļ. 
+Dažas no kļūdām sīkāk ir aprakstītas \ref{chap:chapter_3} nodaļā. 
+Taču tas nav vienīgais veids, ka var iegūt atmiņas izmeti, eksistē vairākas iespējas kā to var uzģenerēt patstāvīgi.  To var izdarīt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora. 
+Turpmāk katra no iespējam tiks uzskatāmi nodemonstrēta un apskatīta sīkāk.
 
 \subsection{Atmiņas izmetes ģenerēšana no koda}
 
@@ -37,13 +39,6 @@ Izmantojot funkciju raise(), ir iespējams norādīt atmiņas izmeti izraisošo 
 Piemērā (sk. 1.1. attēlu) ir redzams C kods, kur funkcija raise() nosūta SIGSEGV signālu izpildāmai programmai. 
 Pēc šī izsaukuma izpildes tiek izvadīts ziņojums: Segmentation fault (core dumped).
 Atmiņas izmeti lietotāju procesiem var atrast darba mapē, jo Linux operētājsistēmā tā ir noklusēta atmiņas izmetes atrašanas vieta, bet noklusētais atmiņas izmetes nosaukums ir core.
-
-Ir iespējams uzģenerēt atmiņas izmeti, nepārtraucot procesa darbību (sk. 1.2. attēlu). 
-To var panākt ar fork() funkcijas palīdzību. Funkcija fork() izveido bērna procesu, kas ir vecāka procesa kopija.
-Funkcijas fork() veiksmīgas izpildes gadījumā, bērnu procesam atgriež 0 vērtību. 
-Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izmeti. Vecāks process turpina izpildi.
-
-
 \begin{figure}[h]
 \begin{lstlisting}
  #include <stdlib.h>
@@ -59,12 +54,19 @@ Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izm
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, turpinot procesa darbību}}}
 \end{figure}
 
+Ir iespējams uzģenerēt atmiņas izmeti, nepārtraucot procesa darbību (sk. 1.2. attēlu). 
+To var panākt ar fork() funkcijas palīdzību. Funkcija fork() izveido bērna procesu, kas ir vecāka procesa kopija.
+Funkcijas fork() veiksmīgas izpildes gadījumā, bērnu procesam atgriež 0 vērtību. 
+Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izmeti. Vecāks process turpina izpildi.
+
+
+
+
 \subsection{Atmiņas izmetes ģenerēšana no gdb}
-Izsaukumi no koda nav vienīga iespēja kā varētu iegūt atmiņas izmeti. 
-Var izmantot gdb komandas: \texttt{generate-core-file [file]}(sk. 1.3. attēlu) vai \texttt{gcore [file]}. Šīs komandas izveido gdb pakļautā procesa atmiņas izmeti. 
+
+Atmiņas izmetes ģenerēšanas nolūkam var izmantot gdb komandas: \texttt{generate-core-file [file]}(sk. 1.3. attēlu) vai \texttt{gcore [file]}. Šīs komandas izveido gdb pakļautā procesa atmiņas izmeti. 
 Izmantojot gdb, var uzģenerēt atmiņas izmeti, kura atbilst kādam pārtraukuma punkta stāvoklim. 
 Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī gdb komanda ir realizēta GNU/Linux, FreeBSD, Solaris and S390 sistēmās \cite {gdb_gen_core}.
-
 \begin{figure}[h]
 \begin{lstlisting}
 (gdb) attach <pid>
@@ -74,6 +76,7 @@ Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī 
  \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, izmantojot gdb}}}
 \end{figure}
+
 
 \subsection{Atmiņas izmetes ģenerēšana no komandrindas interpretatora}
 Trešā iespēja ir nosūtīt signālu, izmantojot komandrindas interpretatoru. 
@@ -113,12 +116,12 @@ Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījum
 \section{Atkļūdošana, izmantojot atmiņas izmeti}
 Atmiņas izmete satur datus, kuri dod iespēju atrast kļūdas. Tāpēc atmiņas izmete var tikt pielietota, lai veiktu lietotnes atkļūdošanu, pēc neparedzētas programmas apstāšanās.
 Atmiņas izmetes analīze ir efektīvs veids, kā var attālināti atrast un izlabot kļūdas bez iejaukšanās un tiešas piekļuves sistēmai.
-Daudzos gadījumos, atmiņas izmete ir speciāli uzģenerēta datne, kura palīdz iegūt atmiņas stāvokli uz signāla nosūtīšanas brīdi.
+Daudzos gadījumos, atmiņas izmete ir speciāli uzģenerēta datne, kura palīdz iegūt atmiņas stāvokli uz signāla nosūtīšanas brīdī.
 Atmiņas izmete ir labi piemērota kļūdu meklēšanai, kas saistītas ar nepareizo atmiņas izmantošanu lietotnē.
 
-Atmiņas izmete ir ELF formāta datne. 
+Atmiņas izmete ir ELF vai cita formātā binārā  datne. 
 ELF formāts ir Linux un Unix standarts priekš izpildāmām datnēm, objektu datnēm, bibliotēkām un atmiņas izmetēm.
-Lai darbotos ar atmiņas izmetēm ir nepieciešams, lai rīks, kurš tika izvēlēts (bibliotēka, utilītprogramma vai atkļūdotājs) atbalstītu ELF formāta datnes.
+Lai darbotos ar atmiņas izmetēm ir nepieciešams, lai rīks, kurš tika izvēlēts (bibliotēka, utilītprogramma vai atkļūdotājs) atbalstītu uzģenerētā formāta datnes, piemēram, ELF formātu.
 GNU gdb ir  Linux standarta atkļūdotājs \cite{MWMK}, kurš ir plaši pielietojams atmiņas izmešu analīzei. 
 Turpmāk tiek apskatīta atmiņas izmetes analīze ar gdb atkļūdotāja piemēru.
 
