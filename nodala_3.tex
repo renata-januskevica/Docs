@@ -1,38 +1,64 @@
 ﻿\section{Atmiņas noplūde}
 
 
-Atmiņas noplūde ir lietotnēs sastopamā problēma, ko bieži mēģina atkļūdot ar dažādu rīku palīdzību \cite{PUG, VAL}. 
-Atmiņas noplūde notiek, kad procesam iedalītās atmiņas adreses kļūst nepieejamas, pazaudētas.
-Tas var notikt dažādu iemeslu dēļ. 
+Atmiņas noplūde ir viena no bieži sastopamām problēmām \cite{atparv}.
+Atmiņas noplūde notiek nepareizās lietotāja atmiņas pārvaldības dēļ, kad atmiņa, kura vairs netiks izmantota programmā,  nekad netiek atbrīvota, ka arī netiek atgriezta operētājsistēmai. 
+Tā kā atmiņa, kas varētu tikt iedalīta dinamiski, ir ierobežots resurss, tad atmiņas adrešu iedalīšana programmai turpināsies līdz brīdim, kad  brīvpiekļuves atmiņas (RAM) un virtuālās atmiņas resursi tiks izsmelti un neviens pieprasījums pēc atmiņas netiks izpildīts.
 
 
-Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams operētājsistēmai atmiņas daudzums ar laiku samazinās.
-Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
-Lielākas iespējas pieļaut atmiņas noplūdi ir C valodā. 
-Tas ir atkarīgs no konkrētas realizācijas, taču C++ kodā ir iespēja izmantot konstruktorus un destruktorus, lai iedalītu un atbrīvotu atmiņu.
-Šīs piegājiens ļauj izsekot atmiņas iedalīšanu un atbrīvošanu, ka arī samazina kļūdu parādīšanās varbūtību, programmām, kas izstrādātas C++ valodā.
-Kaut arī eksistē valodās, kurās priekš atmiņās atbrīvošanas ir paredzēts drāzu savācējs un atbrīvošanas operācijas nav jāveic manuāli, piemēram: Java, C\#, Python un Ruby valodās. 
-Taču šajās valodās arī pastāv iespēja pieļaut atmiņas noplūdi izraisošās kļūdas. Šī problēma, kaut arī ir raksturīga C un C++ valodām, ir novērojamā arī citās valodās.
-
-Arī atmiņā, programmētāju kļūdu dēļ, var tikt izveidots liels nepieejams atmiņas apgabals bez norādēm.
-
-\subsection{Atmiņas noplūdes sekas}
-
-Atmiņas noplūde ir problēma, kas īpaši nav pieļaujama sekojošos gadījumos: 
+Atmiņās noplūdes problēma ir uzskatāmi nodemonstrēta piemērā (sk. 3.1. attēlu).
+Programma  iedala 10001 atmiņas gabalus ar new operatora palīdzību. 
+Rādītājs \texttt{str} katru reizi tiek pārrakstīts un norāda uz kārtējo iedalīto atmiņas gabalu.
+Beigās tiek atbrīvots tikai viens atmiņas gabals, kurš bija iedalīts pēdējais. 
+Programmas darbības laikā kļūst pazaudēti 10000 gabali, kuru kopējais izmērs ir 140000 baiti.
  
+\begin{figure}[h]
+\begin{lstlisting}
+#include <string>
+using namespace std;
+
+int main() {
+    string *str;
+
+    for (int i=0; i<10001; i++) {
+        // 10000*14 bytes are lost
+        str = new string("Hello, World!");
+    }
+    delete str;
+
+    return 0;
+}
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas noplūde, C++}}}
+\end{figure}
+
+Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūda, kas izraisa atmiņās noplūdi \cite{RTTV}: 
 \begin{itemize}
-\item { Programmas darbībai ir nepieciešams izdalīt daudz dinamiskās atmiņas resursu, }
-\item { Servera vai citas programmas, kuras darbojās visu laiku bez apstājas, }
-\item { Reālā laikā sistēmās, jo ir svarīgi iegūt rezultātu ierobežotā laikā. }
+\item { Operētājsistēma neatbrīvo, lietotnes izpildei izmantoto atmiņu, kad lietotne beidz savu darbību, piemēram, AmigaOS,}
+\item { Ja servera vai citas programmas darbojās visu laiku bez apstājas, }
+\item { Ja iegultās sistēmas strādā gadiem ilgi, }
+\item { Ja portatīvām ierīcēm ir ierobežots atmiņas daudzums, }
+\item { Ja programmas pieprasa atmiņu uzdevumiem, kuri izpildās ilgstošu laika periodu, }
+\item { Reālā laikā sistēmām, jo ir svarīgi iegūt rezultātu ierobežotajā laikā. }
 \end{itemize}
 
-Viena no svarīgākam atmiņas noplūdes pazīmēm, ko var novērot lietotājs, ir noplūdi izraisošā procesa un pārējo procesu palēnināšana. 
-Tas notiek, jo uz operatīvas atmiņas pietrūkst vietas un dati šajā brīdī tiek pārnesti (swapped out) cietajā diskā.
-Bet, procesa pārnešana ir laikietilpīga operācija. 
-Kaut kāda brīdī tiks izsmelti visi resursi, katrs malloc pieprasījums būs neveiksmīgs un sekas var būt ļoti dažādas, tas ir atkarīgs no sistēmas. 
-Novēršot problēmu programma kļūs pirmām kārtām uzticamāka, ātrāka un kvalitatīvāka.
+Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, kuriem izpildoties notiek atmiņas noplūde. 
+Ja pazaudētas atmiņas daudzums nav liels, tad izstrādātājiem ir grūti atklāt un izlabot atmiņas noplūdi. 
+Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify.
+\subsection{Atmiņas noplūdes sekas}
+
+
+
+
 
 \subsection{Atmiņas noplūdes pazīmes}
+
+Rakstā \cite{RHBJ} ir minēts, ka atmiņas noplūdes problēmu ir grūti atkļūdot, jo tai nav tiešas pazīmes, kas ļauj ātri identificēt problēmu.
+Tā kā atmiņas noplūdes laikā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu, kura dēļ, daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
+Pēc tam notiks pakāpeniskā procesa palēnināšana, jo procesa izpildei pietrūks brīvpiekļuves atmiņas un virtuālās atmiņas.
+
+ un atmiņas patēriņa pieaugums. 
+
 
 
 
@@ -45,5 +71,5 @@ Novēršot problēmu programma kļūs pirmām kārtām uzticamāka, ātrāka un 
 \subsection{Fragmentēšanas pazīmes}
 
 \section{Kļūdas glibc bibliotēkā}
-\subsection{Kļūdas glibc sekas}
-\subsection{Kļūdas glibc pazīmes}
+\subsection{glibc kļūdu sekas}
+\subsection{glibc kļūdu pazīmes}
