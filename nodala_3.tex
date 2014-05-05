@@ -2,16 +2,16 @@
 
 
 Atmiņas noplūde ir viena no bieži sastopamām problēmām \cite{atparv}.
-Atmiņas noplūde notiek nepareizās lietotāja atmiņas pārvaldības dēļ, kad atmiņa, kura vairs netiks izmantota programmā,  nekad netiek atbrīvota, ka arī netiek atgriezta operētājsistēmai. 
-Tā kā atmiņa, kas varētu tikt iedalīta dinamiski, ir ierobežots resurss, tad atmiņas adrešu iedalīšana programmai turpināsies līdz brīdim, kad  brīvpiekļuves atmiņas (RAM) un virtuālās atmiņas resursi tiks izsmelti un neviens pieprasījums pēc atmiņas netiks izpildīts.
-
-
-Atmiņās noplūdes problēma ir uzskatāmi nodemonstrēta piemērā (sk. 3.1. attēlu).
-Programma  iedala 10001 atmiņas gabalus ar new operatora palīdzību. 
-Rādītājs \texttt{str} katru reizi tiek pārrakstīts un norāda uz kārtējo iedalīto atmiņas gabalu.
-Beigās tiek atbrīvots tikai viens atmiņas gabals, kurš bija iedalīts pēdējais. 
-Programmas darbības laikā kļūst pazaudēti 10000 gabali, kuru kopējais izmērs ir 140000 baiti.
- 
+Atmiņas noplūde notiek nepareizās lietotāja atmiņas pārvaldības dēļ, kad atmiņa, kura vairs netiks izmantota programmā, netiek atbrīvota.
+Atmiņas noplūdes problēmu var sadalīt divos dažādos veidos.
+Pirmkārt, šī problēma ir novērojama, kad procesam iedalītās atmiņas adreses kļūst nepieejamas, pazaudētas.
+Atmiņa var kļūt nepieejama gadījumos, kad procesa adrešu telpā uz iedalīto atmiņas gabalu kaudzē nenorāda neviens rādītājs.
+Otrs problēmas veids ir novērojams, kad iekšējā buferī, rindā vai cita datu struktūrā dinamiski iedalītu elementu skaits pieaug neierobežoti.
+Tas atšķiras no pirmā veida ar to, ka visi elementi joprojām ir pieejami un procesa adrešu telpā ir rādītājs uz dinamiski iedalītu elementu.
+Abos gadījumos dinamiskā atmiņas iedalīšana programmai turpināsies līdz brīdim, kad  tiks sasniegts RLIMIT limits.
+Šos limitus var atrast \texttt{man setrlimit} komandas izvadā. 
+Limitiem, aprakstā ir nodarīts, kas ir jādara, kad limits ir pārsniegts.
+Daži no limitiem šajā gadījumā nosūta signālus procesiem, kuri izraisa atmiņas izmetes ģenerēšanu.
 \begin{figure}[h]
 \begin{lstlisting}
 #include <string>
@@ -32,6 +32,14 @@ int main() {
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas noplūde, C++}}}
 \end{figure}
 
+Atmiņās noplūdes problēma ir uzskatāmi nodemonstrēta piemērā (sk. 3.1. attēlu).
+Programma  iedala 10001 atmiņas gabalus ar new operatora palīdzību. 
+Rādītājs \texttt{str} katru reizi tiek pārrakstīts un norāda uz kārtējo iedalīto atmiņas gabalu.
+Beigās tiek atbrīvots tikai viens atmiņas gabals, kurš bija iedalīts pēdējais. 
+Programmas darbības laikā kļūst pazaudēti 10000 gabali, kuru kopējais izmērs ir 140000 baiti.
+ 
+
+
 Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūda, kas izraisa atmiņās noplūdi \cite{RTTV}: 
 \begin{itemize}
 \item { Operētājsistēma neatbrīvo, lietotnes izpildei izmantoto atmiņu, kad lietotne beidz savu darbību, piemēram, AmigaOS,}
@@ -43,7 +51,7 @@ Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūd
 \end{itemize}
 
 Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, kuriem izpildoties notiek atmiņas noplūde. 
-Ja pazaudētas atmiņas daudzums nav liels, tad izstrādātājiem ir grūti atklāt un izlabot atmiņas noplūdi. 
+Ja pazaudētās atmiņas daudzums nav liels, tad izstrādātājiem ir grūti atklāt un izlabot atmiņas noplūdi. 
 Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify.
 \subsection{Atmiņas noplūdes sekas}
 
