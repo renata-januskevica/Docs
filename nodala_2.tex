@@ -345,7 +345,7 @@ Algoritms ir sekojošs:
 
      ptrl = malloc(4);
  
-     /* get address of chunk size (the second malloc_chunk element) */
+     /* get value of chunk size (the second malloc_chunk element) */
      chunk_size = *((char *) ptrl - sizeof(size_t));
      /* the lower 3-bits are used as metadata */
      chunk_size = chunk_size - (chunk_size & 7);
