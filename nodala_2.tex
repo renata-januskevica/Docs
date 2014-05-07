@@ -170,6 +170,7 @@ Darbība ar arēnām notiek saskaņā ar sekojošo algoritmu:
 \item ja arēna ir nobloķēta, tad malloc() vēršas pie nākamas izveidotās arēnas,
 \item ja nav piekļuves nevienai arēnai, tad tiek izveidota jauna arēna un malloc() vēršas pie tās.
 \end{enumerate}
+
 Vispirms atmiņas iedalīšana sākas no galvenās arēnas (main arena). 
 GNU C bibliotēkā ir globāls \texttt{malloc\_state} objekts - galvenā arēna, kura atšķiras no pārējām arēnām ar to, kā atmiņu no kodola iegūst, izmantojot brk() nevis  mmap() sistēmas izsaukumu. 
 

@@ -1,7 +1,7 @@
 ﻿\section{Atmiņas noplūde}
 
 
-Atmiņas noplūde ir viena no bieži sastopamām problēmām C un C++ valodās \cite{atparv}.
+Atmiņas noplūde (memory leak) ir viena no bieži sastopamām problēmām C un C++ valodās \cite{atparv}.
 Atmiņas noplūde notiek nepareizās lietotāja atmiņas pārvaldības dēļ, kad atmiņa, kura vairs netiks izmantota programmā, netiek atbrīvota.
 
 Atmiņas noplūdes problēmu var sadalīt divos dažādos veidos: fiziskā un loģiskā atmiņas noplūde \cite{JMMR}.
@@ -16,7 +16,7 @@ Fiziskā atmiņas noplūde ir novērojama, kad atmiņas adreses, kuras tika ieda
 Loģiskā atmiņas noplūde ir novērojama, kad iekšējā buferī, rindā vai citā datu struktūrā ir uzglabātas norādes uz dinamiski iedalītu atmiņu, bet norāžu skaits pieaug neierobežoti.
 Loģiskā atmiņas noplūdi bieži nosauc par slēpto atmiņas noplūdi (hidden memory leak) \cite{RRUU}, jo atmiņa ir joprojām sasniedzama no programmas.
 Abos gadījumos sekas ir vienādas. 
-Dinamiskā atmiņas iedalīšana turpināsies līdz brīdim, kad  tiks sasniegts RLIMIT ierobežojums vai notiks kritiskā kļūda, kas saistīta ar neveiksmīgo atmiņas iedalīšanu un vēršanos pēc nederīgās atmiņas norādes (invalid memory reference).
+Dinamiskā atmiņas iedalīšana turpināsies līdz brīdim, kad  tiks sasniegts RLIMIT ierobežojums vai notiks kritiskā kļūda, kas saistīta ar neveiksmīgo atmiņas iedalīšanu un vēršanos pēc norādes ar \texttt{NULL} adresi.
 Šos ierobežojumus var atrast \texttt{man setrlimit} vai \texttt{man getrlimit} komandas izvadā. 
 Ierobežojumiem, aprakstā ir norādīts, kas notiks, ja tiks pārsniegta ierobežojošā vērtībā.
 Daži no ierobežojumiem nosūta signālus procesiem un izraisa atmiņas izmetes ģenerēšanu, ko var izmantot atmiņas noplūdes atkļūdošanai.
@@ -62,18 +62,20 @@ Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūd
 Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, kuriem izpildoties notiek atmiņas noplūde. 
 Ja ir redzamas sekas, bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
 Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify. 
-Tāču tie sniedz nepietiekamu informāciju vai netiek izmantoti strādājošās sistēmās.
-Piedāvātas atkļūdošanas tehnikas vai rīki var palēnināt sistēmas darbību 200 vai 300 reizēs, un var divkāršot atmiņas patēriņu \cite{atparv}. 
+Tāču tie ne vienmēr sniedz ietiekamu informāciju vai netiek izmantoti strādājošās sistēmās.
+Piedāvātas atkļūdošanas tehnikas vai rīki var palēnināt sistēmas darbību 200 vai 300 reizēs, ka arī var divkāršot atmiņas patēriņu \cite{atparv}. 
 
 
 
 \subsection{Atmiņas noplūdes pazīmes}
 
 Rakstā \cite{RHBJ} ir minēts, ka atmiņas noplūdes problēmu ir grūti atkļūdot, jo tai nav tiešas pazīmes, kas ļauj ātri identificēt problēmu.
-Tā kā atmiņas noplūdes laikā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu, kura dēļ, daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
-Pēc tam tiks novērota pakāpeniskā procesa palēnināšana, jo procesa izpildei sāks pietrūkt brīvpiekļuves atmiņas (RAM) un virtuālās atmiņas.
+Realajās sistēmās problēma var izpauties uzreiz pēc palaišana, bet var kļūt novērojama tikai pēc dažiem gadiem. Abi gadījumi ir izplatīti \cite{HTTM}.
+Tā kā atmiņas noplūdes rezultatā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu, kura dēļ, daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
+Pēc tam tiks novērota pakāpeniskā procesa palēnināšana, jo procesa izpildei sāks pietrūkt brīvpiekļuves (RAM) un virtuālās atmiņas.
 
- un atmiņas patēriņa pieaugums. 
+Svarīgāka pazīme, kas varētu liecināt par atmiņas noplūdi ir atmiņas izmetes izmērs.
+Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdī, tad uzģenerētās datnes izmērs var sasniegt vairākus gigabaitus.
 
 
 
