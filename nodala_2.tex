@@ -308,13 +308,13 @@ Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja 
 
 
 Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
-Top chunk ir atmiņas gabals, kurš ierobežo pieejamās atmiņas daudzumu.
+Top chunk ir atmiņas gabals, kuram ir kopīga robeža ar dinamiski iedalītās atmiņas beigām.
 Tas ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu.
-Top chunk nodrošina pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
-Top chunk var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top chunk objektam. 
-Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top chunk var paplašināties ar brk() palīdzību.
-Top chunk ir līdzīgs jebkuram citam atmiņas apgabalam. 
-Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, ka arī speciāla top chunk apstrāde, lai nodrošinātu, ka top chunk vienmēr eksistē.
+Sākotnēji atmiņās iedalīšana sākas ar top gabalu, bet tās nodrošina arī pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
+Top gabals var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top gabala objektam. 
+Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top gabals var paplašināties ar brk() palīdzību.
+Top gabals ir līdzīgs jebkuram citam atmiņas apgabalam. 
+Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, P kontroles zīme, kura vienmēr norāda, ka iepriekšējais gabals ir izmantots, ka arī speciāla top gabala apstrāde, lai nodrošinātu, ka top chunk vienmēr eksistē \cite {BLACKHAT}.
 
 Last\_remainder ir vel viens atmiņas gabals ar īpašu nozīmi.
 Tas ir izmantots gadījumos, kad ir pieprasīts mazs atmiņas gabals, kas neatbilst nevienam bin saraksta elementam. 

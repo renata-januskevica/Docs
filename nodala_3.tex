@@ -62,7 +62,7 @@ Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūd
 Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, kuriem izpildoties notiek atmiņas noplūde. 
 Ja ir redzamas sekas, bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
 Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify. 
-Tāču tie ne vienmēr sniedz ietiekamu informāciju vai netiek izmantoti strādājošās sistēmās.
+Tāču tie ne vienmēr sniedz pietiekamu informāciju vai netiek izmantoti strādājošās sistēmās.
 Piedāvātas atkļūdošanas tehnikas vai rīki var palēnināt sistēmas darbību 200 vai 300 reizēs, ka arī var divkāršot atmiņas patēriņu \cite{atparv}. 
 
 
@@ -70,24 +70,55 @@ Piedāvātas atkļūdošanas tehnikas vai rīki var palēnināt sistēmas darbī
 \subsection{Atmiņas noplūdes pazīmes}
 
 Rakstā \cite{RHBJ} ir minēts, ka atmiņas noplūdes problēmu ir grūti atkļūdot, jo tai nav tiešas pazīmes, kas ļauj ātri identificēt problēmu.
-Realajās sistēmās problēma var izpauties uzreiz pēc palaišana, bet var kļūt novērojama tikai pēc dažiem gadiem. Abi gadījumi ir izplatīti \cite{HTTM}.
-Tā kā atmiņas noplūdes rezultatā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu, kura dēļ, daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
+Reālajās sistēmās problēma var izpausties uzreiz pēc palaišana, bet var kļūt novērojama tikai pēc dažiem gadiem. Abi gadījumi ir izplatīti \cite{HTTM}.
+Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu, kura dēļ, daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
 Pēc tam tiks novērota pakāpeniskā procesa palēnināšana, jo procesa izpildei sāks pietrūkt brīvpiekļuves (RAM) un virtuālās atmiņas.
 
-Svarīgāka pazīme, kas varētu liecināt par atmiņas noplūdi ir atmiņas izmetes izmērs.
-Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdī, tad uzģenerētās datnes izmērs var sasniegt vairākus gigabaitus.
+Pazīme, kas varētu liecināt par atmiņas noplūdi ir liels\footnote{Šajā kontekstā liels vai pārmērīgs nozīme, ka izmērs ir daudz lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.} atmiņas izmetes izmērs.
+Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, tad uzģenerētās datnes izmērs var sasniegt vairākus gigabaitus.
+Pārmērīgs atmiņas izmetes izmērs var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, atmiņas nevienmērīga lietošana, kļūdas trešās puses bibliotēkās, kuru dēļ var būt novērojams liels atmiņas izmetes izmērs.
 
+
+
+Ja ir fiziskā atmiņas noplūde, tad uz katru iedalīto atmiņas gabalu kaudzē ir jābūt norādei.
+Turpmāk tiks aprakstīts piemērs, kas uzskatāmi demonstrē kā, izmantojot atmiņas izmeti, var apskatīt kaudzes saturu.
+Dotais piemērs paskaidro fizisko atmiņas noplūdes problēmu 32 bitu arhitektūrā, kur INTERNAL\_SIZE\_T makrodefinīcijas vērtība ir 4.
+Ar instrukciju \texttt{p main\_arena} (sk. 3.2. attēlu) var izdrukāt galvenās arēnas struktūru. 
+Piemērā var redzēt visus galvenās arēnas elementus. 
+\begin{figure}[h]
+\fontsize{11}{12}
+\begin{lstlisting}
+(gdb) p main_arena
+$1= {mutex = 0, flags = 1, fastbinsY = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, top = 0x9565010, last_remainder = 0x0,
+bins = {0xb76b8470, 0xb76b8470, 0xb76b8478, 0xb76b8478...},
+binmap = {0, 0, 0, 0}, next = 0xb76b8440, next_free = 0x0, system_mem = 135168, max_system_mem = 135168}
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Galvenās arēnas struktūras izdrukāšana, Intel x86, 32 bitu arhitektūrā}}}
+\end{figure}
+Gabals top robežo ar dinamiski iedalītās atmiņas beigām un, izdrukājot visu atmiņas gabalu, kas atrodas pirms top gabala adreses, kas ir vienāda ar 0x9565010, var iegūt kaudzes saturu galvenajām pavedienam.
+Interpretēt iegūto apgabalu var kā kopu ar atmiņas gabaliem (chunk), kuriem ir noteiktā struktūra.
+Tā kā katram gabalam struktūrā ir saglabāts  izmērs, tad lai iegūtu nākamo gabalu vajag pārvietojoties pa atmiņu par kārtēja gabala izmēru.
+Ja programma dinamiski bija iedalīts tikai viens int tipa elements (4 baiti - skaitļa glabāšanai, 8 baiti - uzturēšanas informācijai, pēc izlīdzināšanas, iedalītais gabals aizņems 16 baitus), tad iegūt doto apgabalu var sekojošā veidā (sk. 3.3. attēlu).
+\begin{figure}[h]
+\fontsize{11}{12}
+\begin{lstlisting}
+(gdb) x/4wx 0x9565010-16
+0x9565000: 0x00000000    0x00000011    0x00000005    0x00000000
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Galvenās arēnas struktūras izdrukāšana, Intel x86, 32 bitu arhitektūrā}}}
+\end{figure}
+
+Pēc šī piemēra var noteikt adresi, kas tika atgriezta pēc malloc() funkcijas izsaukuma, kas ir vienāda ar 0x9565000 + 8 = 0x9565008.
+Ja atmiņas izmetēs procesa adrešu telpā nav nevienas norādes uz 0x9565008 adresi, tad ar lielu varbūtību var apgalvot, ka programmā ir atmiņas noplūde.
+To nevar secināt, jo kļūda nav atrasta kodā, bet atmiņas izmete vat būt bojāta un var neiekļaut daļu no procesa adrešu telpas.
 
 
 
 \section{Atmiņas nevienmērīga lietošana}
-\subsection{Atmiņas nevienmērīga lietošanas sekas}
 \subsection{Atmiņas nevienmērīga lietošanas pazīmes}
 
 \section{Fragmentēšana}
-\subsection{Fragmentēšanas sekas}
 \subsection{Fragmentēšanas pazīmes}
 
 \section{Kļūdas glibc bibliotēkā}
-\subsection{glibc kļūdu sekas}
 \subsection{glibc kļūdu pazīmes}

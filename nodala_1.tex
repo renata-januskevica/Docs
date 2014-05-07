@@ -125,7 +125,7 @@ Lai darbotos ar atmiņas izmetēm ir nepieciešams, lai rīks, kurš tika izvēl
 GNU gdb ir  Linux standarta atkļūdotājs \cite{MWMK}, kurš ir plaši pielietojams atmiņas izmešu analīzei. 
 Turpmāk tiek apskatīta atmiņas izmetes analīze ar gdb atkļūdotāja piemēru.
 
-\subsubsection{Atmiņas izmetes atkļūdošana, izmantojot gdb }
+\subsection{Atmiņas izmetes atkļūdošana, izmantojot gdb }
 Ja atmiņas izmetes analīzei tika izvēlēts GNU gdb atkļūdotājs, tad pirms sākt analīzi ir nepieciešams pārliecināties ka gdb ir pareizi nokonfigurēts priekš procesora arhitektūras, no kuras bija iegūta atmiņas izmete.
 To var identificēt uzreiz pēc gdb palaišanas, ar sekojošās rindiņas palīdzību: \texttt{This GDB was configured as i686-linux-gnu}.  
 Lai atmiņas izmete saturētu atkļūdošanas informāciju, ir jānorāda -g opcija kompilācijas laikā.
@@ -157,9 +157,9 @@ Katram segmentam ir adrešu apgabals ar nosaukumu.
 Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.}, koplietošanas atmiņa.
 Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem, uzzināt kuram segmentam pieder konkrētā atmiņas adrese un kādas ir segmentu adrešu vērtības.
 
-Lai izdrukātu atmiņas apgabalu var izmantot sekojošo formātu: \texttt{(gdb) x/nfu addr}. 
+Lai izdrukātu atmiņas apgabalu var izmantot instrukciju ar sekojošo formātu: \texttt{(gdb) x/nfu addr}. 
 Ir nepieciešams norādīt atmiņas adresi (addr), no kuras sākt atmiņas izdruku, formātu (f), apgabala lielumu (n) un norādīt vienības lielumu (u). 
-Izmantojot doto piemēru (sk. 1.7. attēlu) tiks izdrukāti 4 elementi, kuri sākas ar rādītāju uz steku, Intel x86 procesoros 32 bitu režīmā uz steku norāda \$esp reģistrs. 
+Izmantojot doto piemēru (sk. 1.7. attēlu), tiks izdrukāti 4 elementi, kuri pieder stekam, jo Intel x86 procesoros 32 bitu režīmā uz steku norāda \$esp reģistrs. 
 Formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{gdb}. 
 Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x), vienības lielums ir vārds (word) jeb 4 baiti.
 \begin{figure}[h]
@@ -172,7 +172,6 @@ Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x), vienī
 Lai uzzinātu kuram simbolam (funkcijai, mainīgam vai tipam) pieder adrese var izmantot sekojošo gdb instrukciju (sk. 1.8. attēlu) \cite{gdb}.
 Instrukcija \texttt{print} vai \texttt{p} ļauj izdrukāt datus, bet \texttt{p/a} izdrukā absolūto un relatīvo (adresi ar nobīdi) no tuvāka simbola, kuram pieder adrese.
 Tādā veidā var noteikt kuram atmiņas apgabalam pieder nezināma adrese.
-Gdb atbalsta tipu pārveidošanu, tāpēc adresi var interpretēt ka norādi, kas ļauj ērti apskatīt dažādas struktūras un tās elementus.
 \begin{figure}[h]
 \begin{lstlisting}
 (gdb) p/a 0x54320
@@ -183,8 +182,8 @@ $3 = 0x54320 <_initialize_vx+396>
 
 Atmiņas izmetes analīze sākas ar backtrace izdrukāšanu. 
 Bactrace ir pārskats, kurš attēlo kā programma nonāca stāvoklī, kurā pabeidza savu darbību.
-Tas palīdz ātri atrast instrukciju kura bija izpildīta pēdēja un daudzos gadījumos,ļauj ātri identificēt kļūdas cēloni.
-Backrtace var nesniegt patieso informāciju par funkciju, kas bija izpildītā pēdējā, jo procesu var pabeigt ārējo apstākļu dēļ, nevis iekšējās koda kļūdas dēļ.
+Tas palīdz ātri atrast instrukciju kura bija izpildīta pēdēja un daudzos gadījumos, ļauj ātri identificēt kļūdas cēloņi.
+Backrtace var nesniegt patieso informāciju par funkciju, kas bija izpildītā pēdējā, jo procesu var pabeigt ārējo apstākļu dēļ, nevis tāpēc, ka bija notikusi iekšējā kļūda.
 Katra rindiņa satur rāmi (frame). Bactrace izdruka sākas ar rāmi, kurš iekļauj funkciju, kura bija izpildīta pēdēja. 
 Nākamais rāmis iekļauj funkciju, kas izsauca iepriekšējā rāmī iekļauto funkciju.
 Katrai baktrace rindiņai piešķirts rāmja numurs. Katrs rāmis var iekļaut: funkcijas nosaukumu, pirmkoda datnes nosaukumu, pirmkodam atbilstošo rindiņas numuru un funkcijas argumentus. 
