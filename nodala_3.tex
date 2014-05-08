@@ -14,13 +14,17 @@ Fiziskā atmiņas noplūde ir novērojama, kad atmiņas adreses, kuras tika ieda
 \end{itemize}
 
 Loģiskā atmiņas noplūde ir novērojama, kad iekšējā buferī, rindā vai citā datu struktūrā ir uzglabātas norādes uz dinamiski iedalītu atmiņu, bet norāžu skaits pieaug neierobežoti.
-Loģiskā atmiņas noplūdi bieži nosauc par slēpto atmiņas noplūdi (hidden memory leak) \cite{RRUU}, jo atmiņa ir joprojām sasniedzama no programmas.
-Abos gadījumos sekas ir vienādas. 
-Dinamiskā atmiņas iedalīšana turpināsies līdz brīdim, kad  tiks sasniegts RLIMIT ierobežojums vai notiks kritiskā kļūda.
-Kļūdas cēlonis var būt sliktā programmēšanas prakse, jo programmētāji ne vienmēr pārbauda malloc() rezultātu pirms vērsties pēc malloc() funkcijas atgrieztās norādes.
-Iespējamos ierobežojumus var atrast \texttt{man setrlimit} vai \texttt{man getrlimit} komandas izvadā. 
-Ierobežojumiem, aprakstā ir norādīts, kas notiks, ja tiks pārsniegta ierobežojošā vērtībā.
-Daži no ierobežojumiem nosūta signālus procesiem un izraisa atmiņas izmetes ģenerēšanu, ko var analizēt, lai atkļūdotu atmiņās izmeti.
+Loģiskā atmiņas noplūdi bieži nosauc par slēpto atmiņas noplūdi (hidden memory leak) \cite{RRUU}, jo atmiņa ir joprojām sasniedzama no programmas, bet nekad netiek atbrīvota.
+
+Abos gadījumos sekas ir vienādas.
+Sākumā tiks novērota pakāpeniskā procesa palēnināšana, jo daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
+Kaut kāda brīdī, kad tiks iztērēta visā dinamiskā atmiņa, tad katrs malloc() funkcijas izsaukums būs neveiksmīgs.
+Šeit var notikt kritiskā kļūda, kuras cēlonis ir sliktā programmēšanas prakse.
+Programmētāji ne vienmēr pārbauda malloc() rezultātu pirms vērsties pēc malloc() funkcijas atgrieztās norādes.  
+Mēģinājums piekļūt NULL adresei  izraisīs Segmentation fault kļūdu, jo šī adrese nepieder procesa adrešu telpai.
+Ja programmā bija paredzēts, ka malloc() var atgriezt NULL, tad process turpina izpildi ierobežotā režīma, jo vairs nav iespējams dinamiski iedalīt atmiņu. 
+Daudzās sistēmās tas nav pieļaujams un var tikt uzstādīti dažādi ierobežojumi, kuri pēc ierobežojošās vērtības sasniegšanas (izpildes laiks, patērētā atmiņa) automātiski pārtrauks procesa darbību. 
+
 \begin{figure}[h]
 \begin{lstlisting}
 #include <string>
@@ -62,15 +66,17 @@ Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūd
 Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, kuriem izpildoties notiek atmiņas noplūde. 
 Ja ir redzamas sekas (ir atmiņas izmete un programma pabeidza savu darbu), bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
 Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify. 
-Taču tie ne vienmēr sniedz pietiekamu informāciju un bieži netiek izmantoti strādājošās sistēmās, jo piedāvātas atkļūdošanas tehnikas un rīki var palēnināt sistēmas darbību 200 vai 300 reizēs, ka arī var divkāršot atmiņas patēriņu \cite{atparv}. 
+Taču tie ne vienmēr sniedz pietiekamu informāciju un bieži netiek izmantoti strādājošās sistēmās, jo piedāvātas atkļūdošanas tehnikas un rīki var palēnināt sistēmas darbību.
+Ieslēdzot iekš Valgrind instrumentācijas ietvara Memcheck rīku programmas izpildes ātrums palēninās 20-30 reizes \cite{UVD}.
 
 
 
 \subsection{Atmiņas noplūdes pazīmes}
 
-Reālajās sistēmās problēma var izpausties uzreiz pēc palaišanas, bet var kļūt novērojama tikai pēc dažiem gadiem. Abi gadījumi ir izplatīti \cite{HTTM}.
-Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu, kurā dēļ, daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
-Pēc tam tiks novērota pakāpeniskā procesa palēnināšana, jo procesa izpildei sāks pietrūkt brīvpiekļuves (RAM) un virtuālās atmiņas.
+Reālajās sistēmās problēma var izpausties uzreiz pēc palaišanas, bet var kļūt novērojama tikai pēc dažiem gadiem. 
+Abi gadījumi ir izplatīti \cite{HTTM}.
+Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu.
+
 
 Pazīme, kas varētu liecināt par atmiņas noplūdi ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīme, ka izmērs ir lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
 atmiņas daudzums, kas ir nepieciešams procesa izpildei. 
@@ -89,14 +95,15 @@ Kamēr kļūda nav atrasta kodā, to nevar secināt, jo atmiņas izmete var būt
 
 
 Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā. 
-Problēmai ir raksturīgs stāvoklis, kad ir daudzi atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus.
-Turpmāk tiks apskatīts piemērs, kurš paskaidro ka var izpausties šī pazīme, kad ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir virtuālās funkcijas.
+Problēmai ir raksturīgs stāvoklis, kad ir daudzi atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus (izmēru, līdzīgas datu shēmas).
+Turpmāk tiks apskatīts piemērs, kurš paskaidro kā var izpausties šī pazīme.
+Piemērā ir aplūkots gadījums, kad programmā ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir izmantotā virtuālā funkcija.
 Ja C++ klasē ir virtuālās funkcijas, tad kompilators izveido virtuālo funkciju tabulu (vtable), kura iekļauj rādītājus uz šī klases virtuālām funkcijām.
  Katrai klasei ir tikai viena virtuālo funkciju tabula, kuru izmanto visi klases objekti.
  Ar katru virtuālo funkciju tabulu ir saistīts virtuālo funkciju rādītājs (vpointer).
  Šīs rādītājs norāda uz virtuālo funkciju tabulu un tiek izmantots lai piekļūtu virtuālajām funkcijām.
 Atmiņā klases izvietojums, kurā ir virtuālā funkcija atmiņā tiek attēlots sekojoši (sk. 3.2. attēlu).
-Ja loģiskā atmiņas noplūde notiks, tāpēc ka atmiņa būs daudz  MyClass objektu, tad pēc vpointer norādes atmiņas gabalos var identificēt doto problēmu, bet saprast kurai klasei pieder objekti var ar gdb palīdzību.
+Ja loģiskā atmiņas noplūde notiks, tāpēc ka atmiņā neierobežoti pieaugs MyClass objektu skaits, tad pēc vpointer norādes atmiņas gabalos var identificēt doto problēmu, bet saprast kurai klasei pieder objekti var ar gdb palīdzību.
 Instrukcijas, kas ļauj apskatīties, kuram apgabalam pieder adrese jau tika aprakstītas sadaļā \ref{subsec:debugg_gdb}
 \begin{figure}[h]
 \begin{lstlisting}
