@@ -8,18 +8,19 @@ Atmiņas noplūdes problēmu var sadalīt divos dažādos veidos: fiziskā un lo
 Fiziskā atmiņas noplūde ir novērojama, kad atmiņas adreses, kuras tika iedalītas procesam,  kļūst nepieejamas, pazaudētas, tas notiek, kad procesa adrešu telpā uz iedalīto atmiņas gabalu kaudzē nenorāda neviens rādītājs.
 Šīs programmas stāvoklis var būt novērojams 3 iemeslu dēļ \cite{JMMR}:
 \begin{itemize}
-\item pēdēja norāde uz atmiņas gabalu ir pārrakstīta vai norādes adrese bija palielināta, lai sasniegtu datus ar nobīdi,
-\item norāde ir ārpus darbības lauka (out of scope),
-\item atmiņas apgabals, kurš glabāja norādi, bija atbrīvots.
+\item pēdēja norāde uz atmiņas gabalu ir pārrakstīta vai norādes adrese bija palielināta, piemēram, lai sasniegtu datus ar nobīdi,
+\item norāde atrodas ārpus darbības lauka (out of scope),
+\item atmiņas bloks, kurš glabāja norādi, bija atbrīvots.
 \end{itemize}
 
 Loģiskā atmiņas noplūde ir novērojama, kad iekšējā buferī, rindā vai citā datu struktūrā ir uzglabātas norādes uz dinamiski iedalītu atmiņu, bet norāžu skaits pieaug neierobežoti.
 Loģiskā atmiņas noplūdi bieži nosauc par slēpto atmiņas noplūdi (hidden memory leak) \cite{RRUU}, jo atmiņa ir joprojām sasniedzama no programmas.
 Abos gadījumos sekas ir vienādas. 
-Dinamiskā atmiņas iedalīšana turpināsies līdz brīdim, kad  tiks sasniegts RLIMIT ierobežojums vai notiks kritiskā kļūda, kas saistīta ar neveiksmīgo atmiņas iedalīšanu un vēršanos pēc norādes ar \texttt{NULL} adresi.
-Šos ierobežojumus var atrast \texttt{man setrlimit} vai \texttt{man getrlimit} komandas izvadā. 
+Dinamiskā atmiņas iedalīšana turpināsies līdz brīdim, kad  tiks sasniegts RLIMIT ierobežojums vai notiks kritiskā kļūda.
+Kļūdas cēlonis var būt sliktā programmēšanas prakse, jo programmētāji ne vienmēr pārbauda malloc() rezultātu pirms vērsties pēc malloc() funkcijas atgrieztās norādes.
+Iespējamos ierobežojumus var atrast \texttt{man setrlimit} vai \texttt{man getrlimit} komandas izvadā. 
 Ierobežojumiem, aprakstā ir norādīts, kas notiks, ja tiks pārsniegta ierobežojošā vērtībā.
-Daži no ierobežojumiem nosūta signālus procesiem un izraisa atmiņas izmetes ģenerēšanu, ko var izmantot atmiņas noplūdes atkļūdošanai.
+Daži no ierobežojumiem nosūta signālus procesiem un izraisa atmiņas izmetes ģenerēšanu, ko var analizēt, lai atkļūdotu atmiņās izmeti.
 \begin{figure}[h]
 \begin{lstlisting}
 #include <string>
@@ -43,74 +44,80 @@ int main() {
 Atmiņās noplūdes problēma ir uzskatāmi nodemonstrēta piemērā (sk. 3.1. attēlu).
 Programma  iedala 10001 atmiņas gabalus ar new operatora palīdzību. 
 Rādītājs \texttt{str} katru reizi tiek pārrakstīts un norāda uz kārtējo iedalīto atmiņas gabalu, kurā izmērs ir 14 baiti.
-Tā kā atmiņas adreses kļūst pazaudētas un nav iespējas piekļūt iepriekšējiem elementiem, kad  \texttt{str} radītājs ir parakstīts, tad piemēra ir redzama fiziskā atmiņas noplūde.
+Tā kā atmiņas adreses kļūst pazaudētas un nav iespējas piekļūt iepriekšējiem elementiem pēc tam kad  \texttt{str} radītājs ir parakstīts, tad piemēra ir redzama fiziskā atmiņas noplūde.
 Beigās tiek atbrīvots tikai viens atmiņas gabals, kurš bija iedalīts pēdējais. 
 Programmas darbības laikā kļūst pazaudēti 10000 gabali, kuru kopējais izmērs ir 140000 baiti.
- Pēc programmas izpildes beigām visā procesam iedalītā atmiņa tiks atgriezta operētājsistēmai.
+ Pēc programmas izpildes beigām visā procesam iedalītā atmiņa tiek atgriezta operētājsistēmai.
 
 
 Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūda, kas izraisa atmiņās noplūdi \cite{RTTV}: 
 \begin{itemize}
-\item { Operētājsistēma neatbrīvo, lietotnes izpildei izmantoto atmiņu, kad lietotne beidz savu darbību, piemēram, AmigaOS,}
-\item { Ja servera vai citas programmas darbojās visu laiku bez apstājas, }
-\item { Ja iegultās sistēmas strādā gadiem ilgi, }
+\item { Kad operētājsistēma neatbrīvo, lietotnes izpildei izmantoto atmiņu pēc tam, kad lietotne beidz savu darbību, piemēram, AmigaOS,}
+\item { Ja servera vai citas programmas darbojās visu laiku bez apstāšanās, }
 \item { Ja portatīvām ierīcēm ir ierobežots atmiņas daudzums, }
 \item { Ja programmas pieprasa atmiņu uzdevumiem, kuri izpildās ilgstošu laika periodu, }
-\item { Reālā laikā sistēmām, jo ir svarīgi iegūt rezultātu ierobežotajā laikā. }
+\item { Reālā laikā sistēmās, jo ir svarīgi iegūt rezultātu ierobežotajā laikā. }
 \end{itemize}
 
 Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, kuriem izpildoties notiek atmiņas noplūde. 
-Ja ir redzamas sekas, bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
+Ja ir redzamas sekas (ir atmiņas izmete un programma pabeidza savu darbu), bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
 Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify. 
-Tāču tie ne vienmēr sniedz pietiekamu informāciju vai netiek izmantoti strādājošās sistēmās.
-Piedāvātas atkļūdošanas tehnikas vai rīki var palēnināt sistēmas darbību 200 vai 300 reizēs, ka arī var divkāršot atmiņas patēriņu \cite{atparv}. 
+Taču tie ne vienmēr sniedz pietiekamu informāciju un bieži netiek izmantoti strādājošās sistēmās, jo piedāvātas atkļūdošanas tehnikas un rīki var palēnināt sistēmas darbību 200 vai 300 reizēs, ka arī var divkāršot atmiņas patēriņu \cite{atparv}. 
 
 
 
 \subsection{Atmiņas noplūdes pazīmes}
 
-Rakstā \cite{RHBJ} ir minēts, ka atmiņas noplūdes problēmu ir grūti atkļūdot, jo tai nav tiešas pazīmes, kas ļauj ātri identificēt problēmu.
-Reālajās sistēmās problēma var izpausties uzreiz pēc palaišana, bet var kļūt novērojama tikai pēc dažiem gadiem. Abi gadījumi ir izplatīti \cite{HTTM}.
-Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu, kura dēļ, daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
+Reālajās sistēmās problēma var izpausties uzreiz pēc palaišanas, bet var kļūt novērojama tikai pēc dažiem gadiem. Abi gadījumi ir izplatīti \cite{HTTM}.
+Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu, kurā dēļ, daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
 Pēc tam tiks novērota pakāpeniskā procesa palēnināšana, jo procesa izpildei sāks pietrūkt brīvpiekļuves (RAM) un virtuālās atmiņas.
 
-Pazīme, kas varētu liecināt par atmiņas noplūdi ir liels\footnote{Šajā kontekstā liels vai pārmērīgs nozīme, ka izmērs ir daudz lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.} atmiņas izmetes izmērs.
-Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, tad uzģenerētās datnes izmērs var sasniegt vairākus gigabaitus.
-Pārmērīgs atmiņas izmetes izmērs var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, atmiņas nevienmērīga lietošana, kļūdas trešās puses bibliotēkās, kuru dēļ var būt novērojams liels atmiņas izmetes izmērs.
+Pazīme, kas varētu liecināt par atmiņas noplūdi ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīme, ka izmērs ir lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
+atmiņas daudzums, kas ir nepieciešams procesa izpildei. 
+Pēc šīs pazīmes var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, atmiņas nevienmērīga lietošana vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
+Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, tad uzģenerētās datnes izmērs, atmiņas noplūdes problēmas ietekmēs rezultātā, var sasniegt vairākus gigabaitus.
+
+
+Par fiziskās atmiņas noplūdes pazīmi var uzskatīt stāvokli, kad uz atmiņas gabaliem kaudzē nav norāžu no procesa adrešu telpas.
+Par šo programmas stāvokli var pārliecināties, veicot atmiņas izmetes analīzi. 
+Atmiņas izmetē atrodas kaudzes saturs visām atmiņas arēnām. 
+Interpretējot katru kaudzes saturu, kā kopu ar daudziem atmiņas gabaliem, var iegūt adreses, uz kuriem malloc() funkcija atgrieza norādes procesam.
+Ja procesa adrešu telpā nav nevienas norādes uz atrastajām adresēm, tad ar lielu varbūtību var apgalvot, ka programmā ir atmiņas noplūde.
+Kamēr kļūda nav atrasta kodā, to nevar secināt, jo atmiņas izmete var būt bojāta un var neiekļaut daļu no procesa adrešu telpas.
+Šī pazīme nav raksturīga loģiskajai atmiņas noplūdei.
 
 
 
-Ja ir fiziskā atmiņas noplūde, tad uz katru iedalīto atmiņas gabalu kaudzē ir jābūt norādei.
-Turpmāk tiks aprakstīts piemērs, kas uzskatāmi demonstrē kā, izmantojot atmiņas izmeti, var apskatīt kaudzes saturu.
-Dotais piemērs paskaidro fizisko atmiņas noplūdes problēmu 32 bitu arhitektūrā, kur INTERNAL\_SIZE\_T makrodefinīcijas vērtība ir 4.
-Ar instrukciju \texttt{p main\_arena} (sk. 3.2. attēlu) var izdrukāt galvenās arēnas struktūru. 
-Piemērā var redzēt visus galvenās arēnas elementus. 
+Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā. 
+Problēmai ir raksturīgs stāvoklis, kad ir daudzi atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus.
+Turpmāk tiks apskatīts piemērs, kurš paskaidro ka var izpausties šī pazīme, kad ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir virtuālās funkcijas.
+Ja C++ klasē ir virtuālās funkcijas, tad kompilators izveido virtuālo funkciju tabulu (vtable), kura iekļauj rādītājus uz šī klases virtuālām funkcijām.
+ Katrai klasei ir tikai viena virtuālo funkciju tabula, kuru izmanto visi klases objekti.
+ Ar katru virtuālo funkciju tabulu ir saistīts virtuālo funkciju rādītājs (vpointer).
+ Šīs rādītājs norāda uz virtuālo funkciju tabulu un tiek izmantots lai piekļūtu virtuālajām funkcijām.
+Atmiņā klases izvietojums, kurā ir virtuālā funkcija atmiņā tiek attēlots sekojoši (sk. 3.2. attēlu).
+Ja loģiskā atmiņas noplūde notiks, tāpēc ka atmiņa būs daudz  MyClass objektu, tad pēc vpointer norādes atmiņas gabalos var identificēt doto problēmu, bet saprast kurai klasei pieder objekti var ar gdb palīdzību.
+Instrukcijas, kas ļauj apskatīties, kuram apgabalam pieder adrese jau tika aprakstītas sadaļā \ref{subsec:debugg_gdb}
 \begin{figure}[h]
-\fontsize{11}{12}
 \begin{lstlisting}
-(gdb) p main_arena
-$1= {mutex = 0, flags = 1, fastbinsY = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, top = 0x9565010, last_remainder = 0x0,
-bins = {0xb76b8470, 0xb76b8470, 0xb76b8478, 0xb76b8478...},
-binmap = {0, 0, 0, 0}, next = 0xb76b8440, next_free = 0x0, system_mem = 135168, max_system_mem = 135168}
+class MyClass
+{
+    virtual SomeVirtualMethod();
+    
+    public:
+        void* attribute1;
+        void* attribute2;
+}
 \end{lstlisting}
-\caption{\textbf{\fontsize{11}{12}\selectfont {Galvenās arēnas struktūras izdrukāšana, Intel x86, 32 bitu arhitektūrā}}}
+%\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas noplūde, C++}}}
 \end{figure}
-Gabals top robežo ar dinamiski iedalītās atmiņas beigām un, izdrukājot visu atmiņas gabalu, kas atrodas pirms top gabala adreses, kas ir vienāda ar 0x9565010, var iegūt kaudzes saturu galvenajām pavedienam.
-Interpretēt iegūto apgabalu var kā kopu ar atmiņas gabaliem (chunk), kuriem ir noteiktā struktūra.
-Tā kā katram gabalam struktūrā ir saglabāts  izmērs, tad lai iegūtu nākamo gabalu vajag pārvietojoties pa atmiņu par kārtēja gabala izmēru.
-Ja programma dinamiski bija iedalīts tikai viens int tipa elements (4 baiti - skaitļa glabāšanai, 8 baiti - uzturēšanas informācijai, pēc izlīdzināšanas, iedalītais gabals aizņems 16 baitus), tad iegūt doto apgabalu var sekojošā veidā (sk. 3.3. attēlu).
 \begin{figure}[h]
-\fontsize{11}{12}
-\begin{lstlisting}
-(gdb) x/4wx 0x9565010-16
-0x9565000: 0x00000000    0x00000011    0x00000005    0x00000000
-\end{lstlisting}
-\caption{\textbf{\fontsize{11}{12}\selectfont {Galvenās arēnas struktūras izdrukāšana, Intel x86, 32 bitu arhitektūrā}}}
+\begin{center}
+\includegraphics[scale=0.6]{memoryleak}
+\end{center}
+\caption{\textbf{\fontsize{11}{12}\selectfont {C++ klases ar virtuālo funkciju izvietojums atmiņā }}}
+\label{fig:memoryleak}
 \end{figure}
-
-Pēc šī piemēra var noteikt adresi, kas tika atgriezta pēc malloc() funkcijas izsaukuma, kas ir vienāda ar 0x9565000 + 8 = 0x9565008.
-Ja atmiņas izmetēs procesa adrešu telpā nav nevienas norādes uz 0x9565008 adresi, tad ar lielu varbūtību var apgalvot, ka programmā ir atmiņas noplūde.
-To nevar secināt, jo kļūda nav atrasta kodā, bet atmiņas izmete vat būt bojāta un var neiekļaut daļu no procesa adrešu telpas.
 
 
 

@@ -158,7 +158,7 @@ Bin masīvs un bin saraksti sīkāk ir aprakstīti \ref{subsec:bin_saraksti} sad
 Lai uzlabotu veiktspēju vairākpavedienu procesiem, GNU C bibliotēkā tiek izmantotas vairākas atmiņas arēnas. 
 Katrs funkcijas malloc() izsaukums bloķē arēnu, no kuras tiek pieprasītā atmiņa. 
 Laikā, kad arēna ir nobloķēta notiek atmiņas apgabala iedalīšana.
-Kad vairākiem pavedieniem ir nepieciešams vienlaicīgi iedalīt atmiņu no kaudzes un visi pavedieni mēģina piekļūt vienai un tai pašai arēnai (tas varētu notikt dlmalloc realizācija), tad arēnas bloķēšana var būtiski samazināt veiktspēju.
+Kad vairākiem pavedieniem ir nepieciešams vienlaicīgi iedalīt atmiņu no kaudzes un visi pavedieni mēģina piekļūt vienai un tai pašai arēnai (tas varētu notikt dlmalloc realizācijā), tad arēnas bloķēšana var būtiski samazināt veiktspēju.
 Gadījumos, kad pavedieni izmanto atmiņu no vairākām atsevišķām arēnām, piemēram kā tas notiek ptmalloc2 realizācijā, tad vienas arēnas bloķēšana neietekmē atmiņas iedalīšanu parējās arēnās un atmiņas iedalīšana var notikt paralēli.
 Lai nodrošinātu labāku veiktspēju, GNU C bibliotēkā tiek izmantots modelis: katram pavedienam - viena arēna. 
 Ja malloc() pirmo reizi izsaukts pavedienā, tad neatkarībā no tā vai kārtējā arēna bija nobloķēta vai nē, tiks izveidota jauna arēna.
@@ -206,7 +206,7 @@ Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki vai vienādi a
 Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
 Gabali, kuru izmērs ir lielāks par 128 kilobaitiem netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap(). 
-Sākot ar GNU C bibliotēkas 2.18 versiju, gabalu kurš tiek iedalīts ar mmap() var uzdot ar M\_MMAP\_THRESHOLD konstanti.
+Sākot ar GNU C bibliotēkas 2.18 versiju, mazako gabalu, kurš tiks iedalīts ar mmap(), var uzdot ar M\_MMAP\_THRESHOLD konstanti.
 Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti pirmais iekšā, pirmais ārā (jeb FIFO) kārtībā \cite {Binning}. 
 
 
@@ -310,7 +310,7 @@ Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja 
 Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
 Top chunk ir atmiņas gabals, kuram ir kopīga robeža ar dinamiski iedalītās atmiņas beigām.
 Tas ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu.
-Sākotnēji atmiņās iedalīšana sākas ar top gabalu, bet tās nodrošina arī pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
+Sākotnēji atmiņās iedalīšana sākas ar top gabalu, bet top gabals nodrošina arī pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
 Top gabals var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top gabala objektam. 
 Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top gabals var paplašināties ar brk() palīdzību.
 Top gabals ir līdzīgs jebkuram citam atmiņas apgabalam. 
