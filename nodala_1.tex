@@ -13,12 +13,13 @@ Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas,
 
 Reālajās sistēmās atmiņas izmetes tiek uzģenerētas atmiņas kļūdu dēļ. 
 Dažas no kļūdām sīkāk ir aprakstītas \ref{chap:chapter_3} nodaļā. 
-Taču tas nav vienīgais veids, ka var iegūt atmiņas izmeti, eksistē vairākas iespējas kā to var uzģenerēt patstāvīgi.  To var izdarīt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora. 
+Taču tas nav vienīgais veids, ka var iegūt atmiņas izmeti, eksistē vairākas iespējas kā to var uzģenerēt patstāvīgi, lai veiktu programmas atkļūdošanu.
+To var izdarīt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora. 
 Turpmāk katra no iespējam tiks uzskatāmi nodemonstrēta un apskatīta sīkāk.
 
 \subsection{Atmiņas izmetes ģenerēšana no koda}
 
-Ģenerējot atmiņas izmeti no programmas koda, ir divas iespējas: process var turpināties vai beigt savu darbu pēc signāla nosūtīšanas.
+Ģenerējot atmiņas izmeti no programmas koda, ir divas iespējas: process var turpināties vai beigt savu darbību pēc signāla nosūtīšanas.
 
 \begin{figure}[h]
 \begin{lstlisting}
@@ -34,7 +35,7 @@ int main ()  {
 \end{figure}
 
 Ja nav nepieciešams, lai process turpinātu darbību, tad var izmantot funkcijas raise(), abort(), kā arī var apzināti pieļaut kļūdu kodā.
-Tādas kļūdas kā dalīšana ar nulli nosūta SIGFPE signālu, bet vēršanās pēc null radītāja - SIGSEGV signālu.
+Tāda kļūda kā dalīšana ar nulli nosūta SIGFPE signālu, bet vēršanās pēc null radītāja - SIGSEGV signālu.
 Izmantojot funkciju raise(), ir iespējams norādīt atmiņas izmeti izraisošo signālu.
 Piemērā (sk. 1.1. attēlu) ir redzams C kods, kur funkcija raise() nosūta SIGSEGV signālu izpildāmai programmai. 
 Pēc šī izsaukuma izpildes tiek izvadīts ziņojums: Segmentation fault (core dumped).
@@ -56,7 +57,7 @@ Atmiņas izmeti lietotāju procesiem var atrast darba mapē, jo Linux operētāj
 
 Ir iespējams uzģenerēt atmiņas izmeti, nepārtraucot procesa darbību (sk. 1.2. attēlu). 
 To var panākt ar fork() funkcijas palīdzību. Funkcija fork() izveido bērna procesu, kas ir vecāka procesa kopija.
-Funkcijas fork() veiksmīgas izpildes gadījumā, bērnu procesam atgriež 0 vērtību. 
+Funkcija fork(), veiksmīgas izpildes gadījumā, bērnu procesam atgriež 0 vērtību. 
 Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izmeti. Vecāks process turpina izpildi.
 
 
@@ -66,7 +67,7 @@ Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izm
 
 Atmiņas izmetes ģenerēšanas nolūkam var izmantot gdb komandas: \texttt{generate-core-file [file]}(sk. 1.3. attēlu) vai \texttt{gcore [file]}. Šīs komandas izveido gdb pakļautā procesa atmiņas izmeti. 
 Izmantojot gdb, var uzģenerēt atmiņas izmeti, kura atbilst kādam pārtraukuma punkta stāvoklim. 
-Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī gdb komanda ir realizēta GNU/Linux, FreeBSD, Solaris and S390 sistēmās \cite {gdb_gen_core}.
+Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī gdb komanda ir realizēta GNU/Linux, FreeBSD, Solaris un S390 sistēmās \cite {gdb_gen_core}.
 \begin{figure}[h]
 \begin{lstlisting}
 (gdb) attach <pid>
@@ -102,8 +103,8 @@ Type Control +\
 Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījumiem \cite {nosacijumi}:
 %\vspace{-6pt}
 \begin{itemize}
-	\item   ir jānodrošina atļauja procesam rakstīt core datni darba mapē,
-	\item 	ja datne, ar vienādu nosaukumu jau eksistē, tad ir jābūt ne vairāk kā vienai stingrai saitei, 
+	\item   ir jānodrošina atļauja procesam rakstīt atmiņas izmeti darba mapē,
+	\item 	ja datne, ar vienādu nosaukumu jau eksistē, tad uz to ir jābūt ne vairāk kā vienai stingrai saitei, 
 	\item 	izvēlētai darba mapei ir jābūt reālai un jāatrodas norādītajā vietā, 
 	\item 	Linux core datnes izmēra robežai {RLIMIT\_CORE} jāpārsniedz ģenerējamā faila izmēru, { RLIMIT\_FSIZE} robežai jāļauj procesam izveidot atmiņas izmeti,
 	\item 	ir  jāatļauj lasīt bināro datni, kura ir palaista,
@@ -121,17 +122,17 @@ Atmiņas izmete ir labi piemērota kļūdu meklēšanai, kas saistītas ar nepar
 
 Atmiņas izmete ir ELF, a.out vai cita formātā binārā  datne. 
 ELF formāts ir Linux un Unix standarts priekš izpildāmām datnēm, objektu datnēm, bibliotēkām un atmiņas izmetēm.
-Lai darbotos ar atmiņas izmetēm ir nepieciešams, lai rīks, kurš tika izvēlēts (bibliotēka, utilītprogramma vai atkļūdotājs) atbalstītu uzģenerētās datnes formātu.
+Lai darbotos ar atmiņas izmetem ir nepieciešams, lai rīks, kurš tika izvēlēts (bibliotēka, utilītprogramma vai atkļūdotājs) atbalstītu uzģenerētās datnes formātu.
 GNU gdb ir  Linux standarta atkļūdotājs \cite{MWMK}, kurš ir plaši pielietojams atmiņas izmešu analīzei. 
-Turpmāk tiek apskatīta atmiņas izmetes analīze ar gdb atkļūdotāja piemēru.
+Turpmāk tiek apskatīta atmiņas izmetes analīze ar gdb atkļūdotāja palīdzību.
 
 \subsection{Atmiņas izmetes atkļūdošana, izmantojot gdb }
  \label{subsec:debugg_gdb}
 Ja atmiņas izmetes analīzei tika izvēlēts GNU gdb atkļūdotājs, tad pirms sākt analīzi ir nepieciešams pārliecināties ka gdb ir pareizi nokonfigurēts priekš procesora arhitektūras, no kuras bija iegūta atmiņas izmete.
 To var identificēt uzreiz pēc gdb palaišanas, ar sekojošās rindiņas palīdzību: \texttt{This GDB was configured as i686-linux-gnu}.  
 Lai atmiņas izmete saturētu atkļūdošanas informāciju, ir jānorāda -g opcija kompilācijas laikā.
-Atkļūdošanas informācija ir uzglabāta objektu datnē un saglabā atbilstību starp izpildāmo datni un pirmkodu, ka arī mainīgo un funkciju datu tipus.
-Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad atmiņas izmete var attēlot sekojošo tekstu (sk. 1.5. attēlu).
+Atkļūdošanas informācija ir uzglabāta objektu datnē un saglabā atbilstību starp izpildāmo datni un pirmkodu, ka arī uzglabā mainīgo un funkciju datu tipus.
+Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad atmiņas izmete var izdrukāt sekojošo tekstu (sk. 1.5. attēlu).
 
 \begin{figure}[h]
 \begin{lstlisting}
@@ -142,8 +143,8 @@ $ 1 = {<text variable, no debug info>} 0x80483e4 <main>
 \end{figure}
 
 Kad atmiņas izmete ir uzģenerēta, tad to var apskatīt, izmantojot gdb atkļūdotāju (sk. 1.6. attēlu). 
-Atkļūdotājam kā argumenti tiek padoti: izpildes fails un atmiņas izmete. 
-Izpildes failam ir jāatbilst atmiņas izmetei, lai varētu apskatīt korektus, nesabojātus datus.
+Atkļūdotājam kā argumenti tiek padoti: izpildāms fails un atmiņas izmete. 
+Izpildamām failam ir jāatbilst atmiņas izmetei, lai varētu apskatīt korektus, nesabojātus datus.
 
 \begin{figure}[h]
 \begin{lstlisting}
@@ -156,13 +157,13 @@ $ gdb <path/to/the/binary> <path/to/the/core>
 Gdb ļauj iegūt svarīgus datus no atmiņas izmetes. Komanda \texttt{info files} ļauj apskatīt procesa segmentus. 
 Katram segmentam ir adrešu apgabals ar nosaukumu. 
 Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.}, koplietošanas atmiņa.
-Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem, uzzināt kuram segmentam pieder konkrētā atmiņas adrese un kādas ir segmentu adrešu vērtības.
+Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem un uzzināt kuram segmentam pieder konkrētā atmiņas adrese.
 
 Lai izdrukātu atmiņas apgabalu var izmantot instrukciju ar sekojošo formātu: \texttt{(gdb) x/nfu addr}. 
 Ir nepieciešams norādīt atmiņas adresi (addr), no kuras sākt atmiņas izdruku, formātu (f), apgabala lielumu (n) un norādīt vienības lielumu (u). 
 Izmantojot doto piemēru (sk. 1.7. attēlu), tiks izdrukāti 4 elementi, kuri pieder stekam, jo Intel x86 procesoros 32 bitu režīmā uz steku norāda \$esp reģistrs. 
 Formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{gdb}. 
-Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x), vienības lielums ir vārds (word) jeb 4 baiti.
+Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x) un vienības lielums ir vārds (word) jeb 4 baiti.
 \begin{figure}[h]
 \begin{lstlisting}
 (gdb) x/4wx $esp
@@ -171,8 +172,8 @@ Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x), vienī
 \end{figure}
 
 Lai uzzinātu kuram simbolam (funkcijai, mainīgam vai tipam) pieder adrese var izmantot sekojošo gdb instrukciju (sk. 1.8. attēlu) \cite{gdb}.
-Instrukcija \texttt{print} vai \texttt{p} ļauj izdrukāt datus, bet \texttt{p/a} izdrukā absolūto un relatīvo (adresi ar nobīdi) no tuvāka simbola, kuram pieder adrese.
-Tādā veidā var noteikt kuram atmiņas apgabalam pieder nezināma adrese.
+Instrukcija \texttt{print} vai \texttt{p} ļauj izdrukāt datus, bet \texttt{p/a} izdrukā absolūto un relatīvo jeb adresi ar nobīdi no tuvāka simbola, kuram pieder adrese.
+Tādā veidā var noteikt kuram atmiņas apgabalam pieder nezināmā adrese.
 \begin{figure}[h]
 \begin{lstlisting}
 (gdb) p/a 0x54320
@@ -183,16 +184,18 @@ $3 = 0x54320 <_initialize_vx+396>
 
 Atmiņas izmetes analīze sākas ar backtrace izdrukāšanu. 
 Bactrace ir pārskats, kurš attēlo kā programma nonāca stāvoklī, kurā pabeidza savu darbību.
-Tas palīdz ātri atrast instrukciju kura bija izpildīta pēdēja un daudzos gadījumos, ļauj ātri identificēt kļūdas cēloņi.
-Backrtace var nesniegt patieso informāciju par funkciju, kas bija izpildītā pēdējā, jo procesu var pabeigt ārējo apstākļu dēļ, nevis tāpēc, ka bija notikusi iekšējā kļūda.
-Katra rindiņa satur rāmi (frame). Bactrace izdruka sākas ar rāmi, kurš iekļauj funkciju, kura bija izpildīta pēdēja. 
+Tas palīdz ātri atrast instrukciju, kura bija izpildīta pēdēja un daudzos gadījumos, ļauj ātri identificēt kļūdas cēloņi.
+Backrtace nesniedz patieso informāciju par funkciju, ja process tika pabeigts ārējo apstākļu dēļ, nevis tāpēc, ka bija notikusi kļūda programmā.
+Katra rindiņa satur rāmi (frame). Bactrace izdruka sākas ar rāmi, kurā iekļauta funkcija, kura bija izpildīta pēdēja. 
 Nākamais rāmis iekļauj funkciju, kas izsauca iepriekšējā rāmī iekļauto funkciju.
-Katrai baktrace rindiņai piešķirts rāmja numurs. Katrs rāmis var iekļaut: funkcijas nosaukumu, pirmkoda datnes nosaukumu, pirmkodam atbilstošo rindiņas numuru un funkcijas argumentus. 
+Katrai baktrace rindiņai tiek piešķirts rāmja numurs. Katrs rāmis var iekļaut: funkcijas nosaukumu, pirmkoda datnes nosaukumu, pirmkodam atbilstošo rindiņas numuru un funkcijas argumentus. 
 Bactrace var tikt iegūts izmantojot gdb komandu \texttt{bactrace full} vai \texttt{bt f}. 
 Pēc noklusējuma, daudzpavedienu lietotnēs gdb  rāda bactrace kārtējām pavedienam, bet pastāv iespēja iegūt arī bactrace izdruku priekš citiem pavedieniem.
-Ja programma bija nokompilēta ar optimizācijas opciju, tad bactrace varētu neiekļaut funkcijas argumentus, tad funkciju argumenti varētu tikt nodoti caur CPU reģistriem.
-CPU reģistru vērtības ir iespējams iegūt, izmantojot komandu \texttt{info registers} vai \texttt{i r}.
-Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis, tāpēc CPU reģistru vērtības ir iespējams atjaunot no steka, ja pēc izjaukšanas (disassembling) ir redzams, ar cik lielu nobīdi tie tika saglabāti stekā.
-Izjaukšana (disassembling) ļauj izdrukāt asamblera instrukcijas noraidītai funkcijai. 
-Tas dod iespēju salīdzināt pirmkodu ar asamblera instrukcijām un tāda veidā var atrast nepieciešamo mainīgo vērtības stekā.
+Ja programma bija nokompilēta ar optimizācijas opciju, tad bactrace varētu neiekļaut funkcijas argumentus.
+Šajā gadījumā funkciju argumenti varētu tikt nodoti caur CPU reģistriem, kuru vērtības ir iespējams iegūt, izmantojot komandu \texttt{info registers} vai \texttt{i r}.
+Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis, tāpēc CPU reģistru vērtības visticamāk tiks parakstītas.
+ Ja ir nepieciešamība, tad reģistru vērtības ir iespējams atjaunot no steka.
+ %ja pēc izjaukšanas (disassembling) ir redzams, ar cik lielu nobīdi tie tika saglabāti stekā.
+%Izjaukšana (disassembling) ļauj izdrukāt asamblera instrukcijas noraidītai funkcijai. 
+%Tas dod iespēju salīdzināt pirmkodu ar asamblera instrukcijām un tāda veidā kļūst iespējams atrast nepieciešamo mainīgo vērtības stekā.
 

@@ -4,7 +4,7 @@ Nodaļā ir iekļauta informācija, kura palīdz saprast kopējo atmiņas organi
 %\label{sect:Motivation}
 
 Pirms izpildīt programmu, operētājsistēmai ir nepieciešams iedalīt resursus, tādus kā atmiņas adreses.  
-Eksistē divas atmiņas iedalīšanas paņēmieni: statiskā un dinamiskā atmiņas iedalīšana (sk. 2.1. attēlu). 
+Eksistē divi atmiņas iedalīšanas paņēmieni: statiskā un dinamiskā atmiņas iedalīšana (sk. 2.1. attēlu). 
 
 \begin{figure}[h]
 \begin{center}
@@ -18,7 +18,7 @@ Eksistē divas atmiņas iedalīšanas paņēmieni: statiskā un dinamiskā atmi�
 \subsubsection{Statiskā atmiņas iedalīšana}
 Statiskā atmiņas iedalīšana nozīme, ka atmiņa tiek iedalīta vienu reizi pirms programmas palaišanas, parasti tas notiek kompilācijas laikā.
 Programmas izpildēs laikā atmiņa vairs netiek iedalīta, ka arī netiek atbrīvota. 
-Statiskais atmiņas iedalīšanas paņēmiens nodrošina to, ka atmiņa tiek iedalīta statiskiem un globāliem mainīgiem, neatkarībā no tā vai mainīgais tiks izmantots pie dotajiem nosacījumiem vai nē.
+Statiskais atmiņas iedalīšanas paņēmiens nodrošina to, ka atmiņa tiek iedalīta statiskiem un globāliem mainīgiem, neatkarībā no tā vai mainīgais tiks izmantots programmā pie dotajiem nosacījumiem vai nē.
 
 \subsubsection{Dinamiskā atmiņas iedalīšana}
 Dinamiskā atmiņas iedalīšana nozīme, ka atmiņa tiek iedalīta programmas izpildes laikā.
@@ -28,11 +28,11 @@ Dinamiskā atmiņas iedalīšana, var būt realizēta ar steka vai kaudzes palī
 Automātiskā iedalīšana notiek, kad sākās programmas funkcijas izpilde. 
 Šeit viens un tas pats atmiņas apgabals, kurš bija atbrīvots, var tikt izmantots  vairākas reizēs. 
 Piemēram, kad tekošās funkcijas argumenti un lokālie mainīgie ir saglabāti stekā un izdzēsti pēc šīs funkcijas izpildes. 
-Vērtību izdzēšana vai saglabāšana notiek, nobīdot steka norādi.
 Pēc tam atbrīvotā atmiņa var būt izmantota atkārtoti. 
+Vērtību izdzēšana vai saglabāšana notiek, nobīdot steka norādi.
 Priekš automātiskās atmiņas iedalīšanas, izmato steku.
 Visiem funkcijas mainīgiem var piekļūt izmantojot steka norādes nobīdi, kas tiek uzglabāta reģistrā, piemēram,  
-Intel x86 procesoros, 16 bitu režīmā reģistrs ir \texttt{SP}, 32 bitu režīmā - \texttt{ESP} un 64 bitu režīmā - \texttt{RSP} \cite{JCL}.
+Intel x86 procesoros, 16 bitu režīmā tas ir reģistrs \texttt{SP}, 32 bitu režīmā - \texttt{ESP} un 64 bitu režīmā - \texttt{RSP} \cite{JCL}.
 Reģistrs uzglabā adresi, kurā atrodas pēdējā uzglabāta vērtība stekā.
 Steka pārpildīšana var notikt dažādu iemeslu dēļ, piemēram to var izraisīt dziļa rekursija.
  
@@ -41,7 +41,7 @@ Kontrolētā jeb manuālā atmiņas iedalīšana tiek nodrošināta ar atmiņas 
 Šeit nav iespējams piekļūt datiem izmantojot vienu norādi un tās nobīdi. 
 Tagad katram iedalītam atmiņas apgabalam var piekļūt tikai tad, ja ir norāde uz šo iedalīto atmiņas apgabalu. 
 Gadījumos, kad norādes nav, tad adreses vairāk nav sasniedzamas un kļūst pazaudētas.
-Turpmāk darbā, termins dinamiskā atmiņas iedalīšana apzīmēs kontrolēto atmiņas iedalīšanu no kaudzes.
+Turpmāk darbā, termins dinamiskā atmiņas iedalīšana apzīmēs kontrolēto atmiņas iedalīšanu kaudzē.
 
 
 \section{Atmiņas pārvaldība}
@@ -53,19 +53,19 @@ Kad lietotājs sāk programmas izpildi, tad kodols iedala atmiņas apgabalu teko
 Pēc tam process pārvalda iedalīto apgabalu, sadalot to vairākos segmentos  \cite {atparv}: 
 %\vspace{-20 pt}
 \begin{itemize}
-	\item   Teksts - uzglabāti dati, kuri tiek izmantoti tikai lasīšanai. Tās ir koda instrukcijas. 
+	\item   Teksts - šeit tiek uzglabāti dati, kuri tiek izmantoti tikai lasīšanai. Tās ir koda instrukcijas. 
     Vairākas programmas instances var izmantot šo atmiņas apgabalu.
     \item Statiskie dati - apgabals, kurā tiek uzglabāti dati ar iepriekš zināmu izmēru. Tās ir globālie un statiskie mainīgie.
-    Operētājsistēma iedala šī apgabala kopiju priekš katras programmas instances atsevišķi.
+    Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi.
     \item Atmiņas arēna - apgabals, kurā tiek uzglabāta dinamiski iedalītā un atbrīvotā atmiņa. 
     Arēna sastāv no sarakstiem ar atbrīvoto atmiņu un vienas vai vairākām kaudzēm.
     Kaudze ir apgabals, kurā atrodas visa dinamiski iedalītā atmiņa programmas izpildei.
-    \item Steks - apgabals, kurā tiek uzglabāts funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam. Steks aug no lielākas adreses uz mazāko. 
+    \item Steks - apgabals, kurā tiek uzglabāts funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam. Steks aug no lielākas adreses līdz mazākai. 
     Unikāla atmiņas arēna un steks iedalīti priekš katras programmas instances atsevišķi.
 \end{itemize} 
 
  Lai palielinātu atmiņas arēnas segmenta izmēru, tiek veikts brk() sistēmas izsaukums. Izsaukums uzstāda atmiņas arēnas segmenta jauno beigu robežu. 
- Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un arēnas segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezts -1 \cite{LINMAN}.
+ Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un arēnas segmenta lielums tiek veiksmīgi izmainīts \cite{LINMAN}.
  Iedalīto adrešu intervālu stekam un atmiņas arēnai var atrast \texttt{/proc/<pid>/maps} datnē.
  
  
@@ -82,9 +82,7 @@ Pārvaldīt nozīme:
 Lietotāja atmiņas pārvaldība ļauj efektīvāk pārvaldīt atmiņu, nekā tas būtu nodrošināts, katru reizi pieprasot atmiņas apgabalu ar sistēmas izsaukumiem.
 Lietotāja atmiņas pārvaldība varētu būt realizēta, izmantojot dažādus atmiņas iedalītājus (allocator), piemēram, Hoard memory allocator, ptmalloc2, dlmalloc.
 Dažreiz speciāli šīm nolūkam tiek izveidots individuālā iedalītāja risinājums. 
-Kaut arī daži universālie iedalītāji strādā pietiekoši ātri un fragmentēšanas līmenis ir zems, individuālais risinājums var ņemt vērā lietotnei raksturīgu uzvedību un tās nodrošinās labāko veiktspēju \cite{EDBG}.
-
-Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība, izmantojot GNU C bibliotēkas funkciju palīdzību.
+Kaut arī daži universālie iedalītāji strādā pietiekoši ātri un fragmentēšanas līmenis ir zems, individuālais risinājums var ņemt vērā lietotnei raksturīgas īpatnības un tās nodrošinās labāko veiktspēju \cite{EDBG}.
 \begin{figure}[h]
 \begin{lstlisting}
 int * ptrl = new int; // C++
@@ -95,10 +93,14 @@ char * str = (char *)malloc(sizeof(char) * num_elements); /* C */
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Dinamiskās atmiņas iedalīšana C un C++}}}
 \end{figure}
-Lietotājam iedalīta atmiņa atrodas kaudzē, kura tiek novietota atmiņas arēnā. 
-Atmiņās arēna C valodā tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
-C++ valodā ir izmantots operators new, lai pieprasītu atmiņu.   
+
+Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība, izmantojot GNU C bibliotēkas funkciju palīdzību.
+Lietotājam iedalīta atmiņa atrodas kaudzē, kuru var nosaukt par atmiņas arēnas sastāvdaļu. 
+C valodā atmiņas arēna tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
+C++ valodā ir izmantots operators new, lai pieprasītu atmiņu. 
 Attēlā 2.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
+
+
 
 Vienīgais arguments malloc() funkcijai ir baitu skaits.
 C programmai, lai saskaitītu cik baitu ir nepieciešams pieprasīt, ir nepieciešams zināt cik daudz vietas aizņem viens elements un kāds ir elementu skaits.
@@ -113,7 +115,7 @@ Funkcija free() atbrīvo ar malloc() palīdzību iedalīto atmiņu.
 Lielāka atšķirība starp free() un delete ir tāda, ka vecajās free() realizācijās netiek nodrošināts atbalsts free() funkcijai, kad arguments ir null \cite{POCF}. 
 
 Programmas rakstīšanā nejauc kopā C un C++ stilus, tāpēc priekš C++ programmas izmanto 
-new un delete operatorus (sk. 2.3. attēlu), bet priekš C programmām malloc() un free.
+new un delete operatorus (sk. 2.3. attēlu), bet priekš C programmām malloc() un free().
 
 
 \begin{figure}[h]
@@ -128,7 +130,7 @@ If( ptrl != NULL )
 
 
 Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams operētājsistēmai atmiņas daudzums ar laiku samazinās.
-Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
+%Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
 
 
 
@@ -158,7 +160,6 @@ Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā 2.4. ir pa
  Ja gabals ir atbrīvots, tad tas tiek pievienots vienā no sarakstiem uz kuriem norāda bin masīvi, kuri atrodas vienā no arēnām.
 Bin masīvs un bin saraksti sīkāk ir aprakstīti \ref{subsec:bin_saraksti} sadaļā. 
  Katrā arēna ir rādītājs uz nākamo izveidoto arēnu. Pēdējā izveidotā arēna norāda uz galveno arēnu.
- Tā kā katrai arēnai var būt vairākas kaudzes, tad lai zinātu, kurai arēnai pieder kaudze, katrai kaudzei ir rādītājs uz arēnu.
  Ja kārtēja kaudze ir izlietotā un tajā nav atmiņas, tad tiek iedalīta jauna kaudze ar fiksēto 64 MB izmēru.
   Tāda veidā arēnas var tikt paplašinātas, izveidojot jaunās kaudzes un savienojot tās sava starpā.
  Jaunai kaudzei ir norāde gan uz arēnu, kurai tā pieder, gan uz iepriekšējo kaudzi.
@@ -182,7 +183,8 @@ Darbība ar arēnām notiek saskaņā ar sekojošo algoritmu:
 Vispirms atmiņas iedalīšana sākas no galvenās arēnas (main arena). 
 GNU C bibliotēkā ir globāls \texttt{malloc\_state} objekts - galvenā arēna, kura atšķiras no pārējām arēnām ar to, kā tā tiek paplašināta, izmantojot brk() nevis  mmap() sistēmas izsaukumu. 
 Līdz ar galvēnās arēnas paplašināšanu, tiek paplašināts arī procesa arēnas segments.
-Bet mmap() sistēmas izsaukums paplašina pārējās dinamiskās arēnas daudzpavedienu lietotnēs, ka arī nodrošina lielu atmiņas bloku iedalīšanu mmap apgabalā.
+brk() sistēmas izsaukumam ir viens arguments, kurš uzstāda procesa arēnas segmenta beigas.
+mmap() sistēmas izsaukums paplašina pārējās dinamiskās arēnas daudzpavedienu lietotnēs, ka arī nodrošina lielu atmiņas bloku iedalīšanu mmap apgabalā.
 Mazākais gabals, kurš pēc noklusējuma tiks iedalīts ar mmap()  ir vienāds ar 128 kilobaitiem. 
 Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts ar mmap() var uzdot ar M\_MMAP\_THRESHOLD konstanti.
 
@@ -194,7 +196,7 @@ Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts 
  \label{subsec:bin_saraksti}
 Realizācijā ptmalloc2 ir masīvi, kuri uzglabā norādes uz bin sarakstiem.
 Bin saraksti ir struktūras, kuras uzglabā atbrīvotus atmiņas gabalus arēnā, līdz brīdim, kad tie tiks iedalīti procesam atkārtoti.
-Atbrīvots atmiņas gabals ne vienmēr tiks uzreiz atgriezts operētājsistēmai (sīkāk šī situācija ir aprakstīta \ref{sec:peak_mem} apakšnodaļā), bet var tikt defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā. 
+Atbrīvots atmiņas gabals ne vienmēr tiks uzreiz atgriezts operētājsistēmai (sīkāk tas ir aprakstīts \ref{sec:peak_mem} apakšnodaļā), bet var tikt defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā. 
 Ja atmiņa bija atbrīvota, tad atmiņas gabali tiks uzglabāti vienā no bin saistītiem sarakstiem.
 Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
 
@@ -202,7 +204,7 @@ Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
 Ātrais saraksts ir paredzēts bieži izmantotu, mazu atmiņas gabalu glabāšanai.
 Pēc noklusējuma ātro atmiņas gabalu izmērs nepārsniedz 64 baitus (sk. 2.5. attēlu), bet to var palielināt līdz 80 baitiem \cite {MALLOC}. 
 Tas varētu būt nepieciešams, ja programma ir bieži izmantotas struktūras, kuru izmērs pārsniedz 64 baitus.
-Atmiņas gabali atrodas viensaišu sarakstā un nav sakārtoti, jo katrā bin sarakstā elementi ir ar vienādu izmēru.
+Atmiņas gabali atrodas viensaišu sarakstā un nav sakārtoti, jo katrā bin sarakstā elementi ir vienādā izmērā.
 Lai samazinātu fragmentācijas iespējamību, programma, kad pieprasa vai atbrīvo lielus atmiņas gabalus var sapludināt atmiņas gabalus, kuri atrodas fastbin sarakstā.
 Piekļuve tādiem atmiņas gabaliem ir ātrāka nekā piekļuve parastiem gabaliem. 
 Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb LIFO) kārtībā \cite {Binning}.
@@ -293,7 +295,7 @@ Otrs iemesls kāpēc ir iedalīts lielāks atmiņas daudzums ir izlīdzināšana
 
 No kreisās pusēs attēlots (sk. 2.7. attēlu) \cite{CHOFM} atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
 Abos gadījumos rādītājs chunk attēlo atmiņas gabalu sākumu. Pēc šī radītāja var iegūt iepriekšēja gabala izmēru, ja iepriekšējais gabals bija atbrīvots.
-Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk norāda uz daļu no iepriekšēja gabala novietotiem lietotāja datiem. 
+Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk norāda uz daļu no lietotāja datiem, kas novietoti iepriekšējā gabalā. 
 Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju. 
 
 
@@ -323,11 +325,11 @@ Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja 
 
 
 Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
-Top chunk ir atmiņas gabals, kuram ir kopīga robeža ar atmiņas arēnas segmentu.
-Top gabals ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu.
+Top chunk ir atmiņas gabals, kuram ir kopīga robeža ar procesa atmiņas arēnas segmentu.
+Top gabals ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu pēc atmiņas.
 Sākotnēji atmiņās iedalīšana sākas ar top gabalu, bet top gabals nodrošina arī pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
 Top gabals var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top gabala objektam. 
-Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top gabals var paplašināties ar brk() palīdzību.
+Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top gabals var paplašināties ar brk() izsaukuma palīdzību.
 Top gabals ir līdzīgs jebkuram citam atmiņas apgabalam. 
 Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, P kontroles zīme, kura vienmēr norāda, ka iepriekšējais gabals ir izmantots, ka arī speciāla top gabala apstrāde, lai nodrošinātu, ka top chunk vienmēr eksistē \cite {BLACKHAT}.
 
@@ -372,8 +374,8 @@ Algoritms ir sekojošs:
 \begin{enumerate}
 \item ar malloc() tiek iedalīts atmiņas apgabals,
 \item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru),
-\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs,
-\item  tiek atbrīvota atmiņa.
+\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs.
+%\item  tiek atbrīvota atmiņa.
 \end{enumerate}
 
 
