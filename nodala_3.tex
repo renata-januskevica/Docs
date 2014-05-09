@@ -78,7 +78,7 @@ Abi gadījumi ir izplatīti \cite{HTTM}.
 Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu.
 Pazīme, kas varētu liecināt par atmiņas noplūdi ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīme, ka izmērs ir lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
 atmiņas daudzums, kas visu laiku pieaug. 
-Kad process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, atmiņas nevienmērīga lietošana vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
+Kad process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad šī pazīme var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, atmiņas nevienmērīga lietošana vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
 Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, tad uzģenerētās datnes izmērs, atmiņas noplūdes problēmas ietekmēs rezultātā, var sasniegt vairākus gigabaitus.
 
 
@@ -95,7 +95,7 @@ Kamēr kļūda nav atrasta kodā, to nevar secināt, jo atmiņas izmete var būt
 Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā. 
 Problēmai ir raksturīgs stāvoklis, kad ir daudzi atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus (izmēru, līdzīgas datu shēmas).
 Turpmāk tiks apskatīts piemērs, kurš paskaidro kā var izpausties šī pazīme.
-Piemērā ir aplūkots gadījums, kad programmā ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir izmantotā virtuālā funkcija.
+Piemērā ir aplūkots gadījums, kad programmā ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir izmantota virtuālā funkcija.
 Ja C++ klasē ir virtuālās funkcijas, tad kompilators izveido virtuālo funkciju tabulu (vtable), kura iekļauj rādītājus uz šī klases virtuālām funkcijām.
  Katrai klasei ir tikai viena virtuālo funkciju tabula, kuru izmanto visi klases objekti.
  Ar katru virtuālo funkciju tabulu ir saistīts virtuālo funkciju rādītājs (vpointer).
@@ -118,7 +118,7 @@ class MyClass
 \end{figure}
 \begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.6]{memoryleak}
+\includegraphics[scale=0.5]{memoryleak}
 \end{center}
 \caption{\textbf{\fontsize{11}{12}\selectfont {C++ klases ar virtuālo funkciju izvietojums atmiņā }}}
 \label{fig:memoryleak}
@@ -126,14 +126,29 @@ class MyClass
 
 
 
-\section{Maksimālā atmiņas izmantošana}
+\section{Maksimālais kopējais kaudzes izlietojums}
+ \label{sec:peak_mem}
 Dinamiskās atmiņas daudzums, kas tiek izmantots programmas izpildes laikā visu laiku var mainīties.
-Daudzām programmām var būt nepieciešams liels atmiņas daudzums, kāda uzdevuma paveikšanai, pēc kura pabeigšanas atmiņa tiks atbrīvota ar kādu no lietotāja atmiņās pārvaldības funkcijām.
-Ir svarīgi pievērst uzmanību gadījumiem, kad izmantotās atmiņas daudzums kļūst uz laiku maksimāls\footnote{Maksimāls salīdzinot ar atmiņas daudzumu, kurš bija izmantots iepriekš.} (peak memory usage).
+Daudzām programmām var būt nepieciešams liels atmiņas daudzums, kāda uzdevuma izpildīšanai, pēc kura pabeigšanas atmiņa tiks atbrīvota ar kādu no lietotāja atmiņās pārvaldības funkcijām.
+Ir svarīgi pievērst uzmanību gadījumiem, kad kopējais kaudzes izlietojums ir maksimāls\footnote{Maksimālais kopējais kaudzes izlietojums ir maksimālā kopējā iedalītu un atbrīvotu gabalu izmēru summa.} (peak memory usage).
+Šajā brīdī ir iespējama situācija, kad liels atmiņas daudzums pēc izmantošanas netiks atgriezts operētājsistēmai, pat tad, ja tās būs atbrīvota ar free() vai delete palīdzību.
+Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš netika paredzēts projektējumā.
+
+Šī situācija kļūst iespējama, ja notiek daudzi pieprasījumi pēc atmiņas, kas ir mazāki par 128 kilobaitiem.
+Pieprasījums pēc lielāka atmiņas gabala tiks apstrādāts ar mmap() sistēmas izsaukumu un neizraisīs doto problēmu.
+Pēc mmap() izsaukumiem atmiņu ir iespējams atgriezt operētājsistēmai ar munmap() palīdzību. 
+Bet, izmantojot brk() sistēmas izsaukumu, atmiņa var netikt atgriezta operētājsistēmai.
+Tas ir atkarīgs no tā, kāda veidā tika atbrīvota atmiņa pēc maksimālā kopējā kaudzes izlietojuma sasniegšanas.
+Kamēr netiks atbrīvota vislielākā adrese kaudzē, atmiņa netiks atgriezta operētājsistēmai.
 
 
 
-\subsection{Maksimālā atmiņas izmantošanas pazīmes}
+ 
+
+
+
+
+\subsection{Maksimālā kopējā kaudzes izlietojuma pazīmes}
 
 
 
