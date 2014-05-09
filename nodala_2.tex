@@ -41,6 +41,7 @@ Kontrolētā jeb manuālā atmiņas iedalīšana tiek nodrošināta ar atmiņas 
 Šeit nav iespējams piekļūt datiem izmantojot vienu norādi un tās nobīdi. 
 Tagad katram iedalītam atmiņas apgabalam var piekļūt tikai tad, ja ir norāde uz šo iedalīto atmiņas apgabalu. 
 Gadījumos, kad norādes nav, tad adreses vairāk nav sasniedzamas un kļūst pazaudētas.
+Turpmāk darbā, termins dinamiskā atmiņas iedalīšana apzīmē kontrolēto atmiņas iedalīšanu no kaudzes.
 
 
 \section{Atmiņas pārvaldība}
@@ -70,17 +71,18 @@ Pēc tam programma pārvalda iedalīto apgabalu, sadalot to vairākos segmentos 
  
  
 \subsection{Lietotāja atmiņas pārvaldība}
-Lietotāja atmiņas pārvaldība ir realizēta veicot sistēmas izsaukumus un pārdalot iegūtos resursus mazākos gabalos. 
-Tas ļauj efektīvāk pārvaldīt no kodola iedalīto atmiņas apgabalu, nekā tas būtu nodrošināts, katru reizi pieprasot atmiņas apgabalu ar sistēmas izsaukumiem.
+Lietotāja atmiņas pārvaldība ir realizēta veicot sistēmas izsaukumus un pārvaldot iegūtos gabalos.
+Pārvaldīt nozīme: 
+\begin{enumerate}
+\item sekot atmiņas gabaliem, kuri ir izmantoti,
+\item sekot atbrīvotiem atmiņas gabaliem,
+\item nodrošināt iespēju atkārtoti izmantot atmiņu.
+\end{enumerate}
+Lietotāja atmiņas pārvaldība ļauj efektīvāk pārvaldīt atmiņu, nekā tas būtu nodrošināts, katru reizi pieprasot atmiņas apgabalu ar sistēmas izsaukumiem.
 Lietotāja atmiņas pārvaldība varētu būt realizēta, izmantojot dažādus atmiņas iedalītājus (allocator), piemēram, Hoard memory allocator, ptmalloc2, dlmalloc.
 Dažreiz speciāli šīm nolūkam tiek izveidots individuālā iedalītāja risinājums. 
 Kaut arī daži universālie iedalītāji strādā pietiekoši ātri un fragmentēšanas līmenis ir zems, individuālais risinājums var ņemt vērā lietotnei raksturīgu uzvedību un tās nodrošinās labāko veiktspēju \cite{EDBG}.
 Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība, izmantojot GNU C bibliotēkas funkciju palīdzību.
-
-Lietotājam iedalīta atmiņa atrodas kaudzē, kura tiek novietota atmiņas arēnā. 
-Atmiņās arēna C valodā tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
-C++ valodā ir izmantots operators new, lai pieprasītu atmiņu.   
-Attēlā 2.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
 \begin{figure}[h]
 \begin{lstlisting}
 int * ptrl = new int; // C++
@@ -91,6 +93,11 @@ char * str = (char *)malloc(sizeof(char) * num_elements); /* C */
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Dinamiskās atmiņas iedalīšana C un C++}}}
 \end{figure}
+Lietotājam iedalīta atmiņa atrodas kaudzē, kura tiek novietota atmiņas arēnā. 
+Atmiņās arēna C valodā tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
+C++ valodā ir izmantots operators new, lai pieprasītu atmiņu.   
+Attēlā 2.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
+
 Vienīgais arguments malloc() funkcijai ir baitu skaits.
 C programmai, lai saskaitītu cik baitu ir nepieciešams pieprasīt, ir nepieciešams zināt cik daudz vietas aizņem viens elements un kāds ir elementu skaits.
 Funkcija malloc() atgriež void tipa rādītāju, tāpēc C programmās ir nepieciešams izmantot drošo tipa pārveidotāju (typecast). 
@@ -139,18 +146,18 @@ Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā 2.4. ir pa
  Atmiņas arēnu  vienkāršotā veidā var attēlot kā viensaišu saistīto sarakstu, kurš sastāv no vienas vai vairākiem atmiņas kaudzēm. 
  Kaudze ir lineārās apgabals, kurš iekļauj sevī iedalītus vai atbrīvotus atmiņas gabalus (chunk of memory), kuri ir novietoti blakus viens otram.
  Atmiņas gabali sīkāk ir aprakstīti \ref{subsec:atminas_gabali} sadaļā.
+ \begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{threads}
+\end{center}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Arēnas GNU C bibliotēkā (versija 2.3)}}}
+\end{figure}
  Gadījumos, kad gabals ir iedalīts, tad pašreiz palaists process satur norādi uz iedalīto apgabalu kaudzē. 
  Ja gabals ir atbrīvots, tad tas tiek pievienots vienā no sarakstiem uz kuriem norāda bin masīvi, kuri atrodas vienā no arēnām.
 Bin masīvs un bin saraksti sīkāk ir aprakstīti \ref{subsec:bin_saraksti} sadaļā. 
  Katrā arēna ir rādītājs uz nākamo izveidoto arēnu. Pēdējā izveidotā arēna norāda uz galveno arēnu.
  Tā kā katrai arēnai var būt vairākas kaudzes, tad lai zinātu, kurai arēnai pieder kaudze, katrai kaudzei ir rādītājs uz arēnu.
  Ja kārtēja kaudze ir izlietotā un tajā nav atmiņas, tad tiek iedalīta jauna kaudze ar fiksēto 64 MB izmēru.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[scale=0.5]{threads}
-\end{center}
-\caption{\textbf{\fontsize{11}{12}\selectfont {Arēnas GNU C bibliotēkā (versija 2.3)}}}
-\end{figure}
  Arēnas šīm nolūkam izmanto \texttt{mmap()} sistēmās izsaukumu, un izveido iegūtajā atmiņā jauno kaudzi. 
   Tāda veidā arēnas var tikt paplašinātas, izveidojot jaunās kaudzes un savienojot tās sava starpā.
  Jaunai kaudzei ir norāde gan uz arēnu, kurai tā pieder, gan uz iepriekšējo kaudzi.
@@ -183,6 +190,15 @@ Atbrīvots atmiņas gabals, ja tas nebija iedalīts ar mmap() izsaukumu, ne vien
 Ja atmiņa bija atbrīvota, tad atmiņas gabali tiks uzglabāti vienā no bin saistītiem sarakstiem.
 Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
 
+
+Ātrais saraksts ir paredzēts bieži izmantotu, mazu atmiņas gabalu glabāšanai.
+Pēc noklusējuma ātro atmiņas gabalu izmērs nepārsniedz 64 baitus (sk. 2.5. attēlu), bet to var palielināt līdz 80 baitiem \cite {MALLOC}. 
+Tas varētu būt nepieciešams, ja programma ir bieži izmantotas struktūras, kuru izmērs pārsniedz 64 baitus.
+Atmiņas gabali atrodas viensaišu sarakstā un nav sakārtoti, jo katrā bin sarakstā elementi ir ar vienādu izmēru.
+Lai samazinātu fragmentācijas iespējamību, programma, kad pieprasa vai atbrīvo lielus atmiņas gabalus var sapludināt atmiņas gabalus, kuri atrodas fastbin sarakstā.
+Piekļuve tādiem atmiņas gabaliem ir ātrāka nekā piekļuve parastiem gabaliem. 
+Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb LIFO) kārtībā \cite {Binning}.
+Kad tiek pieprasīta atmiņa no fastbin saraksta, tad jebkurš atmiņas gabals tiek atgriezts konstantā laikā  \cite {ACCA}.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[scale=0.35]{fastbins}
@@ -190,15 +206,6 @@ Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
 \caption{\textbf{\fontsize{11}{12}\selectfont {Ātrais saraksts}}}
 \label{fig:fastbin}
 \end{figure}
-Ātrais saraksts ir paredzēts bieži izmantotu, mazu atmiņas gabalu glabāšanai.
-Pēc noklusējuma ātro atmiņas gabalu izmērs nepārsniedz 64 baitus (sk. 2.5. attēlu), bet to var palielināt līdz 80 baitiem \cite {MALLOC}. 
-Tas varētu būt nepieciešams, ja programma ir bieži izmantotas struktūras, kuru izmērs pārsniedz 64 baitus.
-Atmiņas gabali atrodas viensaišu sarakstā un nav sakārtoti, jo katrā bin sarakstā elementi ir ar vienādu izmēru.
-Lai samazinātu fragmentācijas iespējamību, programma, kad pieprasa vai atbrīvo lielus atmiņas gabalus var sapludināt atmiņas gabalus, kuri atrodas fastbin sarakstā.
-
-Piekļuve tādiem atmiņas gabaliem ir ātrāka nekā piekļuve parastiem gabaliem. 
-Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb LIFO) kārtībā \cite {Binning}.
-Kad tiek pieprasīta atmiņa no fastbin saraksta, tad jebkurš atmiņas gabals tiek atgriezts konstantā laikā  \cite {ACCA}.
 
 Parastie saraksti var būt sadalīti 3 veidos. Pirmkārt, bin saraksts, kurš uzglabā nesakārtotus gabalus, kuri nesen bija atbrīvoti.  
 Pēc tam tie tiks novietoti vienā no atlikušiem bin sarakstiem: mazā vai lielā izmēra. 
@@ -206,7 +213,7 @@ Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki vai vienādi a
 Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
 Gabali, kuru izmērs ir lielāks par 128 kilobaitiem netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap(). 
-Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts ar mmap(), var uzdot ar M\_MMAP\_THRESHOLD konstanti.
+Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts ar mmap(), nevis ar brk(), var uzdot ar M\_MMAP\_THRESHOLD konstanti.
 Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti pirmais iekšā, pirmais ārā (jeb FIFO) kārtībā \cite {Binning}. 
 
 
@@ -308,8 +315,8 @@ Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja 
 
 
 Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
-Top chunk ir atmiņas gabals, kuram ir kopīga robeža ar dinamiski iedalītās atmiņas beigām.
-Tas ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu.
+Top chunk ir atmiņas gabals, kuram ir kopīga robeža ar atmiņas arēnas segmentu.
+Top gabals ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu.
 Sākotnēji atmiņās iedalīšana sākas ar top gabalu, bet top gabals nodrošina arī pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
 Top gabals var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top gabala objektam. 
 Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top gabals var paplašināties ar brk() palīdzību.
@@ -328,13 +335,7 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 %Ir pieejama kopēja statistikā visām arēnām pēc abiem iepriekš minētiem parametriem, ka arī tiek izdrukāts maksimālais bloku un baitu daudzums, kurš bija iedalīts ar mmap() sistēmas izsaukumu. 
 
 Zinot atmiņas gabala struktūru, var uzrakstīt kodu C valodā, kurš izdrukās iedalītā gabala izmēru (sk. 2.8. attēlu).
-Algoritms ir sekojošs: 
-\begin{enumerate}
-\item ar malloc() tiek iedalīts atmiņas apgabals,
-\item  tiek iegūta size elementa adrese (objektam ar malloc\_chunk struktūru),
-\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7,
-\item  tiek atbrīvota atmiņa,
-\end{enumerate}
+
 \begin{figure}[h]
 \begin{lstlisting}
  #include <stdio.h>
@@ -359,3 +360,9 @@ Algoritms ir sekojošs:
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Izmēra noteikšana iedalītām gabalam}}}
 \end{figure}
+Algoritms ir sekojošs: 
+\begin{enumerate}
+\item ar malloc() tiek iedalīts atmiņas apgabals,
+\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru),
+\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs.
+\end{enumerate}

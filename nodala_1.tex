@@ -34,7 +34,7 @@ int main ()  {
 \end{figure}
 
 Ja nav nepieciešams, lai process turpinātu darbību, tad var izmantot funkcijas raise(), abort(), kā arī var apzināti pieļaut kļūdu kodā.
-Tādas kļūdas kā dalīšana ar nulli nosūta SIGFPE signālu, bet vēršanās pēc rādītāja ar null vērtību - SIGSEGV signālu.
+Tādas kļūdas kā dalīšana ar nulli nosūta SIGFPE signālu, bet vēršanās pēc null radītāja - SIGSEGV signālu.
 Izmantojot funkciju raise(), ir iespējams norādīt atmiņas izmeti izraisošo signālu.
 Piemērā (sk. 1.1. attēlu) ir redzams C kods, kur funkcija raise() nosūta SIGSEGV signālu izpildāmai programmai. 
 Pēc šī izsaukuma izpildes tiek izvadīts ziņojums: Segmentation fault (core dumped).

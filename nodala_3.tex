@@ -8,7 +8,7 @@ Atmiņas noplūdes problēmu var sadalīt divos dažādos veidos: fiziskā un lo
 Fiziskā atmiņas noplūde ir novērojama, kad atmiņas adreses, kuras tika iedalītas procesam,  kļūst nepieejamas, pazaudētas, tas notiek, kad procesa adrešu telpā uz iedalīto atmiņas gabalu kaudzē nenorāda neviens rādītājs.
 Šīs programmas stāvoklis var būt novērojams 3 iemeslu dēļ \cite{JMMR}:
 \begin{itemize}
-\item pēdēja norāde uz atmiņas gabalu ir pārrakstīta vai norādes adrese bija palielināta, piemēram, lai sasniegtu datus ar nobīdi,
+\item pēdēja norāde uz atmiņas gabalu ir pārrakstīta vai norāde bija palielināta, piemēram, lai sasniegtu datus ar nobīdi,
 \item norāde atrodas ārpus darbības lauka (out of scope),
 \item atmiņas bloks, kurš glabāja norādi, bija atbrīvots.
 \end{itemize}
@@ -18,12 +18,12 @@ Loģiskā atmiņas noplūdi bieži nosauc par slēpto atmiņas noplūdi (hidden 
 
 Abos gadījumos sekas ir vienādas.
 Sākumā tiks novērota pakāpeniskā procesa palēnināšana, jo daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
-Kaut kāda brīdī, kad tiks iztērēta visā dinamiskā atmiņa, tad katrs malloc() funkcijas izsaukums būs neveiksmīgs.
+Kaut kāda brīdī, kad tiks iztērēta visā dinamiskā atmiņa, katrs malloc() funkcijas izsaukums būs neveiksmīgs.
 Šeit var notikt kritiskā kļūda, kuras cēlonis ir sliktā programmēšanas prakse.
 Programmētāji ne vienmēr pārbauda malloc() rezultātu pirms vērsties pēc malloc() funkcijas atgrieztās norādes.  
-Mēģinājums piekļūt NULL adresei  izraisīs Segmentation fault kļūdu, jo šī adrese nepieder procesa adrešu telpai.
-Ja programmā bija paredzēts, ka malloc() var atgriezt NULL, tad process turpina izpildi ierobežotā režīma, jo vairs nav iespējams dinamiski iedalīt atmiņu. 
-Daudzās sistēmās tas nav pieļaujams un var tikt uzstādīti dažādi ierobežojumi, kuri pēc ierobežojošās vērtības sasniegšanas (izpildes laiks, patērētā atmiņa) automātiski pārtrauks procesa darbību. 
+Mēģinājums piekļūt null adresei  izraisīs Segmentation fault kļūdu.
+Ja programmā bija paredzēts, ka malloc() var atgriezt null, tad process turpina izpildi ierobežotā režīmā, jo vairs nav iespējams dinamiski iedalīt atmiņu. 
+Daudzās sistēmās tas nav pieļaujams un var tikt uzstādīti dažādi ierobežojumi, kuri pēc ierobežojošās vērtības sasniegšanas (izpildes laiks, patērētās atmiņas) automātiski pārtrauks procesa darbību. 
 
 \begin{figure}[h]
 \begin{lstlisting}
@@ -67,7 +67,7 @@ Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, 
 Ja ir redzamas sekas (ir atmiņas izmete un programma pabeidza savu darbu), bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
 Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify. 
 Taču tie ne vienmēr sniedz pietiekamu informāciju un bieži netiek izmantoti strādājošās sistēmās, jo piedāvātas atkļūdošanas tehnikas un rīki var palēnināt sistēmas darbību.
-Ieslēdzot iekš Valgrind instrumentācijas ietvara Memcheck rīku programmas izpildes ātrums palēninās 20-30 reizes \cite{UVD}.
+Ieslēdzot  Memcheck rīku iekš Valgrind instrumentācijas ietvarā, programmas izpildes ātrums palēninās 20-30 reizes \cite{UVD}.
 
 
 
@@ -76,11 +76,9 @@ Ieslēdzot iekš Valgrind instrumentācijas ietvara Memcheck rīku programmas iz
 Reālajās sistēmās problēma var izpausties uzreiz pēc palaišanas, bet var kļūt novērojama tikai pēc dažiem gadiem. 
 Abi gadījumi ir izplatīti \cite{HTTM}.
 Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu.
-
-
 Pazīme, kas varētu liecināt par atmiņas noplūdi ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīme, ka izmērs ir lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
-atmiņas daudzums, kas ir nepieciešams procesa izpildei. 
-Pēc šīs pazīmes var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, atmiņas nevienmērīga lietošana vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
+atmiņas daudzums, kas visu laiku pieaug. 
+Kad process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, atmiņas nevienmērīga lietošana vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
 Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, tad uzģenerētās datnes izmērs, atmiņas noplūdes problēmas ietekmēs rezultātā, var sasniegt vairākus gigabaitus.
 
 
@@ -128,8 +126,16 @@ class MyClass
 
 
 
-\section{Atmiņas nevienmērīga lietošana}
-\subsection{Atmiņas nevienmērīga lietošanas pazīmes}
+\section{Maksimālā atmiņas izmantošana}
+Dinamiskās atmiņas daudzums, kas tiek izmantots programmas izpildes laikā visu laiku var mainīties.
+Daudzām programmām var būt nepieciešams liels atmiņas daudzums, kāda uzdevuma paveikšanai, pēc kura pabeigšanas atmiņa tiks atbrīvota ar kādu no lietotāja atmiņās pārvaldības funkcijām.
+Ir svarīgi pievērst uzmanību gadījumiem, kad izmantotās atmiņas daudzums kļūst uz laiku maksimāls\footnote{Maksimāls salīdzinot ar atmiņas daudzumu, kurš bija izmantots iepriekš.} (peak memory usage).
+
+
+
+\subsection{Maksimālā atmiņas izmantošanas pazīmes}
+
+
 
 \section{Fragmentēšana}
 \subsection{Fragmentēšanas pazīmes}
