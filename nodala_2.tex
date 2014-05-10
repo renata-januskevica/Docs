@@ -197,7 +197,7 @@ Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts 
 Realizācijā ptmalloc2 ir masīvi, kuri uzglabā norādes uz bin sarakstiem.
 Bin saraksti ir struktūras, kuras uzglabā atbrīvotus atmiņas gabalus arēnā, līdz brīdim, kad tie tiks iedalīti procesam atkārtoti.
 Atbrīvots atmiņas gabals ne vienmēr tiks uzreiz atgriezts operētājsistēmai (sīkāk tas ir aprakstīts \ref{sec:peak_mem} apakšnodaļā), bet var tikt defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā. 
-Ja atmiņa bija atbrīvota, tad atmiņas gabali tiks uzglabāti vienā no bin saistītiem sarakstiem.
+Ja atmiņa bija atbrīvota, tad atmiņas gabali var tikt uzglabāti vienā no bin saistītiem sarakstiem.
 Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
 
 
@@ -217,10 +217,12 @@ Kad tiek pieprasīta atmiņa no fastbin saraksta, tad jebkurš atmiņas gabals t
 \label{fig:fastbin}
 \end{figure}
 
-Parastie saraksti var būt sadalīti 3 veidos. Pirmkārt, bin saraksts, kurš uzglabā nesakārtotus gabalus, kuri nesen bija atbrīvoti.  
+Kopumā ir 128 parastie saraksti, kurus var sadalīt 3 veidos. 
+Pirmkārt, bin saraksts, kurš uzglabā nesakārtotus gabalus, kuri nesen bija atbrīvoti.  
 Pēc tam tie tiks novietoti vienā no atlikušiem bin sarakstiem: mazā vai lielā izmēra. 
-Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki vai vienādi par 512 baitiem. 
+Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki par 512 baitiem. 
 Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
+Mazā izmērā saraksti iekļauj gabalus ar vienādu izmēru. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
 Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti pirmais iekšā, pirmais ārā (jeb FIFO) kārtībā \cite {Binning}. 
 Gabali, kuru izmērs ir lielāks par 128 kilobaitiem netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap(). 

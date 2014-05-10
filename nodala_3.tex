@@ -78,7 +78,7 @@ Abi gadījumi ir izplatīti \cite{HTTM}.
 Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu.
 Pazīme, kas varētu liecināt par atmiņas noplūdi ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīme, ka izmērs ir lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
 atmiņas daudzums, kas visu laiku pieaug. 
-Kad process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad šī pazīme var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, maksimālā kopējā kaudzes izlietošana vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
+Kad process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad šī pazīme var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, maksimālās atmiņas izmantošanas problēma vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
 Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, tad uzģenerētās datnes izmērs, atmiņas noplūdes problēmas ietekmēs rezultātā, var sasniegt vairākus gigabaitus.
 
 
@@ -126,46 +126,47 @@ class MyClass
 
 
 
-\section{Maksimālā kopējā kaudzes izlietošana}
+\section{Maksimālās atmiņas izmantošanas problēma}
  \label{sec:peak_mem}
 Atmiņas daudzums, kas tiek izmantots programmas izpildes laikā var visu laiku mainīties.
-Pētījumā \cite{PWMS} tiek apkopoti trīs svarīgākie nevienmērīgās atmiņas izmantošanas veidi: traps (ramps),  maksimums (peaks),  plankalne (plateaus).
-Citi nevienmērīgās izmantošanas veidi arī ir iespējami, bet izpaužas ļoti reti.
-Ne visām programmām raksturīgi visi trīs veidi, bet tikai daži no tiem.
-Šie veidi ir kvantitatīvs novērtējums, kas tiek novērojams izpētot lielu programmu kopu \cite{PWMS}. 
+Pētījumā \cite{PWMS} tiek apkopoti trīs svarīgākas atmiņas izmantošanas shēmas: traps (ramps),  maksimums (peaks),  plato (plateaus).
+Citas atmiņas izmantošanas shēmas ir iespējamas, bet izpaužas ļoti reti.
+Ne visām programmām ir raksturīgas visās trīs shēmas, bet vairākumam ir raksturīga viena vai divas no tām.
+Šīs shēmas ir apkopotas balstoties uz kvantitatīvo programmu novērtējumu \cite{PWMS}. 
 \begin{itemize}
 \item Traps. Programma uzkrāj datu struktūras monotoni. 
 Tas varētu notikt, tāpēc ka uzdevuma atrisināšanai ir nepieciešams paveikt daudzas darbības un pakāpeniski uzbūvēt daudzas  datu struktūras. 
 Lai atrisinātu uzdevumu, atmiņas patēriņš monotoni aug. Pēc uzdevuma atrisināšanas atmiņas patēriņš strauji samazinās.
 \item Maksimums. Šo veidu var nosaukt par trapu tikai ļoti īsa laika periodā.
-Daudzām programmām var būt nepieciešams izveidot lielas datu struktūras, kāda ātra uzdevuma izpildīšanai.
-Pēc šī uzdevuma pabeigšanas gandrīz visa pieprasītā atmiņa var tikt atbrīvota.
-Grafiks šīm veidam izskatās kā raustīta līnija un atmiņas patēriņš var svārstīties dramatiski.
-\item Plankalne. Novērojama, kad programmas ātri uzbūve datu struktūras un izmanto tās ilgā laika periodā. Var izmantot līdz programmas izpildes beigām.
+Daudzām programmām var būt nepieciešams izveidot lielas datu struktūras, kāda uzdevuma izpildīšanai.
+Pēc šī uzdevuma pabeigšanas gandrīz visā pieprasītā atmiņa var tikt atbrīvota.
+Grafiks šai shēmai izskatās kā lauztā līnija un atmiņas patēriņš var svārstīties dramatiski.
+\item Plato. Novērojama, kad programmas ātri uzbūve datu struktūras un izmanto tās ilgā laika periodā, bieži izmanto līdz programmas izpildes beigām.
 \end{itemize}
 
-Ir svarīgi pievērst uzmanību gadījumiem, kad var tikt sasniegta maksimālā kopējā atmiņas izlietošana.
-Maksimālā kopējā atmiņas izlietošana ir stāvoklis, kad kopējais iedalītu un atbrīvotu gabalu izmērs kaudzē sasniedz maksimumu.
+Maksimālās atmiņas izmantošanas problēma var notikt, kad iedalītu un atbrīvotu gabalu izmēru summa kaudzē sasniedz maksimumu procesa izpildes laikā.
+Ir svarīgi pievērst uzmanību gadījumiem, kad var tikt sasniegta maksimālā atmiņas izmantošana.
 Piemēram, tas var notikt, kad process tiecās pie trapa virsotnes vai maksimuma sasniegšanas.
-Šeit ir iespējama situācija, kad liels atmiņas daudzums pēc izmantošanas netiks atgriezts operētājsistēmai, pat tad, ja atmiņa tiks atbrīvota ar free() vai delete palīdzību.
+Šeit ir iespējama situācija, kad liels atmiņas daudzums netiks atgriezts operētājsistēmai pēc izmantošanas, pat tad, ja atmiņa tiks atbrīvota ar free() vai delete palīdzību.
 Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš nebija paredzēts projektējumā.
 Šī situācija kļūst iespējama, ja notiek daudzi pieprasījumi pēc atmiņas, kas ir mazāki par 128 kilobaitiem.
-Pieprasījums pēc lielākiem atmiņas gabaliem tiks apstrādāts ar mmap() sistēmas izsaukumu un neizraisīs doto problēmu.
+Pieprasījumi pēc lielākiem atmiņas gabaliem tiks apstrādāti ar mmap() sistēmas izsaukumu un neizraisīs doto problēmu.
 Pēc mmap() izsaukumiem atmiņu ir iespējams atgriezt operētājsistēmai ar munmap() palīdzību. 
 Bet, izmantojot brk() sistēmas izsaukumu, kamēr netiks atbrīvots atmiņas gabals, kas atrodas beigās, atmiņa netiks atgriezta operētājsistēmai.
 
+
 Turpmāk tiks apskatīts piemērs, kurš demonstrē doto problēmu.
-Lai kontrolētu atmiņas lietojumu, procesa izpildes laikā, tika izmantota \texttt{ps} komanda.
+Lai kontrolētu atmiņas patēriņu, procesa izpildes laikā, tika izmantota \texttt{ps} komanda.
 Procesam patērēts atmiņas daudzums iegūts no RSS un VSZ rādītājiem.
 VSZ parāda virtuālo atmiņu, RSS parāda fizisko atmiņu, kuru izmanto process.
 Rādītāju mērvienība ir kilobaits.
 Tika palaista programma un katrā programmas solī tika noņemti radītāji (sk. 3.1. tabulu).
-Tā kā bija iedalīti 100 gabali, katrs 100 kilobaitu izmēra, tad kaudze bija paplašināta ar brk() sistēmas izsaukumu.
+Tā kā bija iedalīti 100 gabali, katrs 100 kilobaitu izmērā, tad kaudze bija paplašināta ar brk() sistēmas izsaukumu.
 Kopēja pieprasīta atmiņa bija vienāda ar 10000 kilobaitiem.
-Uzņemtie rādītāji parāda, ka atmiņa pilnībā tika atbrīvota tikai pēc tam, kad bija atbrīvots pēdējais atmiņas gabals.
+Iegūtie rādītāji parāda, ka atmiņa pilnībā tika atbrīvota tikai pēc tam, kad bija atbrīvots pēdējais atmiņas gabals.
 To var redzēt 4 solī, kur VSZ un RSS rādītāji paliek nemainīgi, salīdzinot ar iepriekšējo soli.
-Turklāt 5 solī, pēc pēdējā gabala atbrīvošanas, var novērot to, ka atmiņās daudzums samazinās, jo atmiņa tika atgriezta operētājsistēmai. 
-Tātad maksimālo kopējo kaudzes izlietošanas problēmu var novērot sekojošā veidā. 
+Turklāt 5 solī, pēc pēdējā gabala atbrīvošanas, var novērot to, ka atmiņās daudzums samazinās, tas ir izskaidrojams ar to, ka atmiņa tika atgriezta operētājsistēmai. 
+
 
 \begin{table}[H]
 \caption{\textbf{\fontsize{11}{12}\selectfont {Programmas RSS un VSZ radītāji}}} 
@@ -188,8 +189,15 @@ Tātad maksimālo kopējo kaudzes izlietošanas problēmu var novērot sekojoš�
 	\end{tabular}
 \end{table}
 
-\subsection{Maksimālās kopējās kaudzes izlietošanas pazīmes}
+\subsection{Maksimālās atmiņas izmantošanas problēmas pazīmes}
 
+Pazīme, kas varētu liecināt par problēmas eksistenci ir pārmērīgs atmiņas patēriņš pēc maksimālās atmiņas izmantošanas.
+
+Atmiņas izmetē pazīme, kas varētu liecināt par problēmas esamību, ir lielā izmēra atmiņas gabali, kuri atrodas bin sarakstos.
+Ja pēc maksimālās atmiņas izmantošanas bija novērojamā fragmentēšana, tad bin sarakstos varētu atrasties liels atmiņas gabalu skaits.
+Tāds skaits, kurš varētu tikt izveidots sadalot mazākos gabalos procesa atmiņas patēriņa pieaugumu, kas notika mēģinot sasniegt trapa virsotni vai maksimuma punktu.
+Saskaņā ar GNU C realizāciju visi atbrīvotie gabali tiek uzglabāti bin sarakstos. 
+Tā kā ātrie saraksti uzglabā mazus atmiņas gabalus (līdz 64 baitiem) un nav paredzēti ilgstošai atmiņas gabalu glabāšanai, tad atmiņas gabali tiks uzglabāti parastajos sarakstos. 
 
 
 \section{Fragmentēšana}
