@@ -22,7 +22,7 @@ Kaut kāda brīdī, kad tiks iztērēta visā dinamiskā atmiņa, katrs malloc()
 Šeit var notikt kritiskā kļūda, kuras cēlonis ir sliktā programmēšanas prakse.
 Programmētāji ne vienmēr pārbauda malloc() rezultātu pirms vērsties pēc malloc() funkcijas atgrieztās norādes.  
 Mēģinājums piekļūt null adresei  izraisīs Segmentation fault kļūdu.
-Ja programmā bija paredzēts, ka malloc() var atgriezt null, tad process turpina izpildi ierobežotā režīmā, jo vairs nav iespējams dinamiski iedalīt atmiņu. 
+Ja programmā bija paredzēts, ka malloc() var atgriezt null, tad process turpinas izpildi ierobežotā režīmā, jo vairs nav iespējams dinamiski iedalīt atmiņu. 
 Daudzās sistēmās tas nav pieļaujams un var tikt uzstādīti dažādi ierobežojumi, kuri pēc ierobežojošās vērtības sasniegšanas (izpildes laiks, patērētās atmiņas) automātiski pārtrauks procesa darbību. 
 
 \begin{figure}[h]

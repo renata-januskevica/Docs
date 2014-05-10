@@ -8,13 +8,14 @@ Sistēmās, kuras atbalsta POSIX standartus, ir signāli \cite{USP}, kuri, pēc 
 Signāliem, kuri izraisa izmetes ģenerēšanu, signālu tabulā \cite{signal} ir lauks ar vērtību core, kas atrodas ailē ar nosaukumu darbība (Action). 
 Uzģenerētā atmiņas izmete iekļauj sevī procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, piemēram, CPU reģistrus un steka vērtības katram pavedienam, globālos un statiskos mainīgos. 
 Atmiņas izmeti var ielādēt atkļūdotājā, tāda kā gdb, lai  apskatītu programmas stāvokli uz brīdi, kad atnāca operētājsistēmas signāls \cite{core}.
-Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas, pat tad, ja nav piekļuves sistēmai. 
+Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas, pat tad, ja nav tiešas piekļuves sistēmai. 
 
 
 Reālajās sistēmās atmiņas izmetes tiek uzģenerētas atmiņas kļūdu dēļ. 
 Dažas no kļūdām sīkāk ir aprakstītas \ref{chap:chapter_3} nodaļā. 
-Taču tas nav vienīgais veids, ka var iegūt atmiņas izmeti, eksistē vairākas iespējas kā to var uzģenerēt patstāvīgi, lai veiktu programmas atkļūdošanu.
-To var izdarīt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora. 
+Bet eksistē vairākas iespējas kā atmiņas izmeti var uzģenerēt patstāvīgi.
+Tas varētu būt nepieciešams programmas atkļūdošanai.
+Atmiņās izmeti var uzģenerēt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora.
 Turpmāk katra no iespējam tiks uzskatāmi nodemonstrēta un apskatīta sīkāk.
 
 \subsection{Atmiņas izmetes ģenerēšana no koda}
@@ -157,7 +158,7 @@ $ gdb <path/to/the/binary> <path/to/the/core>
 Gdb ļauj iegūt svarīgus datus no atmiņas izmetes. Komanda \texttt{info files} ļauj apskatīt procesa segmentus. 
 Katram segmentam ir adrešu apgabals ar nosaukumu. 
 Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.}, koplietošanas atmiņa.
-Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem un uzzināt kuram segmentam pieder konkrētā atmiņas adrese.
+Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem un uzzināt kuram segmentam pieder nezināmā atmiņas adrese.
 
 Lai izdrukātu atmiņas apgabalu var izmantot instrukciju ar sekojošo formātu: \texttt{(gdb) x/nfu addr}. 
 Ir nepieciešams norādīt atmiņas adresi (addr), no kuras sākt atmiņas izdruku, formātu (f), apgabala lielumu (n) un norādīt vienības lielumu (u). 
@@ -172,7 +173,7 @@ Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x) un vien
 \end{figure}
 
 Lai uzzinātu kuram simbolam (funkcijai, mainīgam vai tipam) pieder adrese var izmantot sekojošo gdb instrukciju (sk. 1.8. attēlu) \cite{gdb}.
-Instrukcija \texttt{print} vai \texttt{p} ļauj izdrukāt datus, bet \texttt{p/a} izdrukā absolūto un relatīvo jeb adresi ar nobīdi no tuvāka simbola, kuram pieder adrese.
+Instrukcija \texttt{print} vai \texttt{p} ļauj izdrukāt datus, bet \texttt{p/a} izdrukā absolūto adresi un relatīvo jeb adresi ar nobīdi no tuvāka simbola, kuram pieder adrese.
 Tādā veidā var noteikt kuram atmiņas apgabalam pieder nezināmā adrese.
 \begin{figure}[h]
 \begin{lstlisting}

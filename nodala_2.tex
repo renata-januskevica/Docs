@@ -27,7 +27,7 @@ Dinamiskā atmiņas iedalīšana, var būt realizēta ar steka vai kaudzes palī
 
 Automātiskā iedalīšana notiek, kad sākās programmas funkcijas izpilde. 
 Šeit viens un tas pats atmiņas apgabals, kurš bija atbrīvots, var tikt izmantots  vairākas reizēs. 
-Piemēram, kad tekošās funkcijas argumenti un lokālie mainīgie ir saglabāti stekā un izdzēsti pēc šīs funkcijas izpildes. 
+Piemēram, tekošās funkcijas argumenti un lokālie mainīgie ir saglabāti stekā un izdzēsti pēc šīs funkcijas izpildes. 
 Pēc tam atbrīvotā atmiņa var būt izmantota atkārtoti. 
 Vērtību izdzēšana vai saglabāšana notiek, nobīdot steka norādi.
 Priekš automātiskās atmiņas iedalīšanas, izmato steku.
@@ -58,7 +58,7 @@ Pēc tam process pārvalda iedalīto apgabalu, sadalot to vairākos segmentos  \
     \item Statiskie dati - apgabals, kurā tiek uzglabāti dati ar iepriekš zināmu izmēru. Tās ir globālie un statiskie mainīgie.
     Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi.
     \item Atmiņas arēna - apgabals, kurā tiek uzglabāta dinamiski iedalītā un atbrīvotā atmiņa. 
-    Arēna sastāv no sarakstiem ar atbrīvoto atmiņu un vienas vai vairākām kaudzēm.
+    Arēna sastāv no atbrīvotās atmiņas sarakstiem un vienas vai vairākām kaudzēm.
     Kaudze ir apgabals, kurā atrodas visa dinamiski iedalītā atmiņa programmas izpildei.
     \item Steks - apgabals, kurā tiek uzglabāts funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam. Steks aug no lielākas adreses līdz mazākai. 
     Unikāla atmiņas arēna un steks iedalīti priekš katras programmas instances atsevišķi.
@@ -211,7 +211,7 @@ Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb L
 Kad tiek pieprasīta atmiņa no fastbin saraksta, tad jebkurš atmiņas gabals tiek atgriezts konstantā laikā  \cite {ACCA}.
 \begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.31]{fastbins}
+\includegraphics[scale=0.35]{fastbins}
 \end{center}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Ātrais saraksts}}}
 \label{fig:fastbin}
@@ -219,7 +219,7 @@ Kad tiek pieprasīta atmiņa no fastbin saraksta, tad jebkurš atmiņas gabals t
 
 Parastie saraksti var būt sadalīti 3 veidos. Pirmkārt, bin saraksts, kurš uzglabā nesakārtotus gabalus, kuri nesen bija atbrīvoti.  
 Pēc tam tie tiks novietoti vienā no atlikušiem bin sarakstiem: mazā vai lielā izmēra. 
-Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki vai vienādi ar 512 baitiem. 
+Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki vai vienādi par 512 baitiem. 
 Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
 Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti pirmais iekšā, pirmais ārā (jeb FIFO) kārtībā \cite {Binning}. 
@@ -295,14 +295,14 @@ Otrs iemesls kāpēc ir iedalīts lielāks atmiņas daudzums ir izlīdzināšana
 
 No kreisās pusēs attēlots (sk. 2.7. attēlu) \cite{CHOFM} atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
 Abos gadījumos rādītājs chunk attēlo atmiņas gabalu sākumu. Pēc šī radītāja var iegūt iepriekšēja gabala izmēru, ja iepriekšējais gabals bija atbrīvots.
-Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk norāda uz daļu no lietotāja datiem, kas novietoti iepriekšējā gabalā. 
+Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk norāda uz daļu no lietotāja datiem, kas dublēti no iepriekšējā gabala. 
 Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju. 
 
 
 Tā kā notiek izlīdzināšana 2*sizeof(INTERNAL\_SIZE\_T), kas ir vienāda 8 - ka vai 16 - ka  reizinājumam, tad 3 pēdējie biti netiek izmantoti izmēra glabāšanai. 
 Šos bitus izmanto kontroles zīmēm. Katram bitam ir sava nozīme, kura aprakstīta 2.2. tabulā.
 Rādītājs mem ir malloc() funkcijas atgriežamā vērtība, jeb radītājs uz iedalīto atmiņas apgabalu. Iedalīts apgabals stiepjas līdz atmiņas gabala struktūras beigām.
-Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja tā ir atbrīvota, tad šeit tiks uzglabāti divi radītāji uz nākamo un iepriekšējo atbrīvotiem gabaliem, kas atrodas sarakstā. 
+Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja tā ir atbrīvota, tad šeit tiks uzglabāti divi radītāji uz nākamo un iepriekšējo atbrīvotiem gabaliem, kas atrodas saistītajā sarakstā. 
 
 
   \begin{table}[H]
@@ -345,6 +345,15 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 %Ir pieejama kopēja statistikā visām arēnām pēc abiem iepriekš minētiem parametriem, ka arī tiek izdrukāts maksimālais bloku un baitu daudzums, kurš bija iedalīts ar mmap() sistēmas izsaukumu. 
 
 Zinot atmiņas gabala struktūru, var uzrakstīt kodu C valodā, kurš izdrukās iedalītā gabala izmēru (sk. 2.8. attēlu).
+
+Algoritms ir sekojošs: 
+\begin{enumerate}
+\item ar malloc() tiek iedalīts atmiņas apgabals,
+\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru),
+\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs,
+\item  tiek atbrīvota atmiņa.
+\end{enumerate}
+
 \begin{figure}[h]
 \begin{lstlisting}
  #include <stdio.h>
@@ -369,14 +378,6 @@ Zinot atmiņas gabala struktūru, var uzrakstīt kodu C valodā, kurš izdrukās
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Izmēra noteikšana iedalītām gabalam}}}
 \end{figure}
-
-Algoritms ir sekojošs: 
-\begin{enumerate}
-\item ar malloc() tiek iedalīts atmiņas apgabals,
-\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru),
-\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs.
-%\item  tiek atbrīvota atmiņa.
-\end{enumerate}
 
 
 
