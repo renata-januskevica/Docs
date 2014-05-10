@@ -128,26 +128,44 @@ class MyClass
 
 \section{Maksimālā kopējā kaudzes izlietošana}
  \label{sec:peak_mem}
-Dinamiskās atmiņas daudzums, kas tiek izmantots programmas izpildes laikā var mainīties.
-Daudzām programmām var būt nepieciešams liels atmiņas daudzums, kāda uzdevuma izpildīšanai.
-Pēc šī uzdevuma pabeigšanas visa pieprasitā atmiņa var tikt atbrīvota.
-Ir svarīgi pievērst uzmanību gadījumiem, kad kopējā kaudzes izlietošana\footnote{Ir kopējais iedalītu un atbrīvotu gabalu izmērs.} tiecās pie maksimuma (peak memory usage).
-Šajā brīdī ir iespējama situācija, kad liels atmiņas daudzums pēc izmantošanas netiks atgriezts operētājsistēmai, pat tad, ja atmiņa tiks atbrīvota ar free() vai delete palīdzību.
-Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš nebija paredzēts projektējumā.
+Atmiņas daudzums, kas tiek izmantots programmas izpildes laikā var visu laiku mainīties.
+Pētījumā \cite{PWMS} tiek apkopoti trīs svarīgākie nevienmērīgās atmiņas izmantošanas veidi: traps (ramps),  maksimums (peaks),  plankalne (plateaus).
+Citi nevienmērīgās izmantošanas veidi arī ir iespējami, bet izpaužas ļoti reti.
+Ne visām programmām raksturīgi visi trīs veidi, bet tikai daži no tiem.
+Šie veidi ir kvantitatīvs novērtējums, kas tiek novērojams izpētot lielu programmu kopu \cite{PWMS}. 
+\begin{itemize}
+\item Traps. Programma uzkrāj datu struktūras monotoni. 
+Tas varētu notikt, tāpēc ka uzdevuma atrisināšanai ir nepieciešams paveikt daudzas darbības un pakāpeniski uzbūvēt daudzas  datu struktūras. 
+Lai atrisinātu uzdevumu, atmiņas patēriņš monotoni aug. Pēc uzdevuma atrisināšanas atmiņas patēriņš strauji samazinās.
+\item Maksimums. Šo veidu var nosaukt par trapu tikai ļoti īsa laika periodā.
+Daudzām programmām var būt nepieciešams izveidot lielas datu struktūras, kāda ātra uzdevuma izpildīšanai.
+Pēc šī uzdevuma pabeigšanas gandrīz visa pieprasītā atmiņa var tikt atbrīvota.
+Grafiks šīm veidam izskatās kā raustīta līnija un atmiņas patēriņš var svārstīties dramatiski.
+\item Plankalne. Novērojama, kad programmas ātri uzbūve datu struktūras un izmanto tās ilgā laika periodā. Var izmantot līdz programmas izpildes beigām.
+\end{itemize}
 
+Ir svarīgi pievērst uzmanību gadījumiem, kad var tikt sasniegta maksimālā kopējā atmiņas izlietošana.
+Maksimālā kopējā atmiņas izlietošana ir stāvoklis, kad kopējais iedalītu un atbrīvotu gabalu izmērs kaudzē sasniedz maksimumu.
+Piemēram, tas var notikt, kad process tiecās pie trapa virsotnes vai maksimuma sasniegšanas.
+Šeit ir iespējama situācija, kad liels atmiņas daudzums pēc izmantošanas netiks atgriezts operētājsistēmai, pat tad, ja atmiņa tiks atbrīvota ar free() vai delete palīdzību.
+Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš nebija paredzēts projektējumā.
 Šī situācija kļūst iespējama, ja notiek daudzi pieprasījumi pēc atmiņas, kas ir mazāki par 128 kilobaitiem.
 Pieprasījums pēc lielākiem atmiņas gabaliem tiks apstrādāts ar mmap() sistēmas izsaukumu un neizraisīs doto problēmu.
 Pēc mmap() izsaukumiem atmiņu ir iespējams atgriezt operētājsistēmai ar munmap() palīdzību. 
 Bet, izmantojot brk() sistēmas izsaukumu, kamēr netiks atbrīvots atmiņas gabals, kas atrodas beigās, atmiņa netiks atgriezta operētājsistēmai.
 
 Turpmāk tiks apskatīts piemērs, kurš demonstrē doto problēmu.
-Lai kontrolētu atmiņas lietojumu tika izmantota \texttt{ps} komanda.
-Procesam paterētās atmiņas daudzums iegūts no RSS un VSZ rādītājiem.
+Lai kontrolētu atmiņas lietojumu, procesa izpildes laikā, tika izmantota \texttt{ps} komanda.
+Procesam patērēts atmiņas daudzums iegūts no RSS un VSZ rādītājiem.
 VSZ parāda virtuālo atmiņu, RSS parāda fizisko atmiņu, kuru izmanto process.
 Rādītāju mērvienība ir kilobaits.
 Tika palaista programma un katrā programmas solī tika noņemti radītāji (sk. 3.1. tabulu).
-Tā kā tika iedalīti 100 gabali, katrs 100 kilobaitu izmēra, tad kaudze tiek paplašināta ar brk() sistēmas izsaukumu.
-Uzņemtie rādītāji parāda, ka atmiņa pilnībā tiek atbrīvota tikai pēc tam, kad bija atbrīvots pēdējais atmiņas gabals.
+Tā kā bija iedalīti 100 gabali, katrs 100 kilobaitu izmēra, tad kaudze bija paplašināta ar brk() sistēmas izsaukumu.
+Kopēja pieprasīta atmiņa bija vienāda ar 10000 kilobaitiem.
+Uzņemtie rādītāji parāda, ka atmiņa pilnībā tika atbrīvota tikai pēc tam, kad bija atbrīvots pēdējais atmiņas gabals.
+To var redzēt 4 solī, kur VSZ un RSS rādītāji paliek nemainīgi, salīdzinot ar iepriekšējo soli.
+Turklāt 5 solī, pēc pēdējā gabala atbrīvošanas, var novērot to, ka atmiņās daudzums samazinās, jo atmiņa tika atgriezta operētājsistēmai. 
+Tātad maksimālo kopējo kaudzes izlietošanas problēmu var novērot sekojošā veidā. 
 
 \begin{table}[H]
 \caption{\textbf{\fontsize{11}{12}\selectfont {Programmas RSS un VSZ radītāji}}} 
@@ -155,17 +173,17 @@ Uzņemtie rādītāji parāda, ka atmiņa pilnībā tiek atbrīvota tikai pēc t
 \centering
 	\begin{tabular}{|l|l|l|p{5cm}|}
 	  \hline
-	Darbība & VSZ & RSS \\
+	Solis & VSZ & RSS \\
     \hline
-    Sākums & 3228 & 612 \\
+    1. Sākums & 3228 & 612 \\
 	\hline
-	  Ar new ir pieprasīti 100 gabali, katrs 100 kilobaitu izmērā  & 13360  & 1136 \\
+	 2. Ar new ir pieprasīti 100 gabali, katrs 100 kilobaitu izmērā  & 13360  & 1136 \\
       \hline
-      Atmiņa ir aizpildīta ar 0 &  13360 & 10640\\
+     3. Atmiņa ir aizpildīta ar 0 &  13360 & 10640\\
       \hline
-      Atmiņa tiek atbrīvota izņemot pēdejo gabalu & 13360 & 10640 \\
+     4. Atmiņa tiek atbrīvota izņemot pēdejo gabalu & 13360 & 10640 \\
       \hline
-      Atmiņa tiek pilnībā atbrīvota & 3360 & 968 \\
+     5. Atmiņa tiek pilnībā atbrīvota & 3360 & 968 \\
     \hline
 	\end{tabular}
 \end{table}
