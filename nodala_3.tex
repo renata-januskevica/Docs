@@ -144,15 +144,15 @@ Grafiks šai shēmai izskatās kā lauztā līnija un atmiņas patēriņš var s
 \item Plato. Novērojama, kad programmas ātri uzbūve datu struktūras un izmanto tās ilgā laika periodā, bieži izmanto līdz programmas izpildes beigām.
 \end{itemize}
 
-Maksimālās atmiņas izmantošanas problēma var notikt, kad iedalītu un atbrīvotu gabalu izmēru summa kaudzē sasniedz maksimumu procesa izpildes laikā.
-Ir svarīgi pievērst uzmanību gadījumiem, kad var tikt sasniegta maksimālā atmiņas izmantošana.
-Piemēram, tas var notikt, kad process tiecās pie trapa virsotnes vai maksimuma sasniegšanas.
-Šeit ir iespējama situācija, kad liels atmiņas daudzums netiks atgriezts operētājsistēmai pēc izmantošanas, pat tad, ja atmiņa tiks atbrīvota ar free() vai delete palīdzību.
+Maksimālās atmiņas izmantošanas (peak memory utilization) problēma var notikt, kad iedalītu un atbrīvotu gabalu izmēru summa kaudzē sasniedz maksimumu procesa izpildes laikā.
+Ir svarīgi pievērst uzmanību gadījumiem, kad var tikt sasniegts maksimums.
+Piemēram, tas var notikt, kad process tiecās pie trapa virsotnes vai maksimuma punkta.
+Problēma ir novērojama, kad liels atmiņas daudzums netiek atgriezts operētājsistēmai pēc izmantošanas, pat tad, ja atmiņa tiek atbrīvota ar free() vai delete palīdzību.
 Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš nebija paredzēts projektējumā.
 Šī situācija kļūst iespējama, ja notiek daudzi pieprasījumi pēc atmiņas, kas ir mazāki par 128 kilobaitiem.
 Pieprasījumi pēc lielākiem atmiņas gabaliem tiks apstrādāti ar mmap() sistēmas izsaukumu un neizraisīs doto problēmu.
 Pēc mmap() izsaukumiem atmiņu ir iespējams atgriezt operētājsistēmai ar munmap() palīdzību. 
-Bet, izmantojot brk() sistēmas izsaukumu, kamēr netiks atbrīvots atmiņas gabals, kas atrodas beigās, atmiņa netiks atgriezta operētājsistēmai.
+Izmantojot brk() sistēmas izsaukumu, kamēr netiks atbrīvots atmiņas gabals, kas atrodas beigās, atmiņa netiks atgriezta operētājsistēmai.
 
 
 Turpmāk tiks apskatīts piemērs, kurš demonstrē doto problēmu.
@@ -191,15 +191,43 @@ Turklāt 5 solī, pēc pēdējā gabala atbrīvošanas, var novērot to, ka atmi
 
 \subsection{Maksimālās atmiņas izmantošanas problēmas pazīmes}
 
-Pazīme, kas varētu liecināt par problēmas eksistenci ir pārmērīgs atmiņas patēriņš pēc maksimālās atmiņas izmantošanas.
+Pazīme, kas varētu liecināt par problēmas esamību ir pārmērīgs atmiņas patēriņš pēc maksimālās atmiņas izmantošanas.
 
-Atmiņas izmetē pazīme, kas varētu liecināt par problēmas esamību, ir lielā izmēra atmiņas gabali, kuri atrodas bin sarakstos.
+Atmiņas izmetē pazīme, kas varētu liecināt par problēmu, ir lielā izmēra atmiņas gabali, kuri atrodas bin sarakstos.
 Ja pēc maksimālās atmiņas izmantošanas bija novērojamā fragmentēšana, tad bin sarakstos varētu atrasties liels atmiņas gabalu skaits.
 Tāds skaits, kurš varētu tikt izveidots sadalot mazākos gabalos procesa atmiņas patēriņa pieaugumu, kas notika mēģinot sasniegt trapa virsotni vai maksimuma punktu.
 Saskaņā ar GNU C realizāciju visi atbrīvotie gabali tiek uzglabāti bin sarakstos. 
 Tā kā ātrie saraksti uzglabā mazus atmiņas gabalus (līdz 64 baitiem) un nav paredzēti ilgstošai atmiņas gabalu glabāšanai, tad atmiņas gabali tiks uzglabāti parastajos sarakstos. 
 
-
+Sākumā tika iedalīti 100 atmiņas gabali, katrs 100 kilobaitu izmēra.
+Katrā baitā bija ierakstīta vērtība 7.
+Pēc tam bija atbrīvoti 99 gabali izņemot pēdējo un tika uzģenerēta atmiņas izmete.
+Saskaņā ar \cite{PWMS} pētījumu bija sasniegts maksimums (peaks). 
+Atmiņas izmete palīdz saprast, kas notiek atmiņā.
+\begin{figure}[h]
+\begin{lstlisting}
+(gdb) p main_arena
+$3 = {mutex = 0, flags = 1, fastbinsY = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, top = 0x97ba4b8, last_remainder = 0x0,
+bins = {0x8df6198, 0x8df6198, 0xb76cf478, 0xb76cf478, 0xb76cf480, 0xb76cf480, 0xb76cf488, 0xb76cf488, 0xb76cf490, 0xb76cf490,
+0xb76cf498, 0xb76cf498, 0xb76cf4a0, 0xb76cf4a0, 0xb76cf4a8, 0xb76cf4a8, 0xb76cf4b0, 0xb76cf4b0, 0xb76cf4b8, 0xb76cf4b8,
+0xb76cf4c0, 0xb76cf4c0, 0xb76cf4c8, 0xb76cf4c8, 0xb76cf4d0, 0xb76cf4d0, 0xb76cf4d8, 0xb76cf4d8, 0xb76cf4e0, 0xb76cf4e0...},
+binmap = {0, 0, 0, 0}, next = 0xb76cf440, next_free = 0x0, system_mem = 10375168, max_system_mem = 10375168}
+(gdb) x/16wx 0x8df6198
+0x8df6198: 0x00000000 0x009ab319 0xb76cf470 0xb76cf470
+0x8df61a8: 0x00000000 0x00000000 0x07070707 0x07070707
+0x8df61b8: 0x07070707 0x07070707 0x07070707 0x07070707
+0x8df61c8: 0x07070707 0x07070707 0x07070707 0x07070707
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {bin saraksta izdruka}}}
+\end{figure}
+%$
+Ar \texttt{p main\_arena} ir izdrukāta galvenās arēnas struktūra un iegūtas bin sarakstu sākuma adreses (sk. 3.3. attēlu). 
+Visi bin saraksti atrodas masīvā bins.
+7 rindiņā ir komanda, kura izdrukā 16 adreses no pirmā bin saraksta.
+Sākot ar 8 rindiņu ir redzams atmiņas gabals, kas atrodas bin sarakstā un kura izmērs ir 0x009ab319, kas decimālajā skaitīšanas sistēmā ir vienāds ar 10138393, binārajā skaitīšanas sistēmā 100110101011001100011001.
+Tā kā 3 mazākie biti netiek izmantoti izmēra glabāšanai, bet kontroles bitiem, tad gabala izmērs ir 10138393 - 1=10138392.
+Mūsu 99 atbrīvoto gabalu kopējais izmērs ir vienāds ar izmērs kilobaitos, kas ir sareizināts ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
+Atšķirība starp pirmā gabala izmēru bin sarakstā un atbrīvoto gabalu kopēju izmēru ir izskaidrojama ar izlīdzināšanu 8 - ka reizinājumam.
 \section{Fragmentēšana}
 \subsection{Fragmentēšanas pazīmes}
 
