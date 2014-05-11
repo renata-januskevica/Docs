@@ -22,7 +22,7 @@ Kaut kāda brīdī, kad tiks iztērēta visā dinamiskā atmiņa, katrs malloc()
 Šeit var notikt kritiskā kļūda, kuras cēlonis ir sliktā programmēšanas prakse.
 Programmētāji ne vienmēr pārbauda malloc() rezultātu pirms vērsties pēc malloc() funkcijas atgrieztās norādes.  
 Mēģinājums piekļūt null adresei  izraisīs Segmentation fault kļūdu.
-Ja programmā bija paredzēts, ka malloc() var atgriezt null, tad process turpinas izpildi ierobežotā režīmā, jo vairs nav iespējams dinamiski iedalīt atmiņu. 
+Ja programmā bija paredzēts, ka malloc() var atgriezt null, tad process turpinas izpildi ierobežotā režīmā, jo vairs nav iespējams dinamiski iedalīt atmiņu un izpildīt daudzus uzdevumus. 
 Daudzās sistēmās tas nav pieļaujams un var tikt uzstādīti dažādi ierobežojumi, kuri pēc ierobežojošās vērtības sasniegšanas (izpildes laiks, patērētās atmiņas) automātiski pārtrauks procesa darbību. 
 
 \begin{figure}[h]
@@ -57,7 +57,7 @@ Programmas darbības laikā kļūst pazaudēti 10000 gabali, kuru kopējais izm�
 Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūda, kas izraisa atmiņās noplūdi \cite{RTTV}: 
 \begin{itemize}
 \item { Kad operētājsistēma neatbrīvo, lietotnes izpildei izmantoto atmiņu pēc tam, kad lietotne beidz savu darbību, piemēram, AmigaOS,}
-\item { Ja servera vai citas programmas darbojās visu laiku bez apstāšanās, }
+\item { Ja servera vai citās programmas darbojās visu laiku bez apstāšanās, }
 \item { Ja portatīvām ierīcēm ir ierobežots atmiņas daudzums, }
 \item { Ja programmas pieprasa atmiņu uzdevumiem, kuri izpildās ilgstošu laika periodu, }
 \item { Reālā laikā sistēmās, jo ir svarīgi iegūt rezultātu ierobežotajā laikā. }
@@ -67,7 +67,7 @@ Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, 
 Ja ir redzamas sekas (ir atmiņas izmete un programma pabeidza savu darbu), bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
 Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify. 
 Taču tie ne vienmēr sniedz pietiekamu informāciju un bieži netiek izmantoti strādājošās sistēmās, jo piedāvātas atkļūdošanas tehnikas un rīki var palēnināt sistēmas darbību.
-Ieslēdzot  Memcheck rīku iekš Valgrind instrumentācijas ietvarā, programmas izpildes ātrums palēninās 20-30 reizes \cite{UVD}.
+Piemēram, ieslēdzot  memcheck rīku iekš Valgrind instrumentācijas ietvara, programmas izpildes ātrums palēninās aptuveni 20-30 reizes \cite{UVD}.
 
 
 
@@ -100,7 +100,7 @@ Ja C++ klasē ir virtuālās funkcijas, tad kompilators izveido virtuālo funkci
  Katrai klasei ir tikai viena virtuālo funkciju tabula, kuru izmanto visi klases objekti.
  Ar katru virtuālo funkciju tabulu ir saistīts virtuālo funkciju rādītājs (vpointer).
  Šīs rādītājs norāda uz virtuālo funkciju tabulu un tiek izmantots lai piekļūtu virtuālajām funkcijām.
-Atmiņā klases izvietojums, kurā ir virtuālā funkcija atmiņā tiek attēlots sekojoši (sk. 3.2. attēlu).
+Klase, kurā ir virtuālā funkcija, atmiņā tiks izvietota sekojoši (sk. 3.2. attēlu).
 Ja loģiskā atmiņas noplūde notiks, tāpēc ka atmiņā neierobežoti pieaugs MyClass objektu skaits, tad pēc vpointer norādes atmiņas gabalos var identificēt doto problēmu, bet saprast kurai klasei pieder objekti var ar gdb palīdzību.
 Instrukcijas, kas ļauj apskatīties, kuram apgabalam pieder adrese jau tika aprakstītas sadaļā \ref{subsec:debugg_gdb}
 \begin{figure}[h]
@@ -132,7 +132,7 @@ Atmiņas daudzums, kas tiek izmantots programmas izpildes laikā var visu laiku 
 Pētījumā \cite{PWMS} tiek apkopoti trīs svarīgākas atmiņas izmantošanas shēmas: traps (ramps),  maksimums (peaks),  plato (plateaus).
 Citas atmiņas izmantošanas shēmas ir iespējamas, bet izpaužas ļoti reti.
 Ne visām programmām ir raksturīgas visās trīs shēmas, bet vairākumam ir raksturīga viena vai divas no tām.
-Šīs shēmas ir apkopotas balstoties uz kvantitatīvo programmu novērtējumu \cite{PWMS}. 
+Šīs shēmas tika apkopotas, balstoties uz kvantitatīvo programmu novērtējumu \cite{PWMS}. 
 \begin{itemize}
 \item Traps. Programma uzkrāj datu struktūras monotoni. 
 Tas varētu notikt, tāpēc ka uzdevuma atrisināšanai ir nepieciešams paveikt daudzas darbības un pakāpeniski uzbūvēt daudzas  datu struktūras. 
@@ -191,14 +191,15 @@ Turklāt 5 solī, pēc pēdējā gabala atbrīvošanas, var novērot to, ka atmi
 
 \subsection{Maksimālās atmiņas izmantošanas problēmas pazīmes}
 
-Pazīme, kas varētu liecināt par problēmas esamību ir pārmērīgs atmiņas patēriņš pēc maksimālās atmiņas izmantošanas.
+Pazīme, kas varētu liecināt par problēmas esamību ir pārmērīgs atmiņas patēriņš pēc trapa virsotnes vai maksimālā punkta sasniegšanas.
 
 Atmiņas izmetē pazīme, kas varētu liecināt par problēmu, ir lielā izmēra atmiņas gabali, kuri atrodas bin sarakstos.
 Ja pēc maksimālās atmiņas izmantošanas bija novērojamā fragmentēšana, tad bin sarakstos varētu atrasties liels atmiņas gabalu skaits.
-Tāds skaits, kurš varētu tikt izveidots sadalot mazākos gabalos procesa atmiņas patēriņa pieaugumu, kas notika mēģinot sasniegt trapa virsotni vai maksimuma punktu.
+Tāds skaits, kurš varētu tikt izveidots sadalot mazākos gabalos procesa atmiņas patēriņa pieaugumu, kas notika mēģinot sasniegt maksimumu.
 Saskaņā ar GNU C realizāciju visi atbrīvotie gabali tiek uzglabāti bin sarakstos. 
 Tā kā ātrie saraksti uzglabā mazus atmiņas gabalus (līdz 64 baitiem) un nav paredzēti ilgstošai atmiņas gabalu glabāšanai, tad atmiņas gabali tiks uzglabāti parastajos sarakstos. 
 
+Tālāk ir aprakstīts piemērs, kurš parāda, ka problēmas pazīme izpaužas atmiņas izmetē. 
 Sākumā tika iedalīti 100 atmiņas gabali, katrs 100 kilobaitu izmēra.
 Katrā baitā bija ierakstīta vērtība 7.
 Pēc tam bija atbrīvoti 99 gabali izņemot pēdējo un tika uzģenerēta atmiņas izmete.
@@ -225,10 +226,10 @@ Ar \texttt{p main\_arena} ir izdrukāta galvenās arēnas struktūra un iegūtas
 Visi bin saraksti atrodas masīvā bins.
 7 rindiņā ir komanda, kura izdrukā 16 adreses no pirmā bin saraksta.
 Sākot ar 8 rindiņu ir redzams atmiņas gabals, kas atrodas bin sarakstā un kura izmērs ir 0x009ab319, kas decimālajā skaitīšanas sistēmā ir vienāds ar 10138393, binārajā skaitīšanas sistēmā 100110101011001100011001.
-Tā kā 3 mazākie biti netiek izmantoti izmēra glabāšanai, bet kontroles bitiem, tad gabala izmērs ir 10138393 - 1=10138392.
-Mūsu 99 atbrīvoto gabalu kopējais izmērs ir vienāds ar izmērs kilobaitos, kas ir sareizināts ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
+Tā kā 3 mazākie biti netiek izmantoti izmēra glabāšanai, tad gabala izmērs ir 10138393 - 1=10138392.
+Mūsu 99 atbrīvoto gabalu kopējais izmērs ir vienāds ar izmēru kilobaitos, kas ir sareizināts ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
 Atšķirība starp pirmā gabala izmēru bin sarakstā un atbrīvoto gabalu kopēju izmēru ir izskaidrojama ar izlīdzināšanu 8 - ka reizinājumam.
-Pārējie 127 bin saraksti bija tukši.
+Pārējie 127 bin saraksti, dotajā piemērā, bija tukši.
 \section{Fragmentēšana}
 \subsection{Fragmentēšanas pazīmes}
 

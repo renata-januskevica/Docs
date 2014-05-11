@@ -88,7 +88,7 @@ Izmantojot shell komandrindas interpretatoru ir  iespējams izmantot īsinājumt
 Nospiežot Control + $\backslash$ tiks nosūtīts SIGQUIT signāls procesam, kas pašreiz ir palaists (sk. 1.4. attēlu) \cite {nosacijumi}. 
 Šajā piemēra ziņojumu - Quit (core dumped), izdruka shell. 
 Šīs komandrindas interpretators noteic, ka  sleep procesu (shell bērnu) pārtrauca SIGQUIT signāls. 
-Pēc šī signāla nosūtīšanās darba mapē tiek uzģenerēta atmiņas izmete. 
+Pēc šī signāla nosūtīšanās, darba mapē tiek uzģenerēta atmiņas izmete. 
 
 \begin{figure}[h]
 \begin{lstlisting}
@@ -160,7 +160,7 @@ Katram segmentam ir adrešu apgabals ar nosaukumu.
 Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.}, koplietošanas atmiņa.
 Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem un uzzināt kuram segmentam pieder nezināmā atmiņas adrese.
 
-Lai izdrukātu atmiņas apgabalu var izmantot instrukciju ar sekojošo formātu: \texttt{(gdb) x/nfu addr}. 
+Lai izdrukātu atmiņas apgabalu var izmantot instrukciju ar sekojošo formātu: \texttt{x/nfu addr}. 
 Ir nepieciešams norādīt atmiņas adresi (addr), no kuras sākt atmiņas izdruku, formātu (f), apgabala lielumu (n) un norādīt vienības lielumu (u). 
 Izmantojot doto piemēru (sk. 1.7. attēlu), tiks izdrukāti 4 elementi, kuri pieder stekam, jo Intel x86 procesoros 32 bitu režīmā uz steku norāda \$esp reģistrs. 
 Formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{gdb}. 
