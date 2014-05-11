@@ -230,7 +230,23 @@ Tā kā 3 mazākie biti netiek izmantoti izmēra glabāšanai, tad gabala izmēr
 Mūsu 99 atbrīvoto gabalu kopējais izmērs ir vienāds ar izmēru kilobaitos, kas ir sareizināts ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
 Atšķirība starp pirmā gabala izmēru bin sarakstā un atbrīvoto gabalu kopēju izmēru ir izskaidrojama ar izlīdzināšanu 8 - ka reizinājumam.
 Pārējie 127 bin saraksti, dotajā piemērā, bija tukši.
+
 \section{Fragmentēšana}
+"Ir pierādīts, ka katram atmiņas iedalīšanas algoritmam, vienmēr ir iespējama situācija, ka kāda lietotne pieprasīs 
+un atbrīvos atmiņu tāda veidā, ka tās nojauks iedalītāja stratēģiju un izraisīs lielu fragmentēšanu. 
+Ir pierādīts ne tikai tas, ka nav laba iedalīšanas algoritma, bet arī tas, ka katrs iedalīšanas algoritms var būt slikts dažām lietotnēm" \cite{PWMS}.
+Tātad, fragmentēšanas problēma var būt aktuālā daudzām C un C++ lietotnēm, kuras pieprasa atmiņu no kaudzes.
+
+Fragmentēšanas problēmu var iedalīt divos dažādos veidos: iekšējā un ārējā fragmentēšana \cite{RAN}.
+Iekšējā fragmentēšana notiek, kad tiek iedalīts lielāks atmiņas gabals nekā tiek pieprasīts.
+Izlīdzināšana ir viens no iekšējās fragmentēšanas cēloņiem.
+GNU C bibliotēkā notiek atmiņas gabalu izlidināšana 8 - ka vai 16 - reizinājumam.
+Izlīdzināšana samazina atšķirīgu gabalu izmēru skaitu kaudzē.
+Iekšējo fragmentēšanu ir iespējams paredzēt, jo var izskaitļot kuram skaitlim tiks noapaļots izmērs.
+Nodrošinot izlīdzināšanu, ir palielināta iekšēja, turklāt ir samazināta ārējā fragmentēšana.
+Ārēja fragmentēšana ir nespēja iedalīt atmiņas gabalu kaudzē, kad kaudzē pietiekoši daudz brīvas atmiņas, lai apmierinātu doto pieprasījumu.
+Ārējā fragmentēšana var izpausties ar laiku, kad daudzas reizes jau tika iedalīta un atbrīvota atmiņa.
+Fragmentēšanas rezultātā pārmērīgi tiek izlietoti kaudzes resursi, jo kad pieprasījums pēc atmiņas nevar tikt apmierināts, tad notiek kaudzes piespiedu paplašināšana.
 \subsection{Fragmentēšanas pazīmes}
 
 \section{Kļūdas glibc bibliotēkā}
