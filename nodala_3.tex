@@ -202,7 +202,7 @@ Tā kā ātrie saraksti uzglabā mazus atmiņas gabalus (līdz 64 baitiem) un na
 Sākumā tika iedalīti 100 atmiņas gabali, katrs 100 kilobaitu izmēra.
 Katrā baitā bija ierakstīta vērtība 7.
 Pēc tam bija atbrīvoti 99 gabali izņemot pēdējo un tika uzģenerēta atmiņas izmete.
-Saskaņā ar \cite{PWMS} pētījumu bija sasniegts maksimums (peaks). 
+Saskaņā ar pētījumā minētām shēmām \cite{PWMS}  bija sasniegts maksimums (peaks). 
 Atmiņas izmete palīdz saprast, kas notiek atmiņā.
 \begin{figure}[h]
 \begin{lstlisting}
@@ -218,7 +218,7 @@ binmap = {0, 0, 0, 0}, next = 0xb76cf440, next_free = 0x0, system_mem = 10375168
 0x8df61b8: 0x07070707 0x07070707 0x07070707 0x07070707
 0x8df61c8: 0x07070707 0x07070707 0x07070707 0x07070707
 \end{lstlisting}
-\caption{\textbf{\fontsize{11}{12}\selectfont {bin saraksta izdruka}}}
+\caption{\textbf{\fontsize{11}{12}\selectfont {bin saraksta izdruka, izmantojot atmiņas izmeti}}}
 \end{figure}
 %$
 Ar \texttt{p main\_arena} ir izdrukāta galvenās arēnas struktūra un iegūtas bin sarakstu sākuma adreses (sk. 3.3. attēlu). 
@@ -228,6 +228,7 @@ Sākot ar 8 rindiņu ir redzams atmiņas gabals, kas atrodas bin sarakstā un ku
 Tā kā 3 mazākie biti netiek izmantoti izmēra glabāšanai, bet kontroles bitiem, tad gabala izmērs ir 10138393 - 1=10138392.
 Mūsu 99 atbrīvoto gabalu kopējais izmērs ir vienāds ar izmērs kilobaitos, kas ir sareizināts ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
 Atšķirība starp pirmā gabala izmēru bin sarakstā un atbrīvoto gabalu kopēju izmēru ir izskaidrojama ar izlīdzināšanu 8 - ka reizinājumam.
+Pārējie 127 bin saraksti bija tukši.
 \section{Fragmentēšana}
 \subsection{Fragmentēšanas pazīmes}
 

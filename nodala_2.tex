@@ -26,11 +26,11 @@ Tas var būt nepieciešams, kad atmiņas daudzums nav zināms programmas kompil�
 Dinamiskā atmiņas iedalīšana, var būt realizēta ar steka vai kaudzes palīdzību un var būt automātiskā vai kontrolētā \cite{SDMA}.
 
 Automātiskā iedalīšana notiek, kad sākās programmas funkcijas izpilde. 
+Priekš automātiskās atmiņas iedalīšanas, izmato steku.
 Šeit viens un tas pats atmiņas apgabals, kurš bija atbrīvots, var tikt izmantots  vairākas reizēs. 
-Piemēram, tekošās funkcijas argumenti un lokālie mainīgie ir saglabāti stekā un izdzēsti pēc šīs funkcijas izpildes. 
+Piemēram, funkcijas argumenti un lokālie mainīgie ir saglabāti stekā un izdzēsti pēc šīs funkcijas izpildes. 
 Pēc tam atbrīvotā atmiņa var būt izmantota atkārtoti. 
 Vērtību izdzēšana vai saglabāšana notiek, nobīdot steka norādi.
-Priekš automātiskās atmiņas iedalīšanas, izmato steku.
 Visiem funkcijas mainīgiem var piekļūt izmantojot steka norādes nobīdi, kas tiek uzglabāta reģistrā, piemēram,  
 Intel x86 procesoros, 16 bitu režīmā tas ir reģistrs \texttt{SP}, 32 bitu režīmā - \texttt{ESP} un 64 bitu režīmā - \texttt{RSP} \cite{JCL}.
 Reģistrs uzglabā adresi, kurā atrodas pēdējā uzglabāta vērtība stekā.
@@ -101,7 +101,9 @@ C++ valodā ir izmantots operators new, lai pieprasītu atmiņu.
 Attēlā 2.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
 
 
-
+Funkcija malloc() ir definēta malloc.c datnē GNU C bibliotēkā. 
+Funkcijas prototips ir definēts <stdlib.h>.
+malloc() ļauj dinamiski iedalīt atmiņu procesam.
 Vienīgais arguments malloc() funkcijai ir baitu skaits.
 C programmai, lai saskaitītu cik baitu ir nepieciešams pieprasīt, ir nepieciešams zināt cik daudz vietas aizņem viens elements un kāds ir elementu skaits.
 Funkcija malloc() atgriež void tipa rādītāju, tāpēc C programmās ir nepieciešams izmantot drošo tipa pārveidotāju (typecast). 
@@ -116,6 +118,7 @@ Lielāka atšķirība starp free() un delete ir tāda, ka vecajās free() realiz
 
 Programmas rakstīšanā nejauc kopā C un C++ stilus, tāpēc priekš C++ programmas izmanto 
 new un delete operatorus (sk. 2.3. attēlu), bet priekš C programmām malloc() un free().
+Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams operētājsistēmai atmiņas daudzums ar laiku samazinās.
 
 
 \begin{figure}[h]
@@ -129,7 +132,6 @@ If( ptrl != NULL )
 \end{figure}
 
 
-Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams operētājsistēmai atmiņas daudzums ar laiku samazinās.
 %Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
 
 
@@ -146,7 +148,7 @@ Atmiņas iedalīšana sākas ar malloc() vai līdzīgo funkciju izsaukumiem no p
 
 \subsection{Atmiņas arēna}
 
-Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā 2.4. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite {MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.}.
+Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite {MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.} 2.4. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām.
  Atmiņas arēnu  vienkāršotā veidā var attēlot kā viensaišu saistīto sarakstu, kurš sastāv no vienas vai vairākiem atmiņas kaudzēm. 
  Kaudze ir lineārās apgabals, kurš iekļauj sevī iedalītus vai atbrīvotus atmiņas gabalus (chunk of memory), kuri ir novietoti blakus viens otram.
  Atmiņas gabali sīkāk ir aprakstīti \ref{subsec:atminas_gabali} sadaļā.
@@ -183,7 +185,7 @@ Darbība ar arēnām notiek saskaņā ar sekojošo algoritmu:
 Vispirms atmiņas iedalīšana sākas no galvenās arēnas (main arena). 
 GNU C bibliotēkā ir globāls \texttt{malloc\_state} objekts - galvenā arēna, kura atšķiras no pārējām arēnām ar to, kā tā tiek paplašināta, izmantojot brk() nevis  mmap() sistēmas izsaukumu. 
 Līdz ar galvēnās arēnas paplašināšanu, tiek paplašināts arī procesa arēnas segments.
-brk() sistēmas izsaukumam ir viens arguments, kurš uzstāda procesa arēnas segmenta beigas.
+brk() sistēmas izsaukumam ir viens arguments, kurš uzstāda procesa arēnas segmenta jaunas beigas.
 mmap() sistēmas izsaukums paplašina pārējās dinamiskās arēnas daudzpavedienu lietotnēs, ka arī nodrošina lielu atmiņas bloku iedalīšanu mmap apgabalā.
 Mazākais gabals, kurš pēc noklusējuma tiks iedalīts ar mmap()  ir vienāds ar 128 kilobaitiem. 
 Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts ar mmap() var uzdot ar M\_MMAP\_THRESHOLD konstanti.
@@ -225,6 +227,7 @@ Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā.
 Mazā izmērā saraksti iekļauj gabalus ar vienādu izmēru. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
 Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti pirmais iekšā, pirmais ārā (jeb FIFO) kārtībā \cite {Binning}. 
+Tāda veida vienmēr tiek atgriezts gabals, kurš ir vislabāk piemērots.
 Gabali, kuru izmērs ir lielāks par 128 kilobaitiem netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap(). 
 
 
@@ -301,11 +304,11 @@ Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk norāda uz daļu 
 Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju. 
 
 
+
 Tā kā notiek izlīdzināšana 2*sizeof(INTERNAL\_SIZE\_T), kas ir vienāda 8 - ka vai 16 - ka  reizinājumam, tad 3 pēdējie biti netiek izmantoti izmēra glabāšanai. 
 Šos bitus izmanto kontroles zīmēm. Katram bitam ir sava nozīme, kura aprakstīta 2.2. tabulā.
 Rādītājs mem ir malloc() funkcijas atgriežamā vērtība, jeb radītājs uz iedalīto atmiņas apgabalu. Iedalīts apgabals stiepjas līdz atmiņas gabala struktūras beigām.
 Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja tā ir atbrīvota, tad šeit tiks uzglabāti divi radītāji uz nākamo un iepriekšējo atbrīvotiem gabaliem, kas atrodas saistītajā sarakstā. 
-
 
   \begin{table}[H]
 \caption{\textbf{\fontsize{11}{12}\selectfont {\\ Chunk gabala kontroles zīmes}}} 
@@ -348,14 +351,6 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 
 Zinot atmiņas gabala struktūru, var uzrakstīt kodu C valodā, kurš izdrukās iedalītā gabala izmēru (sk. 2.8. attēlu).
 
-Algoritms ir sekojošs: 
-\begin{enumerate}
-\item ar malloc() tiek iedalīts atmiņas apgabals,
-\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru),
-\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs,
-\item  tiek atbrīvota atmiņa.
-\end{enumerate}
-
 \begin{figure}[h]
 \begin{lstlisting}
  #include <stdio.h>
@@ -380,6 +375,16 @@ Algoritms ir sekojošs:
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Izmēra noteikšana iedalītām gabalam}}}
 \end{figure}
+
+
+Algoritms ir sekojošs: 
+\begin{enumerate}
+\item ar malloc() tiek iedalīts atmiņas apgabals,
+\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru),
+\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs.
+%\item  tiek atbrīvota atmiņa.
+\end{enumerate}
+
 
 
 
