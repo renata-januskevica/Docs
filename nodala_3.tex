@@ -240,13 +240,54 @@ Tātad, fragmentēšanas problēma var būt aktuālā daudzām C un C++ lietotn�
 Fragmentēšanas problēmu var iedalīt divos dažādos veidos: iekšējā un ārējā fragmentēšana \cite{RAN}.
 Iekšējā fragmentēšana notiek, kad tiek iedalīts lielāks atmiņas gabals nekā tiek pieprasīts.
 Izlīdzināšana ir viens no iekšējās fragmentēšanas cēloņiem.
+Iekšējo fragmentēšanu ir iespējams paredzēt, jo var izskaitļot kuram skaitlim tiks noapaļots izmērs.
 GNU C bibliotēkā notiek atmiņas gabalu izlidināšana 8 - ka vai 16 - reizinājumam.
 Izlīdzināšana samazina atšķirīgu gabalu izmēru skaitu kaudzē.
-Iekšējo fragmentēšanu ir iespējams paredzēt, jo var izskaitļot kuram skaitlim tiks noapaļots izmērs.
 Nodrošinot izlīdzināšanu, ir palielināta iekšēja, turklāt ir samazināta ārējā fragmentēšana.
 Ārēja fragmentēšana ir nespēja iedalīt atmiņas gabalu kaudzē, kad kaudzē pietiekoši daudz brīvas atmiņas, lai apmierinātu doto pieprasījumu.
 Ārējā fragmentēšana var izpausties ar laiku, kad daudzas reizes jau tika iedalīta un atbrīvota atmiņa.
 Fragmentēšanas rezultātā pārmērīgi tiek izlietoti kaudzes resursi, jo kad pieprasījums pēc atmiņas nevar tikt apmierināts, tad notiek kaudzes piespiedu paplašināšana.
+
+
+Zinot atmiņas gabala struktūru, var uzrakstīt kodu C valodā, kurš izdrukās atmiņas gabala izmēru, kurš reāli tiek iedalīts no kaudzes (sk. 2.8. attēlu).
+Piemēra ir redzams, ka tiek iedalīti 4 baiti, bet programma izdruka beigu rezultātu - 16 baiti.
+Dotajā piemērā iekšējā fragmentēšana ir vienāda ar 12 baitiem.
+
+Algoritms ir sekojošs: 
+\begin{enumerate}
+\item ar malloc() tiek iedalīts atmiņas apgabals,
+\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru),
+\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs,
+\item  tiek atbrīvota atmiņa.
+\end{enumerate}
+
+\begin{figure}[h]
+\begin{lstlisting}
+ #include <stdio.h>
+ #include <malloc.h>
+
+ int main () {
+     char * ptrl;
+     int chunk_size;
+
+     ptrl = (char *)malloc(4);
+ 
+     /* get value of chunk size (the second malloc_chunk element) */
+     chunk_size = *((char *) ptrl - sizeof(size_t));
+     /* the lower 3-bits are used as metadata */
+     chunk_size = chunk_size - (chunk_size & 7);
+ 
+     printf("size = %d\n", chunk_size);
+     free(ptrl);
+ 
+     return 0;
+ }
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Izmēra noteikšana iedalītām gabalam}}}
+\end{figure}
+
+
+
 \subsection{Fragmentēšanas pazīmes}
 
 \section{Kļūdas glibc bibliotēkā}
