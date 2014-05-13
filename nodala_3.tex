@@ -202,7 +202,8 @@ Tā kā ātrie saraksti uzglabā mazus atmiņas gabalus (līdz 64 baitiem) un na
 Tālāk ir aprakstīts piemērs, kurš parāda, ka problēmas pazīme izpaužas atmiņas izmetē. 
 Sākumā tika iedalīti 100 atmiņas gabali, katrs 100 kilobaitu izmēra.
 Katrā baitā bija ierakstīta vērtība 7.
-Pēc tam bija atbrīvoti 99 gabali izņemot pēdējo un tika uzģenerēta atmiņas izmete.
+Pēc tam bija atbrīvoti 99 gabali izņemot pēdējo.
+Beigās, lai apskatīties pazīmi, tika uzģenerēta atmiņas izmete.
 Saskaņā ar pētījumā minētām shēmām \cite{PWMS}  bija sasniegts maksimums (peaks). 
 Atmiņas izmete palīdz saprast, kas notiek atmiņā.
 \begin{figure}[h]
@@ -228,7 +229,7 @@ Visi bin saraksti atrodas masīvā bins.
 Sākot ar 8 rindiņu ir redzams atmiņas gabals, kas atrodas bin sarakstā un kura izmērs ir 0x009ab319, kas decimālajā skaitīšanas sistēmā ir vienāds ar 10138393, binārajā skaitīšanas sistēmā 100110101011001100011001.
 Tā kā 3 mazākie biti netiek izmantoti izmēra glabāšanai, tad gabala izmērs ir 10138393 - 1=10138392.
 Mūsu 99 atbrīvoto gabalu kopējais izmērs ir vienāds ar izmēru kilobaitos, kas ir sareizināts ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
-Atšķirība starp pirmā gabala izmēru bin sarakstā un atbrīvoto gabalu kopēju izmēru ir izskaidrojama ar izlīdzināšanu 8 - ka reizinājumam.
+Atšķirība starp pirmā gabala izmēru bin sarakstā un atbrīvoto gabalu kopēju izmēru ir vienāda ar 10138392 - 10137600 = 792 un izskaidrojama ar to, ka katram gabalam bija iedalīti 8 baiti uzturēšanas informācijas glabāšanai (prev\_size, size).
 Pārējie 127 bin saraksti, dotajā piemērā, bija tukši.
 
 \section{Fragmentēšana}
@@ -237,21 +238,22 @@ un atbrīvos atmiņu tāda veidā, ka tās nojauks iedalītāja stratēģiju un 
 Ir pierādīts ne tikai tas, ka nav laba iedalīšanas algoritma, bet arī tas, ka katrs iedalīšanas algoritms var būt slikts dažām lietotnēm" \cite{PWMS}.
 Tātad, fragmentēšanas problēma var būt aktuālā daudzām C un C++ lietotnēm, kuras pieprasa atmiņu no kaudzes.
 
-Fragmentēšanas problēmu var iedalīt divos dažādos veidos: iekšējā un ārējā fragmentēšana \cite{RAN}.
+Fragmentēšanas problēmu var iedalīt divos dažādos veidos: iekšējā un ārējā fragmentēšana.
 Iekšējā fragmentēšana notiek, kad tiek iedalīts lielāks atmiņas gabals nekā tiek pieprasīts.
 Izlīdzināšana ir viens no iekšējās fragmentēšanas cēloņiem.
 Iekšējo fragmentēšanu ir iespējams paredzēt, jo var izskaitļot kuram skaitlim tiks noapaļots izmērs.
 GNU C bibliotēkā notiek atmiņas gabalu izlidināšana 8 - ka vai 16 - reizinājumam.
 Izlīdzināšana samazina atšķirīgu gabalu izmēru skaitu kaudzē.
-Nodrošinot izlīdzināšanu, ir palielināta iekšēja, turklāt ir samazināta ārējā fragmentēšana.
-Ārēja fragmentēšana ir nespēja iedalīt atmiņas gabalu kaudzē, kad kaudzē pietiekoši daudz brīvas atmiņas, lai apmierinātu doto pieprasījumu.
-Ārējā fragmentēšana var izpausties ar laiku, kad daudzas reizes jau tika iedalīta un atbrīvota atmiņa.
+Nodrošinot izlīdzināšanu, ir palielināta iekšējā, turklāt ir samazināta ārējā fragmentēšana \cite{RAN}.
+Ārējā fragmentēšana ir nespēja iedalīt atmiņas gabalu kaudzē, kad kaudzē pietiekoši daudz brīvas atmiņas, lai apmierinātu doto pieprasījumu.
+Ārējā fragmentēšana var izpausties ar laiku, kad daudzas reizes jau tika iedalīti un atbrīvoti dažāda izmēra atmiņas gabali.
 Fragmentēšanas rezultātā pārmērīgi tiek izlietoti kaudzes resursi, jo kad pieprasījums pēc atmiņas nevar tikt apmierināts, tad notiek kaudzes piespiedu paplašināšana.
 
-
-Zinot atmiņas gabala struktūru, var uzrakstīt kodu C valodā, kurš izdrukās atmiņas gabala izmēru, kurš reāli tiek iedalīts no kaudzes (sk. 2.8. attēlu).
+Turpmāk ir apskatīts piemērs, kurš demonstrē iekšējās fragmentēšanas cēloņi.
+Zinot atmiņas gabala struktūru, var uzrakstīt kodu C valodā, kurš izdrukās atmiņas gabala izmēru, kurš īstenībā tika iedalīts no kaudzes (sk. 3.4. attēlu).
 Piemēra ir redzams, ka tiek iedalīti 4 baiti, bet programma izdruka beigu rezultātu - 16 baiti.
 Dotajā piemērā iekšējā fragmentēšana ir vienāda ar 12 baitiem.
+
 
 Algoritms ir sekojošs: 
 \begin{enumerate}
@@ -289,6 +291,8 @@ Algoritms ir sekojošs:
 
 
 \subsection{Fragmentēšanas pazīmes}
+No problēmas apraksta seko, ka fragmentēšanai ir raksturīgs liels mazo atbrīvoto gabalu skaits.
+
 
 \section{Kļūdas glibc bibliotēkā}
 \subsection{glibc kļūdu pazīmes}
