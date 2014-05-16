@@ -1,4 +1,5 @@
-﻿Šajā nodaļā tiek aplūkots atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
+﻿
+Šajā nodaļā tiek aplūkots atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
 Nodaļā ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
 Uz šiem pamatjēdzieniem, turpmāk tiks balstīta izstrādājamā kaudzes atkļūdošanas metode.
 \section{Atmiņas izmete}
@@ -157,7 +158,7 @@ $ gdb <path/to/the/binary> <path/to/the/core>
 
 Gdb ļauj iegūt svarīgus datus no atmiņas izmetes. Komanda \texttt{info files} ļauj apskatīt procesa segmentus. 
 Katram segmentam ir adrešu apgabals ar nosaukumu. 
-Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.}, koplietošanas atmiņa.
+Segmenti, kuru nosaukums ir "loadNNN" pieder procesam, tajos var tikt uzglabāti: statiskie dati, steks, kaudze, koplietošanas atmiņa.
 Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas saturu, kas pieder segmentiem un uzzināt kuram segmentam pieder nezināmā atmiņas adrese.
 
 Lai izdrukātu atmiņas apgabalu var izmantot instrukciju ar sekojošo formātu: \texttt{x/nfu addr}. 
