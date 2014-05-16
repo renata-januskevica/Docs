@@ -207,7 +207,7 @@ Beigās, lai apskatīties pazīmi, tika uzģenerēta atmiņas izmete.
 Saskaņā ar pētījumā minētām shēmām \cite{PWMS}  bija sasniegts maksimums (peaks). 
 Atmiņas izmete palīdz saprast, kas notiek atmiņā.
 \begin{figure}[h]
-\begin{lstlisting}
+\begin{lstlisting}[style=customgdb]
 (gdb) p main_arena
 $3 = {mutex = 0, flags = 1, fastbinsY = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, top = 0x97ba4b8, last_remainder = 0x0,
 bins = {0x8df6198, 0x8df6198, 0xb76cf478, 0xb76cf478, 0xb76cf480, 0xb76cf480, 0xb76cf488, 0xb76cf488, 0xb76cf490, 0xb76cf490,
@@ -319,7 +319,7 @@ Pēdejām gabalam ātrajā sarakstā ir uzglabāta 0x00000000 adrese.
 Dotajam piemēram fragmentēšana ir vienāda ar 50\%.
 
 \begin{figure}[h]
-\begin{lstlisting}
+\begin{lstlisting}[style=customgdb]
 0x8b30198: 0x00000000 0x00000011 0x00000000 0x00000000
 0x8b301a8: 0x00000000 0x00000021 0x00000000 0x00000000
 0x8b301b8: 0x00000000 0x00000000 0x00000000 0x00000000

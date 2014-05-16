@@ -152,24 +152,47 @@ pdfkeywords={},
 
 
 
-\lstset{
-	backgroundcolor=\color{lbcolor},
-    language=C++,
-    basicstyle=\ttfamily\small,
-    breaklines=true,
-    prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
-    frame=lines,
-    showtabs=false,
-    showspaces=false,
-    showstringspaces=false,
-    keywordstyle=\color{red}\bfseries,
-    stringstyle=\color{green!50!black},
-    commentstyle=\color{gray}\itshape,
-    numbers=left,
+
+\lstdefinestyle{ANSI}{language=C}
+\lstdefinestyle{C++}{alsolanguage=C++}
+\lstdefinestyle{customc}{
+  backgroundcolor=\color{lbcolor},
+  belowcaptionskip=2\baselineskip,
+  breaklines=true,
+  prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+  frame=none,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  xleftmargin=0.1cm,
+  frame=tlbr,
+  framesep=4pt,
+  framerule=0pt,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{lightgray!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  numbers=left,
 	numberstyle=\color{gray}\footnotesize,
     captionpos=t,
     escapeinside={\%*}{*)}
 }
+
+\lstdefinestyle{customgdb}{
+  belowcaptionskip=2\baselineskip,
+  frame=none,
+  keywordstyle=\bfseries\color{black!40!black},
+  identifierstyle=\ttfamily,
+  xleftmargin=\parindent,
+  basicstyle=\footnotesize\ttfamily,
+  xleftmargin=0.1cm,
+  frame=tlbr,
+  framesep=4pt,
+  framerule=0pt,
+  commentstyle=\itshape\color{purple!40!black},
+}
+\lstset{escapechar=@,style=customc}
 
 \begin{document}
 \include{nosaukums}
@@ -197,8 +220,6 @@ pdfkeywords={},
 
 \chapter{Atmiņas iedalīšana, organizācija un pārvaldība}\label{chap:chapter_2} % 
 \input{nodala_2}
-
-
 \chapter{Jēdzieni, uz kuriem balstīta metode}
 \input{nodala_1}
 
