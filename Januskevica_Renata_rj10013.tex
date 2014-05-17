@@ -21,6 +21,7 @@
 \usepackage{indentfirst}
 \usepackage{subcaption}
 \usepackage[font=small]{caption}
+\usepackage[titletoc,title]{appendix}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -147,6 +148,8 @@ pdfkeywords={},
 \DeclareCaptionLabelSeparator{period1@}{\@\space}
 \captionsetup[table]{justification=raggedleft,singlelinecheck=off,labelsep=period1@}
 
+
+
 % Kods
 \definecolor{lbcolor}{rgb}{0.95,0.95,0.95}
 
@@ -225,7 +228,7 @@ pdfkeywords={},
 
 
 
-\chapter{Problēmu apraksts}\label{chap:chapter_3} % 
+\chapter{Problēmu pazīmes atmiņas izmetē}\label{chap:chapter_3} % 
 \input{nodala_3}
 
 \chapter{Atkļūšanas metodes apraksts}\label{chap:chapter_4} % 
@@ -233,6 +236,8 @@ pdfkeywords={},
 
 \chapter{Realizācijas apraksts}\label{chap:chapter_5}
 \input{nodala_5}
+
+
 
 %\chapter{Klasterizēta divu līmeņu sistēma}\label{chap:chapter_3}
 %\input{chapter_3_cor}
@@ -256,6 +261,18 @@ pdfkeywords={},
 \bibliographystyle{acm}
 \bibliography{biblio}
 \addcontentsline{toc}{chapter}{Izmantotā literatūra un avoti}
+
+
+\setcounter{secnumdepth}{-1}
+
+\begingroup
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\clearpage}{}
+\chapter{Pielikumi}\label{chap:pielikumi}
+\input{pielikumi}
+\endgroup
+
+
 
 \include{dokument_lapa}
 %\setcounter{secnumdepth}{-1}

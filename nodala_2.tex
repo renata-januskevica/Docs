@@ -1,4 +1,4 @@
-﻿Šī nodaļa palīdz saprast kopējo atmiņas organizāciju un kaudzes\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.} lomu. 
+﻿Šī nodaļa palīdz saprast kopējo atmiņas organizāciju un kaudzes\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.} lomu tajā. 
 Šajā nodaļā ir aprakstīti atmiņas iedalīšanas paņēmieni, ir dots īss ieskāts GNU C bibliotēkas ptmalloc2 realizācijā un aprakstīta atmiņas pārvaldība.
 
 \section{Atmiņas iedalīšanas paņēmieni}
@@ -36,7 +36,7 @@ Visiem funkcijas mainīgiem var piekļūt izmantojot steka norādes nobīdi, kas
 Intel x86 procesoros, 16 bitu režīmā tas ir reģistrs \texttt{SP}, 32 bitu režīmā - \texttt{ESP} un 64 bitu režīmā - \texttt{RSP} \cite{JCL}.
 
 
-Kontrolētā atmiņas iedalīšana nozīme, ka programma izvēlās brīvus atmiņas gabalus no pieejamas segmenta telpas, priekš programmas datiem. 
+Kontrolētā atmiņas iedalīšana nozīme, ka programma izvēlās brīvus atmiņas gabalus no pieejama segmenta telpas, priekš programmas datiem. 
 Kontrolētā jeb manuālā atmiņas iedalīšana parasti ir nodrošināta ar kaudzes palīdzību.
 Šeit nav iespējams piekļūt visiem iedalītiem atmiņas gabaliem, izmantojot vienu norādi un tās nobīdi, piemēram, kā tas tiek nodrošināts stekā. 
 Tagad katram iedalītam atmiņas gabalam var piekļūt tikai tad, ja ir norāde uz šo iedalīto atmiņas gabalu. 
@@ -55,18 +55,18 @@ Svarīgākie procesa segmenti  \cite {atparv}:
 %\vspace{-20 pt}
 \begin{itemize}
 	\item   Teksta segments - šeit tiek uzglabāti dati, kuri tiek izmantoti tikai lasīšanai. Tās ir nokompilētas koda instrukcijas. 
-    Vairākas programmas instances var izmantot šo atmiņas apgabalu.
+    Vairākas programmas instances var izmantot šo atmiņas apgabalu;
     \item Statisko datu segments - apgabals, kurā tiek uzglabāti dati ar iepriekš zināmu izmēru. Tās ir globālie un statiskie mainīgie.
-    Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi.
+    Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi;
     \item Kaudzes segments - apgabals, no kura tiek iedalīta dinamiskā atmiņa.
     Kaudzes segmentā atrodas dinamiski iedalītā un atbrīvotā atmiņa. Kaudzes segmenta saturs ir sadalīts sīkāk, mazākos atmiņās gabalos.
     Kaudzes segments aug no mazākas adreses līdz lielākai.  Lai palielinātu kaudzes segmenta izmēru, tiek veikts brk() sistēmas izsaukums. 
     Izsaukums uzstāda kaudzes segmenta jauno beigu robežu. 
- Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 \cite{LINMAN}.
+ Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 \cite{LINMAN};
     \item Steka segments - apgabals, kurā tiek uzglabāti: funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam, ka arī lokālo mainīgo un reģistru vērtības. 
     Steks aug no lielākas adreses līdz mazākai. 
     Steks ir iedalīts priekš katras programmas instances atsevišķi.
-     Iedalīto adrešu intervālu stekam un kaudzei var atrast \texttt{/proc/<pid>/maps} datnē.
+     Iedalīto virtuālo adrešu karti var atrast \texttt{/proc/<pid>/maps} datnē.
 \end{itemize} 
 
  
@@ -78,9 +78,9 @@ Iedalītājs ļauj efektīvāk pārvaldīt atmiņu, nekā tas būtu nodrošināt
 Šobrīd eksistē vairāki iedalītāji, piemēram, Hoard memory allocator, ptmalloc2, dlmalloc.
 Iedalītāju galvenie uzdevumi: 
 \begin{enumerate}
-\item Sekot atmiņas gabaliem, kuri ir izmantoti;
-\item Sekot atbrīvotiem atmiņas gabaliem;
-\item Nodrošināt iespēju atkārtoti izmantot atmiņu.
+\item sekot atmiņas gabaliem, kuri ir izmantoti;
+\item sekot atbrīvotiem atmiņas gabaliem;
+\item nodrošināt iespēju atkārtoti izmantot atmiņu.
 \end{enumerate}
 Dažreiz tiek izveidots individuālā iedalītāja risinājums. 
 Kaut arī daži universālie iedalītāji strādā pietiekoši ātri un fragmentēšanas līmenis ir zems, individuālais risinājums var ņemt vērā lietotnei raksturīgas īpatnības un tās nodrošinās labāko veiktspēju \cite{EDBG}.
@@ -96,7 +96,7 @@ char * str = (char *)malloc(sizeof(char) * num_elements); /* C */
 \end{figure}
 
 GNU C bibliotēkā ir iebūvēts ptmalloc2 iedalītājs.
-Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība no lietotnes, izmantojot GNU C bibliotēkas funkciju palīdzību.
+Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība no lietotnes, izmantojot GNU C bibliotēkas funkciju palīdzību, ko nodrošina ptmalloc2.
 C valodā dinamiskā atmiņa tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
 C++ valodā ir izmantots operators new, lai pieprasītu atmiņu. 
 Attēlā 1.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
@@ -119,10 +119,10 @@ new un delete operatorus (sk. 1.3. attēlu), bet priekš C programmām malloc() 
 Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams no operētājsistēmas atmiņas daudzums ar laiku samazinās.
 
 \begin{figure}[h]
-\begin{lstlisting} [language=C++]
+\begin{lstlisting}
 delete ptrl; // C++
 
-If( ptrl != NULL )
+If(ptrl != NULL)
 	free(ptrl); /* C */
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Dinamiskās atmiņas atbrīvošana C un C++}}}
@@ -132,7 +132,7 @@ If( ptrl != NULL )
 %Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
 
 
-\section{Dinamiskās atmiņas organizācija glibc bibliotēkā}
+\section{Atmiņas organizācija glibc bibliotēkā}
 Darbā tiek aplūkota GNU C bibliotēkas (versija 2.3) ptmalloc2 realizācija, kuru izstrādāja Wolfram Gloger, balstoties uz Doug Lea dlmalloc realizāciju. 
 Atmiņas iedalīšana sākas ar malloc() vai līdzīgo funkciju izsaukumiem no programmas koda un tiek nodrošināta ar GNU C bibliotēkas palīdzību. 
 
@@ -169,8 +169,8 @@ Tā kā pavedienu skaits parasti nepārsniedz divkāršo kodolu skaitu, tad norm
 Darbība ar arēnām notiek saskaņā ar sekojošo algoritmu: 
 \begin{enumerate}
 \item malloc() izsaukums vēršas pie arēnas, kurai piekļuva iepriekšējo reizi;
-\item Ja arēna ir nobloķēta, tad malloc() vēršas pie nākamas izveidotās arēnas;
-\item Ja nav piekļuves nevienai arēnai, tad tiek izveidota jauna arēna un malloc() vēršas pie tās.
+\item ja arēna ir nobloķēta, tad malloc() vēršas pie nākamas izveidotās arēnas;
+\item ja nav piekļuves nevienai arēnai, tad tiek izveidota jauna arēna un malloc() vēršas pie tās.
 \end{enumerate}
 
 Vispirms atmiņas iedalīšana sākas no galvenās arēnas (main arena). 
@@ -356,15 +356,15 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 \section{Secinājumi}
 \begin{enumerate}
 \item Tiek aplūkota literatūra un GNU C bibliotēkas malloc pirmkods;
-\item Ir apkopotas zināšanas un uzzīmēta atmiņas organizācijas reprezentācija GNU C bibliotēkā (sk. 1.4. attēlu);
+\item Ir apkopotas zināšanas un uzzīmēta atmiņas organizācijas reprezentācija ptmalloc2 realizācijā (sk. 1.4. attēlu);
 \item Galvenie secinājumi par kaudzi:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
-    \item Kontrolētā atmiņas iedalīšana ir dinamiskā atmiņas iedalīšana, kura notiek programmas izpildes laikā, un atmiņa parasti tiek iedalīta no kaudzes.
-    \item Kaudzes segments ir procesa adrešu telpas apgabals, kurš var tikt paplašināts;
-    \item Iedalīt atmiņu no kaudzes var no lietotnes ar malloc() vai new palīdzību;
-    \item Kaudze sastāv no daudziem iedalītiem un atbrīvotiem atmiņas gabaliem. 
+    \item kontrolētā atmiņas iedalīšana ir dinamiskā atmiņas iedalīšana, kura notiek programmas izpildes laikā, un atmiņa parasti tiek iedalīta no kaudzes;
+    \item kaudzes segments ir procesa adrešu telpas apgabals, kurš var tikt paplašināts;
+    \item iedalīt atmiņu no kaudzes var no lietotnes ar malloc() vai new palīdzību;
+    \item kaudze sastāv no daudziem iedalītiem un atbrīvotiem atmiņas gabaliem.
     Atbrīvotie gabali var būt savienoti sarakstā, pārrakstot lietotāja datus;
-    \item Vienu arēnu var veidot vairākas kaudzes, kas ir savienotās savā starpā.
+    \item vienu arēnu var veidot vairākas kaudzes, kas ir savienotās savā starpā.
     \end{itemize}
     
 \end{enumerate}

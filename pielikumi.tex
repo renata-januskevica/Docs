@@ -1,0 +1,105 @@
+﻿
+
+\chapter{1. pielikums. Atmiņas noplūde}
+
+    
+   
+\begin{lstlisting}[language=C++]
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <memory.h>
+
+int main(int argc, char** argv)
+{
+	int num_allocations = atoi(argv[1]);
+	int alloc_size      = atoi(argv[2]);
+	printf ("Going to allocate %i chunks, %i KiB each, %i KiB in total\n",
+	         num_allocations, alloc_size, num_allocations*alloc_size);
+
+	char** arr = new char* [num_allocations];
+	for (int i=0; i<num_allocations; i++)
+		arr[i] = new char[alloc_size * 1024];
+	printf ("Allocation done\n");
+
+	for (int i=0; i<num_allocations; i++)
+		memset (arr[i], 0, alloc_size*1024);
+	printf ("Filled with data\n");
+
+	delete[] arr;
+	printf ("%i KiB are lost\n", 
+			num_allocations*alloc_size);
+    abort();
+} 
+\end{lstlisting}
+
+\newpage
+\chapter{2. pielikums. Maksimālās atmiņas izmantošanas problēma}
+
+
+\begin{lstlisting}[language=C++]
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <memory.h>
+
+int main(int argc, char** argv)
+{
+	int num_allocations = atoi(argv[1]);
+	int alloc_size      = atoi(argv[2]);
+	printf ("Going to allocate %i chunks, %i KiB each, %i KiB in total\n",
+	         num_allocations, alloc_size, num_allocations*alloc_size);
+
+	char** arr = new char* [num_allocations];
+	for (int i=0; i<num_allocations; i++)
+		arr[i] = new char[alloc_size * 1024];
+	printf ("Allocation done\n");
+
+	for (int i=0; i<num_allocations; i++)
+		memset (arr[i], 0, alloc_size*1024);
+	printf ("Filled with data\n");
+
+	for (int i=0; i<num_allocations-1; i++)
+		delete[] arr[i];
+	printf ("Released all but the last chunk is not released\n");
+
+	abort();
+} 
+\end{lstlisting}
+
+\newpage
+\chapter{3. pielikums. Fragmentēšana}
+
+\begin{lstlisting}[language=C++]
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <memory.h>
+
+int main(int argc, char** argv)
+{
+	int num_allocations = atoi(argv[1]);
+	int alloc_size      = atoi(argv[2]);
+	printf ("Going to allocate %i chunks, %i KiB each, %i KiB in total\n",
+	         num_allocations, alloc_size, num_allocations*alloc_size);
+
+	char** arr = new char* [num_allocations];
+	for (int i=0; i<num_allocations; i++) {
+		if (i%2 == 0) {
+			arr[i] = new char[alloc_size];
+			memset (arr[i], 0, alloc_size);
+		} else {
+			arr[i] = new char[alloc_size+16];
+			memset (arr[i], 0, alloc_size+16);
+		}
+    }
+	printf ("Allocation done\n");
+
+	for (int i=0; i<num_allocations; i = i+2)
+		delete[] arr[i];
+	printf ("Released all\n");
+
+	abort();
+} 
+\end{lstlisting}
+
