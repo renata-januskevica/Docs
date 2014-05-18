@@ -26,10 +26,13 @@ int main(int argc, char** argv)
 		memset (arr[i], 0, alloc_size*1024);
 	printf ("Filled with data\n");
 
-	delete[] arr;
+	for (int i=0; i<num_allocations; i = i+2)
+		arr[i] = NULL;
+        
 	printf ("%i KiB are lost\n", 
 			num_allocations*alloc_size);
-    abort();
+	abort();
+	delete[] arr;
 } 
 \end{lstlisting}
 
@@ -89,10 +92,10 @@ int main(int argc, char** argv)
 			arr[i] = new char[alloc_size];
 			memset (arr[i], 0, alloc_size);
 		} else {
-			arr[i] = new char[alloc_size+16];
-			memset (arr[i], 0, alloc_size+16);
+			arr[i] = new char[alloc_size + alloc_size];
+			memset (arr[i], 0, alloc_size + alloc_size);
 		}
-    }
+	}
 	printf ("Allocation done\n");
 
 	for (int i=0; i<num_allocations; i = i+2)

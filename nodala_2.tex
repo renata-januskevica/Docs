@@ -340,7 +340,7 @@ Sākotnēji atmiņās iedalīšana sākas ar top gabalu, bet top gabals nodroši
 Top gabals var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top gabala objektam. 
 Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top gabals var paplašināties ar brk() izsaukuma palīdzību.
 Top gabals ir līdzīgs jebkuram citam atmiņas apgabalam. 
-Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, P kontroles zīme, kura vienmēr norāda, ka iepriekšējais gabals ir izmantots, ka arī speciāla top gabala apstrāde, lai nodrošinātu, ka top chunk vienmēr eksistē \cite {BLACKHAT}.
+Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, P kontroles zīme, kura vienmēr norāda, ka iepriekšējais gabals ir izmantots, ka arī speciāla top gabala apstrāde, lai nodrošinātu, ka top gabals vienmēr eksistē \cite {BLACKHAT}.
 
 Last\_remainder ir vel viens atmiņas gabals ar īpašu nozīmi.
 Tas ir izmantots gadījumos, kad ir pieprasīts mazs atmiņas gabals, kas neatbilst nevienam bin saraksta elementam. 
@@ -356,7 +356,7 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 \section{Secinājumi}
 \begin{enumerate}
 \item Tiek aplūkota literatūra un GNU C bibliotēkas malloc pirmkods;
-\item Ir apkopotas zināšanas un uzzīmēta atmiņas organizācijas reprezentācija ptmalloc2 realizācijā (sk. 1.4. attēlu);
+\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 1.4. attēlu);
 \item Galvenie secinājumi par kaudzi:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
     \item kontrolētā atmiņas iedalīšana ir dinamiskā atmiņas iedalīšana, kura notiek programmas izpildes laikā, un atmiņa parasti tiek iedalīta no kaudzes;

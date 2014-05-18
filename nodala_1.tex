@@ -1,16 +1,19 @@
-﻿%Šajā nodaļā tiek aplūkots atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
+﻿Šī nodaļa apraksta sagatavošanos posmu, kas ir nepieciešams, lai varētu noteikt problēmu pazīmes atmiņas izmetē.
+Šīs posms iekļauj sevī: problēmu izvēli, problēmas paraugu izveidošanu, atmiņas izmešu ģenerēšanu un atmiņas izmetes atkļūdošanas aprakstu.
+
+%Šajā nodaļā tiek aplūkotas kaudzes problēmas. atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
 %Nodaļā ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
 %Uz šiem pamatjēdzieniem, turpmāk tiks balstīta izstrādājamā kaudzes atkļūdošanas metode.
 
 \section{Kaudzes problēmu apraksts}
  \label{sec:problems}
-Par kaudzes problēmām bakalaura darbā tiek uzskatītas problēmas, kuras rodas lietotnē nepareizās kaudzes pārvaldības dēļ: 
+Par kaudzes problēmām tiek uzskatītas problēmas, kuras rodas lietotnē nepareizās kaudzes pārvaldības dēļ: 
 \begin{itemize}
 \item nekorekta kaudzes pārvaldība ar malloc() vai citām līdzīgām funkcijām;
 \item nekorekta kaudzes pārvaldība, ko nodrošina iedalītājs.
 \end{itemize}
 Darbā tiek izpētītās 3 kaudzes problēmas: atmiņas noplūde, fragmentēšana, maksimālās atmiņas izmantošanas problēma.
-Šī sadaļa satur problēmu aprakstus, kuri palīdzēs turpmāk izvirzīt hipotēzes par problēmu pazīmēm atmiņas izmetē un sagatavot atmiņas izmešu paraugus dotajām problēmām.
+Šī sadaļa satur problēmu aprakstus, kuri palīdzēs turpmāk izvirzīt hipotēzes par problēmu pazīmēm atmiņas izmetē un uzģenerēt atmiņas izmetes dotajām problēmām.
 \subsection{Atmiņas noplūde}
 
 Atmiņas noplūde (memory leak) ir viena no bieži sastopamām problēmām C un C++ valodās \cite{atparv}.
@@ -115,7 +118,7 @@ Grafiks šai shēmai izskatās kā lauztā līnija un atmiņas patēriņš var s
 \end{itemize}
 
 
-Problēma ir novērojama, kad liels atmiņas daudzums netiek atgriezts operētājsistēmai pēc izmantošanas, pat tad, ja gandrīz visa atmiņa tiek atbrīvota ar free() vai delete palīdzību.
+Problēma ir novērojama, kad liels atmiņas daudzums netiek atgriezts operētājsistēmai pēc izmantošanas, pat tad, ja gandrīz visa atmiņa tika atbrīvota ar free() vai delete palīdzību.
 Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš nebija paredzēts projektējumā.
 Šī situācija kļūst iespējama, ja notiek daudzi pieprasījumi pēc atmiņas, kas ir mazāki par 128 kilobaitiem.
 Pieprasījumi pēc lielākiem atmiņas gabaliem tiks apstrādāti ar mmap() sistēmas izsaukumu un neizraisīs doto problēmu.
@@ -193,8 +196,8 @@ Algoritms ir sekojošs:
 
 \section{Atmiņas izmete}
 
-Pēc tam, kad ir identificētas problēmas, ir nepieciešams sagatavot atmiņas izmešu paraugus dotajām problēmām.
-Pirms uzģenerēt atmiņas izmetes paraugus, ir nepieciešams:
+Pēc tam, kad ir izvēlētas problēmas, ir nepieciešams sagatavot atmiņas izmetes dotajām problēmām.
+Pirms uzģenerēt atmiņas izmetes, ir nepieciešams:
 \begin{itemize}
     \item   atrast piemērotāko veidu atmiņas izmešu ģenerēšanai;
     \item   nokonfigurēt iestatījumus Linux operētājsistēmā, lai varētu uzģenerēt atmiņas izmeti.
@@ -299,7 +302,7 @@ Type Control + \
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, izmantojot īsinājumtaustiņus}}}
 \end{figure}
  Ir apskatītas vairākas iespējas kā var uzģenerēt atmiņas izmeti (no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora).
- Pētījumam vislabāk ir piemērots tāds veids, kuru izmantojot būtu iespējams zināt programmas stāvokli uz ģenerēšanas brīdi.
+ Pētījumam vislabāk ir piemērots tāds veids, kuru izmantojot būtu iespējams zināt programmas stāvokli uz atmiņas izmetes ģenerēšanas brīdi.
  Vislabāk šīm nolūkam ir piemērots atmiņas izmetes ģenerēšanas veids no programmas koda, jo nevajag speciāli uzstādīt pārtraukuma punktus, ka arī nevajag izmantot bezgalīgus ciklus, lai  pārtrauktu tos no komandrindas interpretatora.
  Pētījumam nav svarīgi, lai process turpinātu darbību, tāpēc tiks izmantots abort() funkcijas izsaukums no programmas koda.
  
@@ -318,7 +321,7 @@ Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījum
 \end{itemize} 
  
  Pēc noklusējuma atmiņas izmetes ģenerēšanas iespēja ir izslēgta,  \texttt{ulimit -c unlimited} komanda ļauj ieslēgt atmiņas izmetes ģenerēšanu.
- Pēc atmiņas izmēra uzstatīšanas, izmantojot komandu,  tika uzģenerētās 3 atmiņas izmetes, izmantojot programmas (sk. 1. pielikumu), (sk. 2. pielikumu), (sk. 3. pielikumu).
+ Pēc komandas palaišanas,  tika uzģenerētās 3 atmiņas izmetes, izmantojot programmas (sk. 1. pielikumu), (sk. 2. pielikumu), (sk. 3. pielikumu).
 
  
 
@@ -416,5 +419,5 @@ Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis, tāpēc CPU reģistru v
 \begin{enumerate}
 \item Ir izvēlētās 3 kaudzes problēmas, kuras tiks pētītās sīkāk;
 \item Katrai problēmai tiek uzģenerēta atmiņās izmete;
-\item Ir iegūtas zināšanas, kā var apskatīt atmiņas izmetē esošus datus;
+\item Ir iegūtas zināšanas, kā var apskatīt atmiņas izmetē esošus datus.
 \end{enumerate}
