@@ -1,216 +1,17 @@
-﻿Šī nodaļa apraksta sagatavošanos posmu, kas ir nepieciešams, lai varētu noteikt problēmu pazīmes atmiņas izmetē.
-Šīs posms iekļauj sevī: problēmu izvēli, problēmas paraugu izveidošanu, atmiņas izmešu ģenerēšanu un atmiņas izmetes atkļūdošanas aprakstu.
+﻿Uz jēdzieniem, kuri aprakstīti dotajā nodaļā tiks balstīta izstrādājamā kaudzes atkļūdošanas metode.
+Šeit ir ietverti 2 svarīgākie jēdzieni: atmiņas izmete un kaudze, kuri ir aprakstīti sīkāk.
 
-%Šajā nodaļā tiek aplūkotas kaudzes problēmas. atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
-%Nodaļā ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
-%Uz šiem pamatjēdzieniem, turpmāk tiks balstīta izstrādājamā kaudzes atkļūdošanas metode.
-
-\section{Kaudzes problēmu apraksts}
- \label{sec:problems}
-Par kaudzes problēmām tiek uzskatītas problēmas, kuras rodas lietotnē nepareizās kaudzes pārvaldības dēļ: 
-\begin{itemize}
-\item nekorekta kaudzes pārvaldība ar malloc() vai citām līdzīgām funkcijām;
-\item nekorekta kaudzes pārvaldība, ko nodrošina iedalītājs.
-\end{itemize}
-Darbā tiek izpētītās 3 kaudzes problēmas: atmiņas noplūde, fragmentēšana, maksimālās atmiņas izmantošanas problēma.
-Šī sadaļa satur problēmu aprakstus, kuri palīdzēs turpmāk izvirzīt hipotēzes par problēmu pazīmēm atmiņas izmetē un uzģenerēt atmiņas izmetes dotajām problēmām.
-\subsection{Atmiņas noplūde}
-
-Atmiņas noplūde (memory leak) ir viena no bieži sastopamām problēmām C un C++ valodās \cite{atparv}.
-Atmiņas noplūde notiek nepareizās lietotāja atmiņas pārvaldības dēļ, kad atmiņa, kura vairs netiks izmantota programmā, netiek atbrīvota.
-
-Atmiņas noplūdes problēmu var sadalīt divos dažādos veidos: fiziskā un loģiskā atmiņas noplūde \cite{JMMR}.
-Fiziskā atmiņas noplūde ir novērojama, kad atmiņas adreses, kuras tika iedalītas procesam,  kļūst nepieejamas, pazaudētas, tas notiek, kad procesa adrešu telpā uz iedalīto atmiņas gabalu kaudzē nenorāda neviens rādītājs.
-Šīs programmas stāvoklis var būt novērojams 3 iemeslu dēļ \cite{JMMR}:
-\begin{itemize}
-\item pēdēja norāde uz atmiņas gabalu ir pārrakstīta vai norāde bija palielināta, piemēram, lai sasniegtu datus ar nobīdi;
-\item norāde atrodas ārpus darbības lauka (out of scope);
-\item atmiņas bloks, kurš glabāja norādi, bija atbrīvots.
-\end{itemize}
-
-Loģiskā atmiņas noplūde ir novērojama, kad iekšējā buferī, rindā vai citā datu struktūrā ir uzglabātas norādes uz dinamiski iedalītu atmiņu, bet norāžu skaits pieaug neierobežoti.
-Loģiskā atmiņas noplūdi bieži nosauc par slēpto atmiņas noplūdi (hidden memory leak) \cite{RRUU}, jo atmiņa ir joprojām sasniedzama no programmas, bet nekad netiek atbrīvota.
-
-Abos gadījumos sekas ir vienādas.
-Sākumā tiks novērota pakāpeniskā procesa palēnināšana, jo daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
-Kaut kāda brīdī, kad tiks iztērēta visā dinamiskā atmiņa, katrs malloc() funkcijas izsaukums būs neveiksmīgs.
-Šeit var notikt kritiskā kļūda, kuras cēlonis ir sliktā programmēšanas prakse.
-Programmētāji ne vienmēr pārbauda malloc() rezultātu pirms vērsties pēc malloc() funkcijas atgrieztās norādes.  
-Mēģinājums piekļūt null adresei  izraisīs Segmentation fault kļūdu.
-Ja programmā bija paredzēts, ka malloc() var atgriezt null, tad process turpinas izpildi ierobežotā režīmā, jo vairs nav iespējams dinamiski iedalīt atmiņu un izpildīt daudzus uzdevumus. 
-Daudzās sistēmās tas nav pieļaujams un var tikt uzstādīti dažādi ierobežojumi, kuri pēc ierobežojošās vērtības sasniegšanas (izpildes laiks, patērētās atmiņas) automātiski pārtrauks procesa darbību. 
-
-\begin{figure}[h]
-\begin{lstlisting}
-#include <string>
-using namespace std;
-
-int main() {
-    string *str;
-
-    for (int i=0; i<10001; i++) {
-        // 10000*14 bytes are lost
-        str = new string("Hello, World!");
-    }
-    delete str;
-
-    return 0;
-}
-\end{lstlisting}
-\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas noplūde, C++}}}
-\end{figure}
-
-Atmiņās noplūdes problēma ir uzskatāmi nodemonstrēta piemērā (sk. 2.1. attēlu).
-Programma  iedala 10001 atmiņas gabalus ar new operatora palīdzību. 
-Rādītājs \texttt{str} katru reizi tiek pārrakstīts un norāda uz kārtējo iedalīto atmiņas gabalu, kurā izmērs ir 14 baiti.
-Tā kā atmiņas adreses kļūst pazaudētas un nav iespējas piekļūt iepriekšējiem elementiem pēc tam kad  \texttt{str} radītājs ir parakstīts, tad piemēra ir redzama fiziskā atmiņas noplūde.
-Beigās tiek atbrīvots tikai viens atmiņas gabals, kurš bija iedalīts pēdējais. 
-Programmas darbības laikā kļūst pazaudēti 10000 gabali, kuru kopējais izmērs ir 140000 baiti.
- Pēc programmas izpildes beigām visā procesam iedalītā atmiņa tiek atgriezta operētājsistēmai.
-
-
-Sekojošos gadījumos sistēmas kļūst viegli ievainojamas, ja tajās ir kļūda, kas izraisa atmiņās noplūdi \cite{RTTV}: 
-\begin{itemize}
-\item { kad operētājsistēma neatbrīvo, lietotnes izpildei izmantoto atmiņu pēc tam, kad lietotne beidz savu darbību, piemēram, AmigaOS;}
-\item { ja servera vai citās programmas darbojās visu laiku bez apstāšanās; }
-\item { ja portatīvām ierīcēm ir ierobežots atmiņas daudzums;}
-\item { ja programmas pieprasa atmiņu uzdevumiem, kuri izpildās ilgstošu laika periodu; }
-\item { reālā laikā sistēmās, jo ir svarīgi iegūt rezultātu ierobežotajā laikā. }
-\end{itemize}
-
-Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, kuriem izpildoties notiek atmiņas noplūde. 
-Ja ir redzamas sekas (ir atmiņas izmete un programma pabeidza savu darbību), bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
-Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi ka: Valgrind, Totalview, Purify. 
-Taču tie ne vienmēr sniedz pietiekamu informāciju un bieži netiek izmantoti strādājošās sistēmās, jo piedāvātas atkļūdošanas tehnikas un rīki var palēnināt sistēmas darbību.
-Piemēram, ieslēdzot  memcheck rīku iekš Valgrind instrumentācijas ietvara, programmas izpildes ātrums palēninās aptuveni 20-30 reizes \cite{UVD}.
-
-Reālajās sistēmās problēma var izpausties uzreiz pēc palaišanas, bet var kļūt novērojama tikai pēc dažiem gadiem. 
-Abi gadījumi ir izplatīti \cite{HTTM}.
-Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu.
-Pazīme, kas varētu liecināt par atmiņas noplūdi ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīme, ka izmērs ir lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
-atmiņas daudzums, kas visu laiku pieaug. 
-Kad process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad šī pazīme var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, maksimālās atmiņas izmantošanas problēma vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
-
-
-%==============================================
-
-
-\subsection{Maksimālās atmiņas izmantošanas problēma}
- \label{sec:peak_mem}
- Maksimālās atmiņas izmantošanas (peak memory utilization) problēma var notikt, kad iedalītu un atbrīvotu gabalu izmēru summa kaudzē sasniedz maksimumu procesa izpildes laikā.
-Ir svarīgi pievērst uzmanību gadījumiem, kad var tikt sasniegts maksimums.
-Piemēram, tas var notikt, kad process tiecās pie trapa virsotnes vai maksimuma punkta.
-
-Atmiņas daudzums, kas tiek izmantots programmas izpildes laikā var visu laiku mainīties.
-Pētījumā \cite{PWMS} tiek apkopoti trīs svarīgākas atmiņas izmantošanas shēmas: traps (ramps),  maksimums (peaks),  plato (plateaus).
-Citas atmiņas izmantošanas shēmas ir iespējamas, bet izpaužas ļoti reti.
-Ne visām programmām ir raksturīgas visās trīs shēmas, bet vairākumam ir raksturīga viena vai divas no tām.
-Šīs shēmas tika apkopotas, balstoties uz kvantitatīvo programmu novērtējumu \cite{PWMS}. 
-\begin{itemize}
-\item Traps. Programma uzkrāj datu struktūras monotoni. 
-Tas varētu notikt, tāpēc ka uzdevuma atrisināšanai ir nepieciešams paveikt daudzas darbības un pakāpeniski uzbūvēt daudzas  datu struktūras. 
-Lai atrisinātu uzdevumu, atmiņas patēriņš monotoni aug. Pēc uzdevuma atrisināšanas atmiņas patēriņš strauji samazinās;
-\item Maksimums. Šo veidu var nosaukt par trapu tikai ļoti īsa laika periodā.
-Daudzām programmām var būt nepieciešams izveidot lielas datu struktūras, kāda uzdevuma izpildīšanai.
-Pēc šī uzdevuma pabeigšanas gandrīz visā pieprasītā atmiņa var tikt atbrīvota.
-Grafiks šai shēmai izskatās kā lauztā līnija un atmiņas patēriņš var svārstīties dramatiski;
-\item Plato. Novērojama, kad programmas ātri uzbūve datu struktūras un izmanto tās ilgā laika periodā, bieži izmanto līdz programmas izpildes beigām.
-\end{itemize}
-
-
-Problēma ir novērojama, kad liels atmiņas daudzums netiek atgriezts operētājsistēmai pēc izmantošanas, pat tad, ja gandrīz visa atmiņa tika atbrīvota ar free() vai delete palīdzību.
-Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš nebija paredzēts projektējumā.
-Šī situācija kļūst iespējama, ja notiek daudzi pieprasījumi pēc atmiņas, kas ir mazāki par 128 kilobaitiem.
-Pieprasījumi pēc lielākiem atmiņas gabaliem tiks apstrādāti ar mmap() sistēmas izsaukumu un neizraisīs doto problēmu.
-Pēc mmap() izsaukumiem atmiņu ir iespējams atgriezt operētājsistēmai ar munmap() palīdzību, jo atmiņa neatrodas kaudzē. 
-Izmantojot brk() sistēmas izsaukumu, kamēr netiks atbrīvots atmiņas gabals, kas atrodas beigās, atmiņa netiks atgriezta operētājsistēmai.
-
-Pazīme, kas varētu liecināt par problēmas esamību ir pārmērīgs atmiņas patēriņš pēc trapa virsotnes vai maksimālā punkta sasniegšanas.
-%==============================================
-
-\subsection{Fragmentēšana}
-
-"Ir pierādīts, ka katram atmiņas iedalīšanas algoritmam, vienmēr ir iespējama situācija, ka kāda lietotne pieprasīs 
-un atbrīvos atmiņu tāda veidā, ka tās nojauks iedalītāja stratēģiju un izraisīs lielu fragmentēšanu. 
-Ir pierādīts ne tikai tas, ka nav laba iedalīšanas algoritma, bet arī tas, ka katrs iedalīšanas algoritms var būt slikts dažām lietotnēm" \cite{PWMS}.
-Tātad, fragmentēšanas problēma var būt aktuālā daudzām C un C++ lietotnēm, kuras pieprasa atmiņu no kaudzes.
-
-Fragmentēšanas problēmu var iedalīt divos dažādos veidos: iekšējā un ārējā fragmentēšana.
-Iekšējā fragmentēšana notiek, kad tiek iedalīts lielāks atmiņas gabals nekā tika pieprasīts.
-Izlīdzināšana ir viens no iekšējās fragmentēšanas cēloņiem.
-Iekšējo fragmentēšanu ir iespējams paredzēt, jo var izskaitļot kuram skaitlim tiks noapaļots izmērs.
-GNU C bibliotēkā notiek atmiņas gabalu izlidināšana 8 - ka vai 16 - reizinājumam.
-Izlīdzināšana samazina atšķirīgu gabalu izmēru skaitu kaudzē.
-Nodrošinot izlīdzināšanu, ir palielināta iekšējā, turklāt ir samazināta ārējā fragmentēšana \cite{RAN}.
-Ārējā fragmentēšana ir nespēja iedalīt atmiņas gabalu kaudzē, kad kaudzē pietiekoši daudz brīvas atmiņas, lai apmierinātu doto pieprasījumu.
-Ārējā fragmentēšana var izpausties ar laiku, kad daudzas reizes jau tika iedalīti un atbrīvoti dažāda izmēra atmiņas gabali.
-Fragmentēšanas rezultātā pārmērīgi tiek izlietoti kaudzes resursi, jo kad pieprasījums pēc atmiņas nevar tikt apmierināts, tad notiek kaudzes piespiedu paplašināšana.
-
-Fragmentēšanu mēra procentos (\%). 
-Stradajošā sistēmā var būt vairāki veidi kā var mērīt atmiņas fragmentēšanu \cite{MSJ}. 
-Atmiņas izmetē ir iespējams izrēķināt ārējo fragmentēšanu tikai uz procesa partraukšanas brīdī.
-Tātad ir iespējams izrēkināt tikai momentāno kaudzes fragmentēšanu.
-Fragmentēšana var būt izrēķināta kā attiecība starp atmiņas daudzumu kaudzē, ko aizņem iedalītājs pret atmiņas daudzumu, ko izmanto process (neietilpst atbrīvotie atmiņās gabali).
-
-Turpmāk ir apskatīts piemērs, kurš demonstrē iekšējās fragmentēšanas cēloņi.
-Šīs C valodā uzrakstītais kods izdruka atmiņas gabala izmēru, kurš īstenībā tiek iedalīts no kaudzes (sk. 2.2. attēlu).
-Piemēra ir redzams, ka tiek iedalīti 4 baiti, bet programma izdruka beigu rezultātu - 16 baiti.
-Dotajā piemērā iekšējā fragmentēšana ir vienāda ar 12 baitiem.
-
-Algoritms ir sekojošs: 
-\begin{enumerate}
-\item ar malloc() tiek iedalīts atmiņas apgabals;
-\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru);
-\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs;
-\item  tiek atbrīvota atmiņa.
-\end{enumerate}
-
-\begin{figure}[h]
-\begin{lstlisting}
- #include <stdio.h>
- #include <malloc.h>
-
- int main () {
-     char * ptrl;
-     int chunk_size;
-
-     ptrl = (char *)malloc(4);
- 
-     /* get value of chunk size (the second malloc_chunk element) */
-     chunk_size = *((char *) ptrl - sizeof(size_t));
-     /* the lower 3-bits are used as metadata */
-     chunk_size = chunk_size - (chunk_size & 7);
- 
-     printf("size = %d\n", chunk_size);
-     free(ptrl);
- 
-     return 0;
- }
-\end{lstlisting}
-\caption{\textbf{\fontsize{11}{12}\selectfont {Izmēra noteikšana iedalītām gabalam}}}
-\end{figure}
-
-
-%==============================================
-
-
-\section{Atmiņas izmete}
-
-Pēc tam, kad ir izvēlētas problēmas, ir nepieciešams sagatavot atmiņas izmetes dotajām problēmām.
-Pirms uzģenerēt atmiņas izmetes, ir nepieciešams:
-\begin{itemize}
-    \item   atrast piemērotāko veidu atmiņas izmešu ģenerēšanai;
-    \item   nokonfigurēt iestatījumus Linux operētājsistēmā, lai varētu uzģenerēt atmiņas izmeti.
-\end{itemize} 
+ \section{Atmiņas izmete}
+ Šajā sadaļā tiek aplūkots atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
+Sadaļā ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
 
  \subsection{Atmiņas izmetes ģenerēšana}
 Sistēmās, kuras atbalsta POSIX standartus, ir signāli \cite{USP}, kuri, pēc noklusētās apstrādes, izraisa atmiņas izmetes ģenerēšanu un pārtrauc procesa darbību. 
 Šos signālus var atrast  \texttt{man 7 signal} komandas izvadā. 
 Signāliem, kuri izraisa izmetes ģenerēšanu, signālu tabulā \cite{signal} ir lauks ar vērtību core, kas atrodas ailē ar nosaukumu darbība (Action). 
-%Uzģenerētā atmiņas izmete iekļauj sevī procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, piemēram, CPU reģistrus un steka vērtības katram pavedienam, globālos un statiskos mainīgos. 
-%Atmiņas izmeti var ielādēt atkļūdotājā, tāda kā gdb, lai  apskatītu programmas stāvokli uz brīdi, kad atnāca operētājsistēmas signāls \cite{core}.
-%Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas, pat tad, ja nav tiešas piekļuves sistēmai. 
-
+Uzģenerētā atmiņas izmete iekļauj sevī procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, piemēram, CPU reģistrus un steka vērtības katram pavedienam, globālos un statiskos mainīgos. 
+Atmiņas izmeti var ielādēt atkļūdotājā, tāda kā gdb, lai  apskatītu programmas stāvokli uz brīdi, kad atnāca operētājsistēmas signāls \cite{core}.
+Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas, pat tad, ja nav tiešas piekļuves sistēmai. 
 
 Reālajās sistēmās atmiņas izmetes tiek uzģenerētas atmiņas kļūdu dēļ. 
 Dažas no kļūdām sīkāk ir aprakstītas \ref{sec:problems} sadaļā. 
@@ -220,15 +21,12 @@ Atmiņās izmeti var uzģenerēt no programmas koda,  gdb atkļūdotāja vai kom
 Turpmāk katra no iespējam tiks apskatīta sīkāk, lai atrastu piemērotāku veidu kā var uzģenerēt atmiņas izmeti, dotā darba veiktajām pētījumam.
 
 \subsubsection{Atmiņas izmetes ģenerēšana no koda}
-
 Ģenerējot atmiņas izmeti no programmas koda, ir divas iespējas: process var turpināties vai beigt savu darbību pēc signāla nosūtīšanas.
-
 \begin{figure}[h]
 \begin{lstlisting}
 #include <signal.h>
 
 int main ()  {
-
     raise(SIGSEGV); /* Signal for Invalid memory reference */
 	
     return 0;
@@ -240,7 +38,7 @@ int main ()  {
 Ja nav nepieciešams, lai process turpinātu darbību, tad var izmantot funkcijas raise(), abort(), kā arī var apzināti pieļaut kļūdu kodā.
 Tāda kļūda kā dalīšana ar nulli nosūta SIGFPE signālu, bet vēršanās pēc null radītāja - SIGSEGV signālu.
 Izmantojot funkciju raise(), ir iespējams norādīt atmiņas izmeti izraisošo signālu.
-Piemērā (sk. 2.3. attēlu) ir redzams C kods, kur funkcija raise() nosūta SIGSEGV signālu izpildāmai programmai. 
+Piemērā (sk. 1.1. attēlu) ir redzams C kods, kur funkcija raise() nosūta SIGSEGV signālu izpildāmai programmai. 
 Pēc šī izsaukuma izpildes tiek izvadīts ziņojums: Segmentation fault (core dumped).
 Atmiņas izmeti lietotāju procesiem var atrast darba mapē, jo Linux operētājsistēmā tā ir noklusēta atmiņas izmetes atrašanas vieta, bet noklusētais atmiņas izmetes nosaukums ir core.
 \begin{figure}[h]
@@ -258,17 +56,14 @@ Atmiņas izmeti lietotāju procesiem var atrast darba mapē, jo Linux operētāj
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, turpinot procesa darbību}}}
 \end{figure}
 
-Ir iespējams uzģenerēt atmiņas izmeti, nepārtraucot procesa darbību (sk. 2.4. attēlu). 
+Ir iespējams uzģenerēt atmiņas izmeti, nepārtraucot procesa darbību (sk. 1.2. attēlu). 
 To var panākt ar fork() funkcijas palīdzību. Funkcija fork() izveido bērna procesu, kas ir vecāka procesa kopija.
 Funkcija fork(), veiksmīgas izpildes gadījumā, bērnu procesam atgriež 0 vērtību. 
 Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izmeti. Vecāks process turpina izpildi.
 
-
-
-
 \subsubsection{Atmiņas izmetes ģenerēšana no gdb}
 
-Atmiņas izmetes ģenerēšanas nolūkam var izmantot gdb komandas: \texttt{generate-core-file [file]}(sk. 2.5. attēlu) vai \texttt{gcore [file]}. Šīs komandas izveido gdb pakļautā procesa atmiņas izmeti. 
+Atmiņas izmetes ģenerēšanas nolūkam var izmantot gdb komandas: \texttt{generate-core-file [file]}(sk. 1.3. attēlu) vai \texttt{gcore [file]}. Šīs komandas izveido gdb pakļautā procesa atmiņas izmeti. 
 Izmantojot gdb, var uzģenerēt atmiņas izmeti, kura atbilst kādam pārtraukuma punkta stāvoklim. 
 Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī gdb komanda ir realizēta GNU/Linux, FreeBSD, Solaris un S390 sistēmās \cite {gdb_gen_core}.
 \begin{figure}[h]
@@ -281,13 +76,12 @@ Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī 
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, izmantojot gdb}}}
 \end{figure}
 
-
 \subsubsection{Atmiņas izmetes ģenerēšana no komandrindas interpretatora}
 Trešā iespēja ir nosūtīt signālu, izmantojot komandrindas interpretatoru. 
 Komanda kill var nosūtīt jebkuru signālu procesam.
 Pēc komandas  \texttt{kill -<SIGNAL\_NUMBER> <PID>}, signāls ar numuru  SIGNAL\_NUMBER tiks nosūtīts procesam ar norādītu PID vērtību.
 Izmantojot shell komandrindas interpretatoru ir  iespējams izmantot īsinājumtaustiņus signālu nosūtīšanai. 
-Nospiežot Control + $\backslash$ tiks nosūtīts SIGQUIT signāls procesam, kas pašreiz ir palaists (sk. 2.6. attēlu) \cite {nosacijumi}. 
+Nospiežot Control + $\backslash$ tiks nosūtīts SIGQUIT signāls procesam, kas pašreiz ir palaists (sk. 1.4. attēlu) \cite {nosacijumi}. 
 Šajā piemēra ziņojumu - Quit (core dumped), izdruka shell. 
 Šīs komandrindas interpretators noteic, ka  sleep procesu (shell bērnu) pārtrauca SIGQUIT signāls. 
 Pēc šī signāla nosūtīšanās, darba mapē tiek uzģenerēta atmiņas izmete. 
@@ -301,12 +95,7 @@ Type Control + \
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, izmantojot īsinājumtaustiņus}}}
 \end{figure}
- Ir apskatītas vairākas iespējas kā var uzģenerēt atmiņas izmeti (no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora).
- Pētījumam vislabāk ir piemērots tāds veids, kuru izmantojot būtu iespējams zināt programmas stāvokli uz atmiņas izmetes ģenerēšanas brīdi.
- Vislabāk šīm nolūkam ir piemērots atmiņas izmetes ģenerēšanas veids no programmas koda, jo nevajag speciāli uzstādīt pārtraukuma punktus, ka arī nevajag izmantot bezgalīgus ciklus, lai  pārtrauktu tos no komandrindas interpretatora.
- Pētījumam nav svarīgi, lai process turpinātu darbību, tāpēc tiks izmantots abort() funkcijas izsaukums no programmas koda.
- 
- 
+  
 \subsection{Atmiņas izmetes ģenerēšanas nosacījumi}
 Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījumiem \cite {nosacijumi}:
 %\vspace{-6pt}
@@ -321,16 +110,8 @@ Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījum
 \end{itemize} 
  
  Pēc noklusējuma atmiņas izmetes ģenerēšanas iespēja ir izslēgta,  \texttt{ulimit -c unlimited} komanda ļauj ieslēgt atmiņas izmetes ģenerēšanu.
- Pēc komandas palaišanas,  tika uzģenerētās 3 atmiņas izmetes, izmantojot programmas (sk. 1. pielikumu), (sk. 2. pielikumu), (sk. 3. pielikumu).
 
- 
-
-
- 
- 
-\section{Atkļūdošana, izmantojot atmiņas izmeti}
-Pirms izvirzīt hipotēzes par problēmu pazīmēm atmiņas izmetē ir nepieciešams uzzināt, kā var veikt lietotnes atkļūdošanu un kāda informācija ir pieejama  no atmiņas izmetes.
-
+\subsection{Atkļūdošana, izmantojot atmiņas izmeti}
 Atmiņas izmete satur datus, kuri dod iespēju atrast kļūdas. Tāpēc atmiņas izmete var tikt pielietota, lai veiktu lietotnes atkļūdošanu, pēc neparedzētas programmas apstāšanās.
 Atmiņas izmetes analīze ir efektīvs veids, kā var attālināti atrast un izlabot kļūdas bez iejaukšanās un tiešas piekļuves sistēmai.
 Daudzos gadījumos, atmiņas izmete ir speciāli uzģenerēta datne, kura palīdz iegūt atmiņas stāvokli uz signāla nosūtīšanas brīdī.
@@ -342,13 +123,13 @@ Lai darbotos ar atmiņas izmetem ir nepieciešams, lai rīks, kurš tika izvēl�
 GNU gdb ir  Linux standarta atkļūdotājs \cite{MWMK}, kurš ir plaši pielietojams atmiņas izmešu analīzei. 
 Turpmāk tiek apskatīta atmiņas izmetes analīze ar gdb atkļūdotāja palīdzību.
 
-\subsection{Atmiņas izmetes atkļūdošana, izmantojot gdb }
+\subsubsection{Atmiņas izmetes atkļūdošana, izmantojot gdb }
  \label{subsec:debugg_gdb}
 Ja atmiņas izmetes analīzei tika izvēlēts GNU gdb atkļūdotājs, tad pirms sākt analīzi ir nepieciešams pārliecināties ka gdb ir pareizi nokonfigurēts priekš procesora arhitektūras, no kuras bija iegūta atmiņas izmete.
 To var identificēt uzreiz pēc gdb palaišanas, ar sekojošās rindiņas palīdzību: \texttt{This GDB was configured as i686-linux-gnu}.  
 Lai atmiņas izmete saturētu atkļūdošanas informāciju, ir jānorāda -g opcija kompilācijas laikā.
 Atkļūdošanas informācija ir uzglabāta objektu datnē un saglabā atbilstību starp izpildāmo datni un pirmkodu, ka arī uzglabā mainīgo un funkciju datu tipus.
-Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad atmiņas izmete var izdrukāt sekojošo tekstu (sk. 2.7. attēlu).
+Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad atmiņas izmete var izdrukāt sekojošo tekstu (sk. 1.5. attēlu).
 
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]
@@ -358,9 +139,9 @@ $ 1 = {<text variable, no debug info>} 0x80483e4 <main>
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmete nesatur atkļūdošanas informāciju}}}
 \end{figure}
 
-Kad atmiņas izmete ir uzģenerēta, tad to var apskatīt, izmantojot gdb atkļūdotāju (sk. 2.8. attēlu). 
+Kad atmiņas izmete ir uzģenerēta, tad to var apskatīt, izmantojot gdb atkļūdotāju (sk. 1.6. attēlu). 
 Atkļūdotājam kā argumenti tiek padoti: izpildāms fails un atmiņas izmete. 
-Izpildamām failam ir jāatbilst atmiņas izmetei, lai varētu apskatīt korektus, nesabojātus datus.
+Izpildāmam failam ir jāatbilst atmiņas izmetei, lai varētu apskatīt korektus, nesabojātus datus.
 
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]
@@ -377,7 +158,7 @@ Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas
 
 Lai izdrukātu atmiņas apgabalu var izmantot instrukciju ar sekojošo formātu: \texttt{x/nfu addr}. 
 Ir nepieciešams norādīt atmiņas adresi (addr), no kuras sākt atmiņas izdruku, formātu (f), apgabala lielumu (n) un norādīt vienības lielumu (u). 
-Izmantojot doto piemēru (sk. 2.9. attēlu), tiks izdrukāti 4 elementi, kuri pieder stekam, jo Intel x86 procesoros 32 bitu režīmā uz steku norāda \$esp reģistrs. 
+Izmantojot doto piemēru (sk. 1.7. attēlu), tiks izdrukāti 4 elementi, kuri pieder stekam, jo Intel x86 procesoros 32 bitu režīmā uz steku norāda \$esp reģistrs. 
 Formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{gdb}. 
 Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x) un vienības lielums ir vārds (word) jeb 4 baiti.
 \begin{figure}[h]
@@ -387,7 +168,7 @@ Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x) un vien
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas apgabala izdrukāšana}}}
 \end{figure}
 
-Lai uzzinātu kuram simbolam (funkcijai, mainīgam vai tipam) pieder adrese var izmantot sekojošo gdb instrukciju (sk. 2.10. attēlu) \cite{gdb}.
+Lai uzzinātu kuram simbolam (funkcijai, mainīgam vai tipam) pieder adrese var izmantot sekojošo gdb instrukciju (sk. 1.8. attēlu) \cite{gdb}.
 Instrukcija \texttt{print} vai \texttt{p} ļauj izdrukāt datus, bet \texttt{p/a} izdrukā absolūto adresi un relatīvo jeb adresi ar nobīdi no tuvāka simbola, kuram pieder adrese.
 Tādā veidā var noteikt kuram atmiņas apgabalam pieder nezināmā adrese.
 \begin{figure}[h]
@@ -415,9 +196,384 @@ Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis, tāpēc CPU reģistru v
 %Izjaukšana (disassembling) ļauj izdrukāt asamblera instrukcijas noraidītai funkcijai. 
 %Tas dod iespēju salīdzināt pirmkodu ar asamblera instrukcijām un tāda veidā kļūst iespējams atrast nepieciešamo mainīgo vērtības stekā.
 
+
+%\subsubsection{Atmiņas izmetes pārbaude uz derīgumu}
+
+
+%==========================================
+
+
+
+\section{Atmiņas organizācija}
+
+Šī sadaļa palīdz saprast kopējo atmiņas organizāciju un kaudzes\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.} lomu tajā. 
+Šajā nodaļā ir aprakstīti atmiņas iedalīšanas paņēmieni, ir dots īss ieskāts GNU C bibliotēkas ptmalloc2 realizācijā un aprakstīta atmiņas pārvaldība.
+
+\subsection{Atmiņas iedalīšanas paņēmieni}
+%\label{sect:Motivation}
+
+Pirms izpildīt programmu, operētājsistēmai ir nepieciešams iedalīt resursus, tādus kā atmiņas adreses.  
+Eksistē divi atmiņas iedalīšanas paņēmieni: statiskā un dinamiskā atmiņas iedalīšana (sk. 1.9. attēlu). 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.28]{alloc}
+\end{center}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas iedalīšanas paņēmienu klasifikācija}}}
+\label{fig:alloc}
+\end{figure}
+
+
+\subsubsection{Statiskā atmiņas iedalīšana}
+Statiskā atmiņas iedalīšana nozīme, ka atmiņa tiek iedalīta pirms programmas palaišanas, parasti tas notiek kompilācijas laikā.
+Programmas izpildēs laikā atmiņa vairs netiek iedalīta, ka arī netiek atbrīvota. 
+Statiskais atmiņas iedalīšanas paņēmiens nodrošina to, ka atmiņa tiek iedalīta statiskiem un globāliem mainīgiem, neatkarībā no tā vai mainīgais tiks izmantots programmā pie dotajiem nosacījumiem vai nē.
+
+\subsubsection{Dinamiskā atmiņas iedalīšana}
+Dinamiskā atmiņas iedalīšana nozīme, ka atmiņa tiek iedalīta programmas izpildes laikā.
+Tas var būt nepieciešams, kad atmiņas daudzums nav zināms programmas kompilācijas laikā. 
+Dinamiskā atmiņas iedalīšana, var būt realizēta ar steka vai kaudzes palīdzību un var būt automātiskā vai kontrolētā \cite{SDMA}.
+
+Automātiskā iedalīšana notiek, kad sākās programmas funkcijas izpilde. 
+Priekš automātiskās atmiņas iedalīšanas, izmato steku.
+Šeit viens un tas pats atmiņas apgabals, kurš bija atbrīvots, var tikt izmantots  vairākas reizēs. 
+Piemēram, funkcijas argumenti un lokālie mainīgie ir saglabāti stekā un izdzēsti pēc šīs funkcijas izpildes. 
+Pēc tam atbrīvotā atmiņa var būt izmantota atkārtoti. 
+Vērtību izdzēšana vai saglabāšana notiek, nobīdot steka norādi.
+Visiem funkcijas mainīgiem var piekļūt izmantojot steka norādes nobīdi, kas tiek uzglabāta reģistrā, piemēram,  
+Intel x86 procesoros, 16 bitu režīmā tas ir reģistrs \texttt{SP}, 32 bitu režīmā - \texttt{ESP} un 64 bitu režīmā - \texttt{RSP} \cite{JCL}.
+
+
+Kontrolētā atmiņas iedalīšana nozīme, ka programma izvēlās brīvus atmiņas gabalus no pieejama segmenta telpas, priekš programmas datiem. 
+Kontrolētā jeb manuālā atmiņas iedalīšana parasti ir nodrošināta ar kaudzes palīdzību.
+Šeit nav iespējams piekļūt visiem iedalītiem atmiņas gabaliem, izmantojot vienu norādi un tās nobīdi, piemēram, kā tas tiek nodrošināts stekā. 
+Tagad katram iedalītam atmiņas gabalam var piekļūt tikai tad, ja ir norāde uz šo iedalīto atmiņas gabalu. 
+Gadījumos, kad norādes nav, tad adreses vairāk nav sasniedzamas un kļūst pazaudētas.
+Turpmāk darbā, termins "dinamiskā atmiņa" apzīmēs atmiņu, kura tiek iedalīta, izmantojot kontrolēto atmiņas iedalīšanu.
+
+
+\subsection{Atmiņas pārvaldība}
+Kad tiek izpildīta jebkura programma, atmiņa tiek pārvaldīta divos veidos: ar kodola palīdzību vai ar lietotnes funkciju izsaukumiem, tādiem kā malloc().
+
+\subsubsection{Kodola atmiņas pārvaldība}
+Operētājsistēmas kodols apstrādā visus atmiņas pieprasījumus, kas attiecās uz programmu vai programmas instancēm.
+Kad lietotājs sāk programmas izpildi, tad kodols iedala atmiņas apgabalu tekošām procesam.
+Šīs apgabals, no procesa viedokļa, ir viena lineārā virtuālā adrešu telpa, kura ir sadalīta vairākos segmentos. 
+Svarīgākie procesa segmenti  \cite {atparv}:
+%\vspace{-20 pt}
+\begin{itemize}
+	\item   Teksta segments - šeit tiek uzglabāti dati, kuri tiek izmantoti tikai lasīšanai. Tās ir nokompilētas koda instrukcijas. 
+    Vairākas programmas instances var izmantot šo atmiņas apgabalu;
+    \item Statisko datu segments - apgabals, kurā tiek uzglabāti dati ar iepriekš zināmu izmēru. Tās ir globālie un statiskie mainīgie.
+    Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi;
+    \item Kaudzes segments - apgabals, no kura tiek iedalīta dinamiskā atmiņa.
+    Kaudzes segmentā atrodas dinamiski iedalītā un atbrīvotā atmiņa. Kaudzes segmenta saturs ir sadalīts sīkāk, mazākos atmiņās gabalos.
+    Kaudzes segments aug no mazākas adreses līdz lielākai.  Lai palielinātu kaudzes segmenta izmēru, tiek veikts brk() sistēmas izsaukums. 
+    Izsaukums uzstāda kaudzes segmenta jauno beigu robežu. 
+ Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 \cite{LINMAN};
+    \item Steka segments - apgabals, kurā tiek uzglabāti: funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam, ka arī lokālo mainīgo un reģistru vērtības. 
+    Steks aug no lielākas adreses līdz mazākai. 
+    Steks ir iedalīts priekš katras programmas instances atsevišķi.
+     Iedalīto virtuālo adrešu karti var atrast \texttt{/proc/<pid>/maps} datnē.
+\end{itemize} 
+
+ 
+\subsubsection{Lietotāja atmiņas pārvaldība}
+Atmiņa, kas var tikt dinamiski iedalīta, parasti ir novietota kaudzē. 
+Lietotāja atmiņas pārvaldība ir dinamiskās atmiņas pārvaldība no lietotnes.
+Lai nodrošinātu lietotāja atmiņas pārvaldību no lietotnes ir nepieciešams iedalītājs (allocator), kurš veic sistēmas izsaukumus un pārvalda iegūto atmiņu, sadalot to sīkākos gabalos.
+Iedalītājs ļauj efektīvāk pārvaldīt atmiņu, nekā tas būtu nodrošināts, katru reizi pieprasot atmiņas gabalu ar sistēmas izsaukumiem.
+Šobrīd eksistē vairāki iedalītāji, piemēram, Hoard memory allocator, ptmalloc2, dlmalloc.
+Iedalītāju galvenie uzdevumi: 
+\begin{enumerate}
+\item sekot atmiņas gabaliem, kuri ir izmantoti;
+\item sekot atbrīvotiem atmiņas gabaliem;
+\item nodrošināt iespēju atkārtoti izmantot atmiņu.
+\end{enumerate}
+Dažreiz tiek izveidots individuālā iedalītāja risinājums. 
+Kaut arī daži universālie iedalītāji strādā pietiekoši ātri un fragmentēšanas līmenis ir zems, individuālais risinājums var ņemt vērā lietotnei raksturīgas īpatnības un tās nodrošinās labāko veiktspēju \cite{EDBG}.
+\begin{figure}[h]
+\begin{lstlisting} [language=C++]
+int * ptrl = new int; // C++
+int * ptrl = (int *)malloc(sizeof(int)); /* C */
+
+char * str = new char[num_elements]; // C++
+char * str = (char *)malloc(sizeof(char) * num_elements); /* C */
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Dinamiskās atmiņas iedalīšana C un C++}}}
+\end{figure}
+
+GNU C bibliotēkā ir iebūvēts ptmalloc2 iedalītājs.
+Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība no lietotnes, izmantojot GNU C bibliotēkas funkciju palīdzību, ko nodrošina ptmalloc2.
+C valodā dinamiskā atmiņa tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
+C++ valodā ir izmantots operators new, lai pieprasītu atmiņu. 
+Attēlā 1.10. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
+
+
+Funkcija malloc() ir definēta malloc.c datnē GNU C bibliotēkā. 
+Funkcijas prototips ir definēts <stdlib.h>.
+Funkcija malloc() ļauj dinamiski iedalīt atmiņu procesam.
+Vienīgais arguments malloc() funkcijai ir baitu skaits.
+C programmai, lai saskaitītu cik baitu ir nepieciešams pieprasīt, ir nepieciešams zināt cik daudz vietas aizņem viens elements un kāds ir elementu skaits.
+Funkcija malloc() atgriež void tipa rādītāju, tāpēc C programmās ir nepieciešams izmantot drošo tipa pārveidotāju (typecast). 
+Tas ir nepieciešams, lai saglabātu atgriezto norādi lokālajā mainīgajā. Atmiņas inicializācija C kodā
+var būt veikta izmantojot arī citas funkcijas, piemēram calloc() funkciju, kura atgriež atmiņas gabalu inicializētu ar 0 vērtībām.
+
+Funkcija free() atbrīvo ar malloc() palīdzību iedalīto atmiņu.
+Lielāka atšķirība starp free() un delete ir tāda, ka vecajās free() realizācijās netiek nodrošināts atbalsts free() funkcijai, kad arguments ir null \cite{POCF}. 
+
+Programmas rakstīšanā nejauc kopā C un C++ stilus, tāpēc priekš C++ programmas izmanto 
+new un delete operatorus (sk. 1.11. attēlu), bet priekš C programmām malloc() un free().
+Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams no operētājsistēmas atmiņas daudzums ar laiku samazinās.
+
+\begin{figure}[h]
+\begin{lstlisting}
+delete ptrl; // C++
+
+If(ptrl != NULL)
+	free(ptrl); /* C */
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Dinamiskās atmiņas atbrīvošana C un C++}}}
+\end{figure}
+
+
+%Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
+
+
+\subsection{Atmiņas organizācija glibc bibliotēkā}
+Darbā tiek aplūkota GNU C bibliotēkas (versija 2.3) ptmalloc2 realizācija, kuru izstrādāja Wolfram Gloger, balstoties uz Doug Lea dlmalloc realizāciju. 
+Atmiņas iedalīšana sākas ar malloc() vai līdzīgo funkciju izsaukumiem no programmas koda un tiek nodrošināta ar GNU C bibliotēkas palīdzību. 
+
+
+\subsubsection{Atmiņas arēna}
+
+Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite {MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.} 1.12. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām.
+ Atmiņas arēnu  vienkāršotā veidā var attēlot kā viensaišu saistīto sarakstu, kurš sastāv no vienas vai vairākām atmiņas kaudzēm. 
+ Kaudze ir lineārās apgabals, kurš iekļauj sevī iedalītus un atbrīvotus atmiņas gabalus (chunk of memory), kuri ir novietoti blakus viens otram.
+ Atmiņas gabali sīkāk ir aprakstīti \ref{subsec:atminas_gabali} sadaļā.
+ \begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{threads}
+\end{center}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas organizācija GNU C bibliotēkā (versija 2.3)}}}
+\end{figure}
+ Gadījumos, kad gabals ir iedalīts, tad pašreiz palaists process satur norādi uz iedalīto apgabalu kaudzē. 
+ Ja gabals ir atbrīvots, tad tas tiek pievienots vienā no sarakstiem uz kuriem norāda bin masīvi, kuri atrodas vienā no arēnām.
+Bin masīvs un bin saraksti sīkāk ir aprakstīti \ref{subsec:bin_saraksti} sadaļā. 
+ Katrā arēnā ir rādītājs uz nākamo izveidoto arēnu. Pēdējā izveidotā arēna norāda uz galveno arēnu.
+ Ja kārtēja kaudze ir izlietotā un tajā nav atmiņas, tad tiek iedalīta jauna kaudze ar fiksēto 64 MB izmēru.
+  Tāda veidā arēnas var tikt paplašinātas, izveidojot jaunās kaudzes un savienojot tās sava starpā.
+ Jaunai kaudzei ir norāde gan uz arēnu, kurai tā pieder, gan uz iepriekšējo kaudzi.
+
+Lai uzlabotu veiktspēju vairākpavedienu procesiem, GNU C bibliotēkā tiek izmantotas vairākas atmiņas arēnas. 
+Katrs funkcijas malloc() izsaukums bloķē arēnu, no kuras tiek pieprasītā atmiņa. 
+Laikā, kad arēna ir nobloķēta, notiek atmiņas gabala iedalīšana.
+Kad vairākiem pavedieniem ir nepieciešams vienlaicīgi iedalīt atmiņu no kaudzes un visi pavedieni mēģina piekļūt vienai un tai pašai arēnai (tas varētu notikt dlmalloc realizācijā), tad arēnas bloķēšana var būtiski samazināt veiktspēju.
+Gadījumos, kad pavedieni izmanto atmiņu no vairākām atsevišķām arēnām (kā tas notiek ptmalloc2 realizācijā), tad vienas arēnas bloķēšana neietekmē atmiņas iedalīšanu parējās kaudzēs, kuras nepieder nobloķētai arēnai, un atmiņas iedalīšana var notikt paralēli.
+Lai nodrošinātu labāku veiktspēju, GNU C bibliotēkā tiek izmantots modelis: katram pavedienam - viena arēna. 
+Ja malloc() pirmo reizi izsaukts pavedienā, tad neatkarībā no tā vai kārtējā arēna bija nobloķēta vai nē, tiks izveidota jauna arēna.
+Arēnu skaits ir ierobežots atkarībā no kodolu skaita, 32 bitu vai 64 bitu arhitektūras un mainīga MALLOC\_ARENA\_MAX vērtības.
+Tā kā pavedienu skaits parasti nepārsniedz divkāršo kodolu skaitu, tad normālā gadījumā katrs pavediens izmanto atsevišķo arēnu. 
+Darbība ar arēnām notiek saskaņā ar sekojošo algoritmu: 
+\begin{enumerate}
+\item malloc() izsaukums vēršas pie arēnas, kurai piekļuva iepriekšējo reizi;
+\item ja arēna ir nobloķēta, tad malloc() vēršas pie nākamas izveidotās arēnas;
+\item ja nav piekļuves nevienai arēnai, tad tiek izveidota jauna arēna un malloc() vēršas pie tās.
+\end{enumerate}
+
+Vispirms atmiņas iedalīšana sākas no galvenās arēnas (main arena). 
+GNU C bibliotēkā ir globāls \texttt{malloc\_state} objekts - galvenā arēna, kura atšķiras no pārējām arēnām ar to, ka tā tiek paplašināta, izmantojot brk() nevis  mmap() sistēmas izsaukumu. 
+Līdz ar galvēnās arēnas paplašināšanu, tiek paplašināts arī procesa kaudzes segments.
+brk() sistēmas izsaukumam ir viens arguments, kurš uzstāda procesa kaudzes segmenta jaunas beigas.
+mmap() sistēmas izsaukums paplašina pārējās dinamiskās arēnas daudzpavedienu lietotnēs, ka arī nodrošina lielu atmiņas bloku iedalīšanu mmap apgabalā.
+Mazākais gabals, kurš pēc noklusējuma tiks iedalīts ar mmap(), ir vienāds ar 128 kilobaitiem. 
+Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts ar mmap() var uzdot ar M\_MMAP\_THRESHOLD konstanti.
+
+
+
+
+
+ \subsubsection{Atbrīvotās atmiņas organizācija}
+ \label{subsec:bin_saraksti}
+Atbrīvots atmiņas gabals ne vienmēr tiks uzreiz atgriezts operētājsistēmai (sīkāk tas ir aprakstīts \ref{sec:peak_mem} sadaļā), bet var tikt defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā. 
+Realizācijā ptmalloc2 ir masīvi, kuri uzglabā norādes uz bin sarakstiem.
+Bin saraksti ir struktūras, kuras uzglabā atbrīvotus atmiņas gabalus, līdz brīdim, kad tie tiks iedalīti procesam atkārtoti.
+Priekš sarakstiem netiek atsevišķi iedalīta atmiņa, bet tiek izmantota kaudzes atmiņa.
+Tas kļūst iespējams pārrakstot atmiņas gabalu struktūru.
+Ja atmiņa bija atbrīvota, tad atmiņas gabali var tikt uzglabāti vienā no bin saistītiem sarakstiem.
+Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
+
+
+Ātrais saraksts ir paredzēts bieži izmantotu, mazu atmiņas gabalu glabāšanai.
+Pēc noklusējuma ātro atmiņas gabalu izmērs nepārsniedz 64 baitus (sk. 1.13. attēlu), bet to var palielināt līdz 80 baitiem \cite {MALLOC}. 
+Tas varētu būt nepieciešams, ja programma ir bieži izmantotas struktūras, kuru izmērs pārsniedz 64 baitus.
+Atmiņas gabali atrodas viensaišu sarakstā un nav sakārtoti, jo katrā bin sarakstā atrodas elementi, kuriem ir vienāds izmērs.
+Lai samazinātu fragmentēšanas iespējamību, programma, kad pieprasa vai atbrīvo lielus atmiņas gabalus var sapludināt atmiņas gabalus, kuri atrodas fastbin sarakstā.
+Piekļuve tādiem atmiņas gabaliem ir ātrāka nekā piekļuve parastiem gabaliem. 
+Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb LIFO) kārtībā \cite {Binning}.
+Kad tiek pieprasīta atmiņa no fastbin saraksta, tad jebkurš atmiņas gabals tiek atgriezts konstantā laikā  \cite {ACCA}.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.35]{fastbins}
+\end{center}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Ātrais saraksts}}}
+\label{fig:fastbin}
+\end{figure}
+
+Kopumā ir 128 parastie saraksti, kurus var sadalīt 3 veidos. 
+Pirmkārt, bin saraksts, kurš uzglabā nesakārtotus gabalus, kuri nesen bija atbrīvoti.  
+Pēc tam tie tiks novietoti vienā no atlikušiem bin sarakstiem: mazā vai lielā izmēra. 
+Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki par 512 baitiem. 
+Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
+Mazā izmērā saraksti iekļauj gabalus ar vienādu izmēru. 
+Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
+Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti pirmais iekšā, pirmais ārā (jeb FIFO) kārtībā \cite {Binning}. 
+Tāda veidā vienmēr tiek atgriezts gabals, kurš ir vislabāk piemērots.
+Tas ir, kad gabalam ir mazāks izmērs no pārējiem saraksta gabaliem, kurš apmierina pieprasījumu pēc atmiņas.
+Gabali, kuru izmērs ir lielāks par 128 kilobaitiem netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap(). 
+
+
+
+
+\subsubsection{Atmiņas gabali}
+\label{subsec:atminas_gabali}
+
+Kaudze sastāv no daudziem atmiņas gabaliem.
+Eksistē divu veidu atmiņas gabali: parastie (normal chunk) un ātrie (fast chunk) gabali. 
+Ātrie gabali ir mazā izmērā (parasti līdz 64 baitiem) un pieder ātrajām sarakstām, bet parastie gabali - parastajām sarakstam. 
+Ātrie un parastie gabali, tiek izmantoti, lai nodrošinātu atmiņas iedalīšanu no kaudzes.
+Atmiņas gabala fiziska struktūra ir vienāda abu veidu gabaliem, bet ir atkarīga no stāvokļa un var tikt interpretēta dažādi.
+Atmiņa no kaudzēs tiek iedalīta, izmantojot malloc\_chunk struktūru (sk. 1.14. attēlu). 
+Sīkāk struktūras malloc\_chunk elementi ir aprakstīti tabulā 1.1.
+
+\begin{table}[H]
+\caption{\textbf{\fontsize{11}{12}\selectfont {\\ Atmiņās gabalu struktūras elementu apraksts}}} 
+\label{table:kysymys}
+\centering
+	\begin{tabular}{|l|l|r|p{5cm}|}
+	  \hline
+	Elements & Nozīme \\
+	\hline
+	  INTERNAL\_SIZE\_T               prev\_size & Iepriekšēja gabala izmērs (baitos), ja tas bija atbrīvots\\
+      \hline
+      INTERNAL\_SIZE\_T               size & Kārtējā gabala izmērs (baitos) \\
+      \hline
+      struct malloc\_chunk*          fd & Rādītājs uz nākamo atbrīvoto gabalu, ja kārtējais  \\
+                                                     & gabals ir atbrīvots un pievienots dubultsaišu bin \\
+                                                     & sarakstām\\
+      \hline
+      struct malloc\_chunk*          bk & Rādītājs uz iepriekšējo atbrīvoto gabalu, ja kārtējais  \\
+                                                     & gabals ir atbrīvots un pievienots dubultsaišu bin \\
+                                                     & sarakstām\\
+    \hline
+	\end{tabular}
+\end{table}
+\begin{figure}[h]
+\begin{lstlisting}[language=C++]
+struct malloc_chunk  {
+                INTERNAL_SIZE_T               prev_size;
+                INTERNAL_SIZE_T               size;
+                struct malloc_chunk*          fd;
+                struct malloc_chunk*          bk;
+ }
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas gabala struktūra}}}
+\end{figure}
+
+Katru reizi ir iedalīts lielāks atmiņas gabals nekā pieprasīts ar malloc() funkciju.
+Tas ir nepieciešams, lai varētu saglabāt uzturēšanai nepieciešamo informāciju. 
+Iedalītam gabalam uzturēšanas informācija ir divas INTERNAL\_SIZE\_T tipa vērtības, kas vienādas ar 4*2 vai 8*2 baitiem. 
+Tas ir atkarīgs no tā, kāda vērtība ir piešķirta INTERNAL\_SIZE\_T makrodefinīcijai, 4 vai 8 baiti.
+Ar INTERNAL\_SIZE\_T var uzdot iekšējo vārda izmēru (word-size), kurš pēc noklusējuma ir vienāds ar size\_t izmēru.
+Datoriem ar 64 bitu tehnoloģiju, 4 baitu vērtības piešķiršana makrodefinīcijai  var samazināt aizņemtās atmiņas daudzumu, bet ierobežo lielāko iespējamo gabala izmēru.
+Tā kā 4 baitos nevar saglabāt skaitli, kas ir vienāds vai lielāks par \(2^{32}\), tad laukā \texttt{prev\_size} un \texttt{size} vērtībai ir jābūt mazākai par šo ierobežojošo vērtību.
+Kad gabals ir iedalīts, tad uzturēšanas informācijai ir izmantoti divas INTERNAL\_SIZE\_T tipa vērtības un, kad gabals ir atbrīvots, tad  dubultsaišu saraksta uzturēšanai, papildus tiek izmantoti divi rādītāji (fd un bk) uz iepriekšējo un nākamo \texttt{malloc\_chunk} struktūras objektiem. 
+Kopējais atmiņas gabala uzturēšanai izmantotais datu izmērs var būt 16 baiti (ja INTERNAL\_SIZE\_T un rādītāja izmērs ir 4 baiti), 24 baiti (ja INTERNAL\_SIZE\_T ir 4/8 baiti un rādītāja izmērs ir 8/4 baiti) vai 32 baiti (ja INTERNAL\_SIZE\_T un rādītāja izmērs ir 8 baiti).  
+Otrs iemesls kāpēc ir iedalīts lielāks atmiņas daudzums ir izlīdzināšana skaitlim, kas ir  2*sizeof(INTERNAL\_SIZE\_T) reizinājums. Šīs skaitlis ir vienāds ar 8 baitu izlīdzinājumu, ja  makrodefinīcijas INTERNAL\_SIZE\_T vērtība  ir vienāda ar 4 baitiem \cite {MALLOC}.  
+
+ \begin{figure}[h]
+\begin{center}
+%\includegraphics[scale=0.22]{chunks}
+\begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.22]{used_chunk}
+        \caption{Iedalīts atmiņas gabals}
+    \end{subfigure}%
+\begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[scale=0.22]{free_chunk}
+        \caption{Atbrīvots atmiņas gabals}
+    \end{subfigure}%
+\end{center}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas gabalu grafiskais struktūras attēlojums}}}
+\label{fig:chunks}
+\end{figure}
+
+
+No kreisās pusēs  attēlots (sk. 1.15. attēlu) \cite{CHOFM} atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
+Abos gadījumos rādītājs chunk attēlo atmiņas gabalu sākumu. Pēc šī radītāja var iegūt iepriekšēja gabala izmēru, ja iepriekšējais gabals bija atbrīvots.
+Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk uzglabā daļu no lietotāja datiem, kas dublēti no iepriekšējā gabala. 
+Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju. 
+
+
+
+Tā kā notiek izlīdzināšana 2*sizeof(INTERNAL\_SIZE\_T), kas ir vienāda 8 - ka vai 16 - ka  reizinājumam, tad 3 pēdējie biti netiek izmantoti izmēra glabāšanai. 
+Šos bitus izmanto kontroles zīmēm. Katram bitam ir sava nozīme, kura aprakstīta 1.2. tabulā.
+
+  \begin{table}[H]
+\caption{\textbf{\fontsize{11}{12}\selectfont {\\ Atmiņas gabala kontroles zīmes}}} 
+\label{table:kysymys}
+\centering
+	\begin{tabular}{|c|l|r|p{5cm}|}
+	  \hline
+	Kontroles zīme & Nozīme \\
+	\hline
+	  A & gabals nepieder galvenajai arēnai \\
+      \hline
+      M & gabals tiek iedalīts ar mmap() sistēmas izsaukumu \\
+      \hline
+      P & iepriekšējais atmiņas gabals tiek izmantots  \\
+    \hline
+	\end{tabular}
+\end{table}
+
+Rādītājs mem ir malloc() funkcijas atgriežamā vērtība, jeb radītājs uz iedalīto atmiņas apgabalu. Iedalīts apgabals stiepjas līdz atmiņas gabala struktūras beigām.
+Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja tā ir atbrīvota, tad šeit tiks uzglabāti divi radītāji uz nākamo un iepriekšējo atbrīvotiem gabaliem, kas atrodas saistītajā sarakstā. 
+
+
+Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
+Top chunk ir atmiņas gabals, kuram ir kopīga robeža ar procesa kaudzes segmentu.
+Top gabals ir izmantots gadījumos, kad nav piemērotu gabalu bin sarakstos, kuri apmierina pieprasījumu vai varētu būt saplūdināti, lai apmierinātu pieprasījumu pēc atmiņas.
+Sākotnēji atmiņās iedalīšana sākas ar top gabalu, bet top gabals nodrošina arī pēdējo iespēju iedalīt pieprasīto atmiņas daudzumu.
+Top gabals var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top gabala objektam. 
+Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top gabals var paplašināties ar brk() izsaukuma palīdzību.
+Top gabals ir līdzīgs jebkuram citam atmiņas apgabalam. 
+Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, P kontroles zīme, kura vienmēr norāda, ka iepriekšējais gabals ir izmantots, ka arī speciāla top gabala apstrāde, lai nodrošinātu, ka top gabals vienmēr eksistē \cite {BLACKHAT}.
+
+Last\_remainder ir vel viens atmiņas gabals ar īpašu nozīmi.
+Tas ir izmantots gadījumos, kad ir pieprasīts mazs atmiņas gabals, kas neatbilst nevienam bin saraksta elementam. 
+Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sadalīšanas, lai apmierinātu pieprasījumu pēc maza gabala  \cite {BLACKHAT}.
+
+
+%\section{Atmiņas statistika}
+
+%Linux nodrošina malloc\_stats() funkciju, kura izdrukā atmiņas statistiku standartā kļūdu plūsmā stderr. 
+%Katrai atmiņas arēnai  funkcija izdruka kopējo iedalītās atmiņas daudzumu \texttt{(system bytes)} un pašreiz izmantoto atmiņas daudzumu \texttt{(in use bytes)}.
+%Ir pieejama kopēja statistikā visām arēnām pēc abiem iepriekš minētiem parametriem, ka arī tiek izdrukāts maksimālais bloku un baitu daudzums, kurš bija iedalīts ar mmap() sistēmas izsaukumu. 
+
 \section{Secinājumi}
 \begin{enumerate}
-\item Ir izvēlētās 3 kaudzes problēmas, kuras tiks pētītās sīkāk;
-\item Katrai problēmai tiek uzģenerēta atmiņās izmete;
-\item Ir iegūtas zināšanas, kā var apskatīt atmiņas izmetē esošus datus.
+\item Ir apskatītas atmiņas izmetes ģenerēšanas iespējas, nosacījumi un atkļūdošanas process;
+\item Tiek aplūkota literatūra un GNU C bibliotēkas malloc pirmkods;
+\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 1.12. attēlu);
+\item Galvenie secinājumi par kaudzi:
+    \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
+    \item kontrolētā atmiņas iedalīšana ir dinamiskā atmiņas iedalīšana, kura notiek programmas izpildes laikā, un atmiņa parasti tiek iedalīta no kaudzes;
+    \item kaudzes segments ir procesa adrešu telpas apgabals, kurš var tikt paplašināts;
+    \item iedalīt atmiņu no kaudzes var no lietotnes ar malloc() vai new palīdzību;
+    \item kaudze sastāv no daudziem iedalītiem un atbrīvotiem atmiņas gabaliem.
+    Atbrīvotie gabali var būt savienoti sarakstā, pārrakstot lietotāja datus;
+    \item vienu arēnu var veidot vairākas kaudzes, kas ir savienotās savā starpā.
+    \end{itemize}
+    
 \end{enumerate}

@@ -1,11 +1,31 @@
-﻿
-Darba mērķis ir izstrādāt kaudzes atkļūdošanas metodi, izmantojot atmiņas izmeti.
-Bakalaura darbā tika izvirzīti šādi uzdevumi:
+﻿Daudzas problēmas C un C++ programmās ir saistītas ar dinamisko atmiņu \cite{TFM}.
+Problēmas ir grūti atkļūdot, jo nav tiešo pazīmju, kas liecinātu par problēmām.
+Tāpēc lai saprastu, kas notiek, ir svarīgi zināt kā notiek atmiņas gabala iedalīšana un atmiņas pārvaldība no programmas un iedalītāja puses.
+Taču programmētāju zināšanas bieži ir ierobežoti ar malloc() un free() funkciju izmantošanu. 
+Tāpēc, lai atkļūdotu lietotnes tiek veidotas speciālās uzturēšanas komandas.
+Atkļūdošanas darbs nav viegls \cite{ER}. Bieži nav piekļuves klientu sistēmām vai piekļuve ir ierobežota, kā arī ļoti bieži sniegtā informācija par problēmu nav pietiekoša, lai varētu viennozīmīgi identificēt problēmu.
+Var būt grūti atkārtot problēmu pat tad, ja ir aprakstīti scenāriji un ir pielikta konfigurācija.
+Tas viss sarežģī atkļūdošanas procesu un padara darbu neefektīvu.
+
+Šajā bakalaura darbā tiks aprakstīta un piedāvāta pieeja, kura palīdzes vienkāršot atkļūdošanas procesu problēmām, kas saistītas ar kaudzi un dinamisko atmiņas iedalīšanu.
+Piemēram: atmiņas noplūde, datu kaudzes bojāšana, maksimālās atmiņas izmantošanas problēma, fragmentēšana, kļūdas trešās puses bibliotēkās.
+Darbā ir aprakstīta atkļūdošanas pieeja, kura balstīta uz atmiņas izmetes analīzi.
+Šī pieeja ir aprakstīta uz 3 izvēlētiem problēmu piemēriem: atmiņas noplūde, fragmentēšana, maksimālās atmiņas izmantošanas problēma.
+Atmiņas noplūde ir izvēlēta, tāpēc ka ir viena no bieži sastopamām problēmām.
+Fragmentēšana un maksimālās atmiņas izmantošanas problēma ir divas problēmas, kuras pēc autores viedokļa, ir līdzīgas, un var tikt atkļūdotas ar atmiņas izmetes palīdzību.
+Dotās problēmas demonstrē, ka pieeja strādā un var tikt izmantota plašāk, piemēram, citu problēmu atkļūdošanai.
+
+Pieeja, kas aprakstīta bakalaura darbā, tiek izstrādāta ievērojot sekojošus ierobežojumus:
 \begin{itemize}
-	\item apskatīt literatūru un iegūt zināšanas par kaudzi un tās lomu GNU C bibliotēkā;
-    \item izvēlēties pētāmās kaudzes problēmas un savākt pēc iespējas vairāk informācijas par tām;
-    \item sagatavot atmiņas izmetes izvēlētajām problēmām;
-    \item noteikt  problēmu pazīmes atmiņas izmetē;
-    \item izveidot kaudzes atkļūdošanas metodi balstoties uz pazīmēm;
-    \item apkopot iegūtus rezultātus.
+	\item GNU C bibliotēkas izmantošana sākot ar 2.3 versiju;
+    \item a.out vai ELF atmiņas izmetes formāts;
+    \item ar atmiņu saistīto problēmu atkļūdošana.
 \end{itemize} 
+
+Darba struktūra:
+\begin{enumerate}
+    \item   nodaļā ietverts atmiņas izmetes un atmiņas organizācijas apraksts;
+    \item   nodaļā aprakstītas problēmas un identificētas tās pazīmes atmiņas izmetē;
+    \item   nodaļā piedāvāta metode, kura balstīta uz atmiņas izmeti;
+    \item   nodaļā "Galvenie rezultāti un secinājumi" apkopotie darba laikā gūtie rezultāti un secinājumi.
+\end{enumerate} 

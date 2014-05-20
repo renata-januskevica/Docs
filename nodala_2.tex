@@ -5,7 +5,7 @@
 %\label{sect:Motivation}
 
 Pirms izpildīt programmu, operētājsistēmai ir nepieciešams iedalīt resursus, tādus kā atmiņas adreses.  
-Eksistē divi atmiņas iedalīšanas paņēmieni: statiskā un dinamiskā atmiņas iedalīšana (sk. 1.1. attēlu). 
+Eksistē divi atmiņas iedalīšanas paņēmieni: statiskā un dinamiskā atmiņas iedalīšana (sk. 2.1. attēlu). 
 
 \begin{figure}[h]
 \begin{center}
@@ -99,7 +99,7 @@ GNU C bibliotēkā ir iebūvēts ptmalloc2 iedalītājs.
 Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība no lietotnes, izmantojot GNU C bibliotēkas funkciju palīdzību, ko nodrošina ptmalloc2.
 C valodā dinamiskā atmiņa tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
 C++ valodā ir izmantots operators new, lai pieprasītu atmiņu. 
-Attēlā 1.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
+Attēlā 2.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
 
 
 Funkcija malloc() ir definēta malloc.c datnē GNU C bibliotēkā. 
@@ -115,7 +115,7 @@ Funkcija free() atbrīvo ar malloc() palīdzību iedalīto atmiņu.
 Lielāka atšķirība starp free() un delete ir tāda, ka vecajās free() realizācijās netiek nodrošināts atbalsts free() funkcijai, kad arguments ir null \cite{POCF}. 
 
 Programmas rakstīšanā nejauc kopā C un C++ stilus, tāpēc priekš C++ programmas izmanto 
-new un delete operatorus (sk. 1.3. attēlu), bet priekš C programmām malloc() un free().
+new un delete operatorus (sk. 2.3. attēlu), bet priekš C programmām malloc() un free().
 Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams no operētājsistēmas atmiņas daudzums ar laiku samazinās.
 
 \begin{figure}[h]
@@ -139,7 +139,7 @@ Atmiņas iedalīšana sākas ar malloc() vai līdzīgo funkciju izsaukumiem no p
 
 \subsection{Atmiņas arēna}
 
-Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite {MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.} 1.4. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām.
+Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite {MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.} 2.4. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām.
  Atmiņas arēnu  vienkāršotā veidā var attēlot kā viensaišu saistīto sarakstu, kurš sastāv no vienas vai vairākām atmiņas kaudzēm. 
  Kaudze ir lineārās apgabals, kurš iekļauj sevī iedalītus un atbrīvotus atmiņas gabalus (chunk of memory), kuri ir novietoti blakus viens otram.
  Atmiņas gabali sīkāk ir aprakstīti \ref{subsec:atminas_gabali} sadaļā.
@@ -187,7 +187,7 @@ Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts 
 
  \subsection{Atbrīvotās atmiņas organizācija}
  \label{subsec:bin_saraksti}
-Atbrīvots atmiņas gabals ne vienmēr tiks uzreiz atgriezts operētājsistēmai (sīkāk tas ir aprakstīts \ref{sec:peak_mem} apakšnodaļā), bet var tikt defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā. 
+Atbrīvots atmiņas gabals ne vienmēr tiks uzreiz atgriezts operētājsistēmai (sīkāk tas ir aprakstīts \ref{sec:peak_mem} sadaļā), bet var tikt defragmentēts vai sapludināts ar pārējiem gabaliem un ievietots sarakstā. 
 Realizācijā ptmalloc2 ir masīvi, kuri uzglabā norādes uz bin sarakstiem.
 Bin saraksti ir struktūras, kuras uzglabā atbrīvotus atmiņas gabalus, līdz brīdim, kad tie tiks iedalīti procesam atkārtoti.
 Priekš sarakstiem netiek atsevišķi iedalīta atmiņa, bet tiek izmantota kaudzes atmiņa.
@@ -197,7 +197,7 @@ Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
 
 
 Ātrais saraksts ir paredzēts bieži izmantotu, mazu atmiņas gabalu glabāšanai.
-Pēc noklusējuma ātro atmiņas gabalu izmērs nepārsniedz 64 baitus (sk. 1.5. attēlu), bet to var palielināt līdz 80 baitiem \cite {MALLOC}. 
+Pēc noklusējuma ātro atmiņas gabalu izmērs nepārsniedz 64 baitus (sk. 2.5. attēlu), bet to var palielināt līdz 80 baitiem \cite {MALLOC}. 
 Tas varētu būt nepieciešams, ja programma ir bieži izmantotas struktūras, kuru izmērs pārsniedz 64 baitus.
 Atmiņas gabali atrodas viensaišu sarakstā un nav sakārtoti, jo katrā bin sarakstā atrodas elementi, kuriem ir vienāds izmērs.
 Lai samazinātu fragmentēšanas iespējamību, programma, kad pieprasa vai atbrīvo lielus atmiņas gabalus var sapludināt atmiņas gabalus, kuri atrodas fastbin sarakstā.
@@ -235,8 +235,8 @@ Eksistē divu veidu atmiņas gabali: parastie (normal chunk) un ātrie (fast chu
 Ātrie gabali ir mazā izmērā (parasti līdz 64 baitiem) un pieder ātrajām sarakstām, bet parastie gabali - parastajām sarakstam. 
 Ātrie un parastie gabali, tiek izmantoti, lai nodrošinātu atmiņas iedalīšanu no kaudzes.
 Atmiņas gabala fiziska struktūra ir vienāda abu veidu gabaliem, bet ir atkarīga no stāvokļa un var tikt interpretēta dažādi.
-Atmiņa no kaudzēs tiek iedalīta, izmantojot malloc\_chunk struktūru (sk. 1.6. attēlu). 
-Sīkāk struktūras malloc\_chunk elementi ir aprakstīti tabulā 1.1.
+Atmiņa no kaudzēs tiek iedalīta, izmantojot malloc\_chunk struktūru (sk. 2.6. attēlu). 
+Sīkāk struktūras malloc\_chunk elementi ir aprakstīti tabulā 2.1.
 
 \begin{table}[H]
 \caption{\textbf{\fontsize{11}{12}\selectfont {\\ Atmiņās gabalu struktūras elementu apraksts}}} 
@@ -302,7 +302,7 @@ Otrs iemesls kāpēc ir iedalīts lielāks atmiņas daudzums ir izlīdzināšana
 \end{figure}
 
 
-No kreisās pusēs  attēlots (sk. 1.7. attēlu) \cite{CHOFM} atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
+No kreisās pusēs  attēlots (sk. 2.7. attēlu) \cite{CHOFM} atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
 Abos gadījumos rādītājs chunk attēlo atmiņas gabalu sākumu. Pēc šī radītāja var iegūt iepriekšēja gabala izmēru, ja iepriekšējais gabals bija atbrīvots.
 Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk uzglabā daļu no lietotāja datiem, kas dublēti no iepriekšējā gabala. 
 Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju. 
@@ -310,7 +310,7 @@ Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju.
 
 
 Tā kā notiek izlīdzināšana 2*sizeof(INTERNAL\_SIZE\_T), kas ir vienāda 8 - ka vai 16 - ka  reizinājumam, tad 3 pēdējie biti netiek izmantoti izmēra glabāšanai. 
-Šos bitus izmanto kontroles zīmēm. Katram bitam ir sava nozīme, kura aprakstīta 1.2. tabulā.
+Šos bitus izmanto kontroles zīmēm. Katram bitam ir sava nozīme, kura aprakstīta 2.2. tabulā.
 
   \begin{table}[H]
 \caption{\textbf{\fontsize{11}{12}\selectfont {\\ Atmiņas gabala kontroles zīmes}}} 
@@ -356,7 +356,7 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 \section{Secinājumi}
 \begin{enumerate}
 \item Tiek aplūkota literatūra un GNU C bibliotēkas malloc pirmkods;
-\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 1.4. attēlu);
+\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 2.4. attēlu);
 \item Galvenie secinājumi par kaudzi:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
     \item kontrolētā atmiņas iedalīšana ir dinamiskā atmiņas iedalīšana, kura notiek programmas izpildes laikā, un atmiņa parasti tiek iedalīta no kaudzes;
