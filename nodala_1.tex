@@ -1,7 +1,7 @@
 ﻿Uz jēdzieniem, kuri aprakstīti dotajā nodaļā tiks balstīta izstrādājamā kaudzes atkļūdošanas metode.
 Šeit ir ietverti 2 svarīgākie jēdzieni: atmiņas izmete un kaudze, kuri ir aprakstīti sīkāk.
 
- \section{Atmiņas izmete}
+ \section{Par atmiņas izmeti}
  Šajā sadaļā tiek aplūkots atmiņas izmetes jēdziens, ka arī aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
 Sadaļā ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
 
@@ -259,7 +259,7 @@ Kad tiek izpildīta jebkura programma, atmiņa tiek pārvaldīta divos veidos: a
 Operētājsistēmas kodols apstrādā visus atmiņas pieprasījumus, kas attiecās uz programmu vai programmas instancēm.
 Kad lietotājs sāk programmas izpildi, tad kodols iedala atmiņas apgabalu tekošām procesam.
 Šīs apgabals, no procesa viedokļa, ir viena lineārā virtuālā adrešu telpa, kura ir sadalīta vairākos segmentos. 
-Svarīgākie procesa segmenti  \cite {atparv}:
+Svarīgākie procesa segmenti  \cite {PETRSOF}:
 %\vspace{-20 pt}
 \begin{itemize}
 	\item   Teksta segments - šeit tiek uzglabāti dati, kuri tiek izmantoti tikai lasīšanai. Tās ir nokompilētas koda instrukcijas. 
@@ -305,7 +305,7 @@ char * str = (char *)malloc(sizeof(char) * num_elements); /* C */
 
 GNU C bibliotēkā ir iebūvēts ptmalloc2 iedalītājs.
 Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība no lietotnes, izmantojot GNU C bibliotēkas funkciju palīdzību, ko nodrošina ptmalloc2.
-C valodā dinamiskā atmiņa tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
+C valodā dinamiskā atmiņa tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {PETRSOF}.
 C++ valodā ir izmantots operators new, lai pieprasītu atmiņu. 
 Attēlā 1.10. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
 
