@@ -1,10 +1,12 @@
 ﻿ \label{sec:problems}
+ Darbā tiek aprakstītas 5 kaudzes problēmas: atmiņas noplūde, fragmentēšana, maksimālās atmiņas izmantošanas problēma, datu kaudzes bojāšana, kļūdas trešās puses bibliotēkās.
+3 no 5 problēmām tiek izpētītas detalizēti.
 Par kaudzes problēmām tiek uzskatītas problēmas, kuras rodas lietotnē nepareizās kaudzes pārvaldības dēļ: 
 \begin{itemize}
 \item nekorekta kaudzes pārvaldība ar malloc() vai citām līdzīgām funkcijām;
 \item nekorekta kaudzes pārvaldība, ko nodrošina iedalītājs.
 \end{itemize}
-Darbā tiek izpētītās 3 kaudzes problēmas: atmiņas noplūde, fragmentēšana, maksimālās atmiņas izmantošanas problēma.
+
 \section{Atmiņas noplūde}
 
 Atmiņas noplūde (memory leak) ir viena no bieži sastopamām problēmām C un C++ valodās \cite{GNED}.
@@ -51,7 +53,7 @@ int main() {
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas noplūde, C++}}}
 \end{figure}
 
-Atmiņās noplūdes problēma ir uzskatāmi nodemonstrēta piemērā (sk. 3.1. attēlu).
+Atmiņās noplūdes problēma ir uzskatāmi nodemonstrēta piemērā (sk. 2.1. attēlu).
 Programma  iedala 10001 atmiņas gabalus ar new operatora palīdzību. 
 Rādītājs \texttt{str} katru reizi tiek pārrakstīts un norāda uz kārtējo iedalīto atmiņas gabalu, kurā izmērs ir 14 baiti.
 Tā kā atmiņas adreses kļūst pazaudētas un nav iespējas piekļūt iepriekšējiem elementiem pēc tam kad  \texttt{str} radītājs ir parakstīts, tad piemēra ir redzama fiziskā atmiņas noplūde.
@@ -119,7 +121,7 @@ Lai kontrolētu atmiņas patēriņu, procesa izpildes laikā, tika izmantota \te
 Procesam patērēts atmiņas daudzums iegūts no RSS un VSZ rādītājiem.
 VSZ parāda virtuālo atmiņu, RSS parāda fizisko atmiņu, kuru izmanto process.
 Rādītāju mērvienība ir kilobaits.
-Tika palaista programma un katrā programmas solī tika noņemti radītāji (sk. 3.1. tabulu).
+Tika palaista programma un katrā programmas solī tika noņemti radītāji (sk. 2.1. tabulu).
 Tā kā bija iedalīti 100 gabali, katrs 100 kilobaitu izmērā, tad kaudze bija paplašināta ar brk() sistēmas izsaukumu.
 Kopēja pieprasīta atmiņa bija vienāda ar 10000 kilobaitiem.
 Iegūtie rādītāji parāda, ka atmiņa pilnībā tika atbrīvota tikai pēc tam, kad bija atbrīvots pēdējais atmiņas gabals.
@@ -175,7 +177,7 @@ Tātad ir iespējams izrēkināt tikai momentāno kaudzes fragmentēšanu.
 Fragmentēšana var būt izrēķināta kā attiecība starp atmiņas daudzumu kaudzē, ko aizņem iedalītājs pret atmiņas daudzumu, ko izmanto process (neietilpst atbrīvotie atmiņās gabali).
 
 Turpmāk ir apskatīts piemērs, kurš demonstrē iekšējās fragmentēšanas cēloņi.
-Šīs C valodā uzrakstītais kods izdruka atmiņas gabala izmēru, kurš īstenībā tiek iedalīts no kaudzes (sk. 3.2. attēlu).
+Šīs C valodā uzrakstītais kods izdruka atmiņas gabala izmēru, kurš īstenībā tiek iedalīts no kaudzes (sk. 2.2. attēlu).
 Piemēra ir redzams, ka tiek iedalīti 4 baiti, bet programma izdruka beigu rezultātu - 16 baiti.
 Dotajā piemērā iekšējā fragmentēšana ir vienāda ar 12 baitiem.
 
@@ -213,8 +215,31 @@ Algoritms ir sekojošs:
 \end{figure}
 
 \section{Datu kaudzes bojāšana}
-\section{Kļūdas trešās puses bibliotēkās}
 
+Viena kļūda programmā var sabojāt kaudzes datus. 
+Šo kļūdu ir grūti atrast, jo sekas ir novērojamas nevis tad, kad tiek pārrakstīti dati kaudzē, bet kad ir nākamais mēģinājums piekļūt pārrakstītiem datiem.
+Kaudzē ir novērojamās vairākas bojāšanas kļūdas (heap corruption) \cite{DHC}:
+\begin{itemize}
+\item robežu pārpildīšana (boundary overrun). Notiek, kad programma raksta aiz malloc() funkcijas robežām;
+Tāda veidā var parakstīt nākamo datu struktūru atmiņā. 
+\item problēma, kad programma raksta pirms malloc() robežām;
+\item piekļuve neinicializētam atmiņas gabalam. Programma mēģina lasīt datus no gabala, kurš nav inicializēts;
+\item piekļuve atbrīvotām gabalam. Programma mēģina lasīt vai rakstīt atmiņas gabalā, kurš bija atbrīvots;
+\item divkārša atbrīvošana. Programma atbrīvo datu struktūras, kuras jau tika atbrīvotas;
+\item programma free() funkcijai padod adresi, kura nebija atgriezta ar malloc().
+\end{itemize}
+
+
+
+\section{Kļūdas trešās puses bibliotēkās}
+Tā kā izstrādājama programma strādā, izmantojot trešās puses bibliotēkas, tad programmas uzticamība un kvalitāte ir atkarīga arī no iedalītāja trešās puses bibliotēkās.
+Ir iespējams, ka notiek problēma programmā nekorektās iedalītāja realizācijas dēļ \cite{MUE}.
+Ja iedalītais ir uzturēts, tad iespējams, ka var piereģistrēt problēmas, lai nākamajās versijās tas tiktu izlabotas.
+Izmantojot individuālo iedalītāja risinājumu problēmas būs jāatkļūdo patstāvīgi.  
+Daži iedalītāji var būt izstrādāti ar iepriekš zināmiem ierobežojumiem, piemēram, ja iedalītāja algoritms ir efektīvs, tad tas var izmantot pārmērīgo atmiņas daudzumu.
+Vai var tikt izmantots mazs atmiņas daudzums, turklāt algoritms būs ļoti neefektīvs.
+Šīs īpašības ir jāņem vērā izstrādājot lietotnes, lai nerastos problēmas, kas saistītas ar trešās puses bibliotēkām.
+Ja problēma notiek iekšā trešās puses bibliotēkās, tad ir jāatrod ceļš ka nepieļaut doto kļūdu, ir jāgaida atjauninājumus, kurā kļūda tiks izlabota, vai ir jānomaina tekošais iedalītājs. 
 
 
 
