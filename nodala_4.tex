@@ -73,14 +73,14 @@ Atmiņas izmetē pazīme, kas varētu liecināt par problēmu, ir lielā izmēra
 Ja pēc maksimālās atmiņas izmantošanas bija novērojamā fragmentēšana, tad bin sarakstos varētu atrasties liels atmiņas gabalu skaits.
 Tāds skaits, kurš varētu tikt izveidots sadalot mazākos gabalos procesa atmiņas patēriņa pieaugumu, kas notika mēģinot sasniegt maksimumu.
 Saskaņā ar GNU C realizāciju visi atbrīvotie gabali tiek uzglabāti bin sarakstos.
-Tā kā ātrie saraksti uzglabā mazus atmiņas gabalus (līdz 64 baitiem) un nav paredzēti ilgstošai atmiņas gabalu glabāšanai, tad atmiņas gabali tiks uzglabāti parastajos sarakstos.
+Tā kā ātrie saraksti uzglabā mazus atmiņas gabalus (līdz 64 baitiem) un nav paredzēti ilgstošai atmiņas gabalu glabāšanai, tad daudzi atmiņas gabali tiks uzglabāti parastajos sarakstos.
 
 Tālāk ir aprakstīts piemērs, kurš parāda, ka problēmas pazīme izpaužas atmiņas izmetē.
 Atmiņas izmete ir uzģenerēta, izmantojot iepriekš sagatavoto programmu (sk. 2. pielikumu).
 Sākumā tika iedalīti 100 atmiņas gabali, katrs 100 kilobaitu izmēra.
 Katrā baitā bija ierakstīta vērtība 7.
 Pēc tam bija atbrīvoti 99 gabali izņemot pēdējo.
-Beigās, lai apskatīties pazīmi, tika uzģenerēta atmiņas izmete.
+Beigās, lai apskatītos pazīmi, tika uzģenerēta atmiņas izmete.
 Saskaņā ar pētījumā minētām shēmām \cite{PWMS}  bija sasniegts maksimums (peaks).
 Atmiņas izmete palīdz saprast, kas notiek atmiņā.
 \begin{figure}[h]
@@ -113,7 +113,7 @@ Pārējie 127 bin un ātrie bin saraksti, dotajā piemērā, bija tukši.
 
 Iekšējai fragmentēšanai nav pazīmju atmiņas izmetē, kuras varētu liecināt par doto problēmu.
 Lai atpazītu doto problēmu ir nepieciešams zināt cik daudz atmiņas pieprasīja lietotne.
-Izmantojot tikai atmiņas izmeti šo informāciju iegūt nevar.
+Izmantojot atmiņas izmeti, šo informāciju var iegūt tikai no backtrace, taču ir nepieciešams, lai lietotne beidz darbību uzreiz pēc atmiņas pieprasīšanas, citā gadījuma šī informācija var netikt iekļauta un iekšējo fragmentēšanu pārbaudīt nevar.
 
 No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels mazo\footnote{Mazs nozīme tāds, kurš nevar apmierināt turpmākos pieprasījumus pēc atmiņas.} atbrīvoto gabalu skaits.
 Šie gabali var būt saglabāti vienā no bin sarakstiem:
@@ -146,6 +146,6 @@ Kaudzē atrodas iedalītie gabali 32 baitu (0x21) izmērā un atbrīvotie gabali
 Atbrīvotie gabali ir saistīti sava starpā un atrodās ātrajā sarakstā.
 Tas ir novērojams, jo lietotāju datos ātrajiem gabaliem ir uzglabāta nākama gabala adrese.
 Pēdejām gabalam ātrajā sarakstā ir uzglabāta 0x00000000 adrese.
-Dotajam piemēram fragmentēšana ir vienāda ar 50\%.
+
 
 
