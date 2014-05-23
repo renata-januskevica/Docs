@@ -54,7 +54,6 @@ end
 # komanda druka kopējo statistiku
 define print_stat
 	set $system_mem = (long *) ($arg0 + 1096)
-	set $top_address = (long *) ($arg0 + 48)
 	set $top_size_address = (long *) ($top_address[0] + 4)
 
 	# Top gabalam vienmēr ir izmantots iepriekšējais atmiņas gabals un P zīme ir vienmēr uzlikta
@@ -107,20 +106,25 @@ define analyze
 	set $bin_number = 0
 	set $biggest_free_size = 0
 	set $count_in_arena = 0
+	set $top_address = (long *) ($arg0 + 48)
 
-	# Lai savāktu statistiku ejam cauri visiem 128 bin sarakstiem
-	while ($bin_number < 127)
-		free_chunk_list $arg0 $bin_number
-		if ($biggest_free_size < $chunk_max_size)
-			set $biggest_free_size = $chunk_max_size
+	if ($top_address[0] != 0)
+		# Lai savāktu statistiku ejam cauri visiem 128 bin sarakstiem
+		while ($bin_number < 127)
+			free_chunk_list $arg0 $bin_number
+			if ($biggest_free_size < $chunk_max_size)
+				set $biggest_free_size = $chunk_max_size
+			end
+			set $bin_number = $bin_number + 1
+			set $free_in_arena = $free_in_arena + $total_size
+			set $count_in_arena = $count_in_arena + $chunk_count
 		end
-		set $bin_number = $bin_number + 1
-		set $free_in_arena = $free_in_arena + $total_size
-		set $count_in_arena = $count_in_arena + $chunk_count
-	end
 	
-	print_stat $arg0
-	if ($arg1 != 0)
-		check_fragm $arg0 $arg1
+		print_stat $arg0
+		if ($arg1 != 0)
+			check_fragm $arg0 $arg1
+		end
+	else
+		printf "Atmiņa programmā netiek dinamiski iedalīta."
 	end
 end

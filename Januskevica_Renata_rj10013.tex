@@ -154,8 +154,6 @@ pdfkeywords={},
 \definecolor{lbcolor}{rgb}{0.95,0.95,0.95}
 
 
-
-
 \lstdefinestyle{ANSI}{language=C}
 \lstdefinestyle{C++}{alsolanguage=C++}
 \lstdefinestyle{customc}{
@@ -196,6 +194,15 @@ pdfkeywords={},
   commentstyle=\itshape\color{purple!40!black},
 }
 \lstset{escapechar=@,style=customc}
+
+
+\newcommand\specialsection{%
+  %\titleformat*{\chapter}{\MakeLowercase}{\fontsize{11}{12}}
+  %\titleformat*{\chapter}{\large\filcenter}{\thechapter}{1em}{\MakeUppercase} \raggedleft
+  \titleformat{\chapter}
+   {\fontsize{12}{12}}{\thechapter}{1em}{\raggedleft}
+\titlespacing*{\chapter}{0pt}{10pt}{10pt}
+}
 
 \begin{document}
 \include{nosaukums}
@@ -271,7 +278,9 @@ pdfkeywords={},
 \begingroup
 \renewcommand{\cleardoublepage}{}
 \renewcommand{\clearpage}{}
-\chapter{Pielikumi}\label{chap:pielikumi}
+
+\chapter{Pielikumi}
+\specialsection
 \input{pielikumi}
 \endgroup
 
