@@ -2,11 +2,13 @@
 # 23.05.2014
 # Lai palaistu skriptu, ir nepieciešams ielādēt skriptu gdb ar "source <script.gdb>"" komandu un izsaukt lietotāja
 # definēto komandu analyze ar 2 argumentiem:
-# $arg0: galvenās arēnas adrese
+# $arg0: galvenās arēnas adrese, kuru iespējams iegūt ar komandu "p &main_arena"
 # $arg1: skaitlis, kurš norāda gabalu skaitu, kuros tiks sadalīta kaudze
+# Piemēram: "analyze 0x845e000 5"
 
 # $arg0: galvenās arēnas adrese
 # $arg1: bin saraksta numurs
+# komanda iet cauri visiem gabaliem sarakstā
 define free_chunk_list
 	# bin saraksta sākuma adrese
 	set $start_bin = (long *) ($arg0 + 56 + $arg1 * 8)
@@ -44,11 +46,12 @@ define free_chunk_list
 	if ($chunk_count == 0)
  		printf "Bin numurs %i: tukšs\n", $arg1 + 1
  	else
- 		printf "Bin numurs %i: %i gabals (%i - %i baiti), kopumā = %i baiti\n", $arg1 + 1, $chunk_count, $chunk_min_size,     $chunk_max_size, $total_size
+ 		printf "Bin numurs %i: %i gabals(-li) (%i - %i baiti), kopumā = %i baiti\n", $arg1 + 1, $chunk_count, $chunk_min_size,     $chunk_max_size, $total_size
  	end
 end
 
 # $arg0: galvenās arēnas adrese
+# komanda druka kopējo statistiku
 define print_stat
 	set $system_mem = (long *) ($arg0 + 1096)
 	set $top_address = (long *) ($arg0 + 48)
@@ -62,17 +65,17 @@ define print_stat
 	printf "Gabalu skaits arēnā: %i,\n", $count_in_arena
 	printf "Lielākā gabala izmērs: %i baiti (%i KiB, %i MiB),\n", $biggest_free_size, $biggest_free_size/1024, $biggest_free_size/1024/1024
 	printf "Kaudzes segmenta izmērs: %i baiti (%i KiB, %i MiB),\n", $system_mem[0], $system_mem[0]/1024, $system_mem[0]/1024/1024
-	printf "Programmai iedalītās atmiņas daudzums: %i baiti (%i KiB, %i MiB),\n", $alloc_memory, $alloc_memory/1024, $alloc_memory/1024/1024
+	printf "Kopējais programmai iedalītās atmiņas daudzums: %i baiti (%i KiB, %i MiB),\n", $alloc_memory, $alloc_memory/1024, $alloc_memory/1024/1024
 	printf "Atbrīvotā atmiņa bin sarakstos: %i baiti (%i KiB, %i MiB),\n", $free_in_arena, $free_in_arena/1024, $free_in_arena/1024/1024
 	printf "Top gabala izmērs: %i baiti (%i KiB, %i MiB),\n", $top_chunk_size, $top_chunk_size/1024, $top_chunk_size/1024/1024
 end
 
 # $arg0: galvenās arēnas adrese
 # $arg1: kaudzes sadalījums apgabalos
+# komanda izvada fragmentāciju, fragmentācija tiek izrēķināta sekojoši: (atbrīvoto gabalu izmērs)/(atbrīvoto un iedalīto gabalu izmērs)*100
 define check_fragm
 	set $fract_size = $used_and_freed/$arg1
-	set $fract_start = (long *) ($top_address[0] - $system_mem[0] + $top_chunk_size)
-	set $heap_pointer =  $fract_start
+	set $heap_pointer =  (long *) ($top_address[0] - $system_mem[0] + $top_chunk_size)
 	set $chunk_size = 0
 
 	while ($heap_pointer != $top_address[0]) 
@@ -101,17 +104,17 @@ end
 # $arg1: kaudzes sadalījums apgabalos
 define analyze
 	set $free_in_arena = 0
-	set $bin_nu = 0
+	set $bin_number = 0
 	set $biggest_free_size = 0
 	set $count_in_arena = 0
 
 	# Lai savāktu statistiku ejam cauri visiem 128 bin sarakstiem
-	while ($bin_nu < 127)
-		free_chunk_list $arg0 $bin_nu
+	while ($bin_number < 127)
+		free_chunk_list $arg0 $bin_number
 		if ($biggest_free_size < $chunk_max_size)
 			set $biggest_free_size = $chunk_max_size
 		end
-		set $bin_nu = $bin_nu + 1
+		set $bin_number = $bin_number + 1
 		set $free_in_arena = $free_in_arena + $total_size
 		set $count_in_arena = $count_in_arena + $chunk_count
 	end
@@ -120,5 +123,4 @@ define analyze
 	if ($arg1 != 0)
 		check_fragm $arg0 $arg1
 	end
-	
 end
