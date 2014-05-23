@@ -16,12 +16,12 @@ Eksistē divi atmiņas iedalīšanas paņēmieni: statiskā un dinamiskā atmiņ
 \end{figure}
 
 
-\subsubsection{Statiskā atmiņas iedalīšana}
+\subsection{Statiskā atmiņas iedalīšana}
 Statiskā atmiņas iedalīšana nozīme, ka atmiņa tiek iedalīta pirms programmas palaišanas, parasti tas notiek kompilācijas laikā.
 Programmas izpildēs laikā atmiņa vairs netiek iedalīta, ka arī netiek atbrīvota. 
 Statiskais atmiņas iedalīšanas paņēmiens nodrošina to, ka atmiņa tiek iedalīta statiskiem un globāliem mainīgiem, neatkarībā no tā vai mainīgais tiks izmantots programmā pie dotajiem nosacījumiem vai nē.
 
-\subsubsection{Dinamiskā atmiņas iedalīšana}
+\subsection{Dinamiskā atmiņas iedalīšana}
 Dinamiskā atmiņas iedalīšana nozīme, ka atmiņa tiek iedalīta programmas izpildes laikā.
 Tas var būt nepieciešams, kad atmiņas daudzums nav zināms programmas kompilācijas laikā. 
 Dinamiskā atmiņas iedalīšana, var būt realizēta ar steka vai kaudzes palīdzību un var būt automātiskā vai kontrolētā \cite{SDMA}.
@@ -51,7 +51,7 @@ Kad tiek izpildīta jebkura programma, atmiņa tiek pārvaldīta divos veidos: a
 Operētājsistēmas kodols apstrādā visus atmiņas pieprasījumus, kas attiecās uz programmu vai programmas instancēm.
 Kad lietotājs sāk programmas izpildi, tad kodols iedala atmiņas apgabalu tekošām procesam.
 Šīs apgabals, no procesa viedokļa, ir viena lineārā virtuālā adrešu telpa, kura ir sadalīta vairākos segmentos. 
-Svarīgākie procesa segmenti  \cite {atparv}:
+Svarīgākie procesa segmenti  \cite {PETRSOF}:
 %\vspace{-20 pt}
 \begin{itemize}
 	\item   Teksta segments - šeit tiek uzglabāti dati, kuri tiek izmantoti tikai lasīšanai. Tās ir nokompilētas koda instrukcijas. 
@@ -97,7 +97,7 @@ char * str = (char *)malloc(sizeof(char) * num_elements); /* C */
 
 GNU C bibliotēkā ir iebūvēts ptmalloc2 iedalītājs.
 Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība no lietotnes, izmantojot GNU C bibliotēkas funkciju palīdzību, ko nodrošina ptmalloc2.
-C valodā dinamiskā atmiņa tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {atparv}.
+C valodā dinamiskā atmiņa tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {PETRSOF}.
 C++ valodā ir izmantots operators new, lai pieprasītu atmiņu. 
 Attēlā 2.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai izmantojot C un C++ kodu.
 
@@ -356,7 +356,7 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 \section{Secinājumi}
 \begin{enumerate}
 \item Tiek aplūkota literatūra un GNU C bibliotēkas malloc pirmkods;
-\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 2.4. attēlu);
+\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 2.8. attēlu);
 \item Galvenie secinājumi par kaudzi:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
     \item kontrolētā atmiņas iedalīšana ir dinamiskā atmiņas iedalīšana, kura notiek programmas izpildes laikā, un atmiņa parasti tiek iedalīta no kaudzes;

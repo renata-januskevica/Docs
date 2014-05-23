@@ -43,9 +43,10 @@
   commentstyle=\color{dkgreen},
   stringstyle=\color{mauve},
   breaklines=true,
-  breakatwhitespace=true
+  breakatwhitespace=true,
   tabsize=2
 }
+
 
 %For Figure exact  placement with tag H
 \usepackage[
@@ -206,7 +207,7 @@ pdfkeywords={},
 
 \begin{document}
 \include{nosaukums}
-%\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{1}
 \setcounter{secnumdepth}{-1}
 \input{anotacija}
 \clearpage
@@ -228,20 +229,20 @@ pdfkeywords={},
 \setcounter{secnumdepth}{2}
 \setcounter{chapter}{0}
 % MAINIT IEVADU JA KAUT KAS ŠEIT MAINĀS!
-\chapter{Jēdzieni, uz kuriem balstīta metode}%\label{chap:chapter_2} % 
+\chapter{\@nodone}\label{chap:chapter_1} 
 \input{nodala_1}
-%\chapter{Atmiņas iedalīšana, organizācija un pārvaldība}
-%\input{nodala_2}
+\chapter{\@nodtwo}\label{chap:chapter_2} % 
+\input{nodala_2}
 
 
 
-\chapter{Kaudzes problēmas}\label{chap:chapter_3} % 
+\chapter{\@nodthree}\label{chap:chapter_3} % 
 \input{nodala_3}
 
-\chapter{Atkļūdošanas metodes apraksts}\label{chap:chapter_4} % 
+\chapter{\@nodfour}\label{chap:chapter_4} % 
 \input{nodala_4}
 
-%\chapter{Realizācijas apraksts}\label{chap:chapter_5}
+%\chapter{\@nodfive}\label{chap:chapter_5}
 %\input{nodala_5}
 
 
@@ -259,7 +260,7 @@ pdfkeywords={},
 %\input{chapter_6_cor}
 %
 \setcounter{secnumdepth}{-1}
-\chapter{Galvenie rezultāti un secinājumi} \label{chap:Secinajumi}
+\chapter{\@nodsix} \label{chap:Secinajumi}
 \input{secinajumi}
 
 \chapter{Pateicības} \label{chap:pateicibas}

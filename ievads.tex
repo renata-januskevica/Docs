@@ -7,24 +7,28 @@ Atkļūdošanas darbs nav viegls \cite{ER}. Parasti nav piekļuves klientu sist�
 Var būt grūti atkārtot problēmu pat tad, ja ir aprakstīti scenāriji un ir pielikta konfigurācija.
 Tas viss sarežģī atkļūdošanas procesu un padara darbu neefektīvu.
 
-Šajā bakalaura darbā tiks aprakstīta un piedāvāta pieeja, kura palīdzes vienkāršot atkļūdošanas procesu problēmām, kas saistītas ar kaudzi un dinamisko atmiņas iedalīšanu.
+Šajā bakalaura darbā tiek aprakstīta un piedāvāta pieeja, kura palīdzes vienkāršot atkļūdošanas procesu problēmām, kas saistītas ar kaudzi un dinamisko atmiņas iedalīšanu.
 Piemēram, kaudzes problēmas var būt sekojošās: atmiņas noplūde, datu kaudzes bojāšana, maksimālās atmiņas izmantošanas problēma, fragmentēšana, kļūdas trešās puses bibliotēkās.
 Darbā ir aprakstīta atkļūdošanas pieeja, kura balstīta uz atmiņas izmetes analīzi.
 Šī pieeja ir aprakstīta uz 3 izvēlētiem problēmu piemēriem: atmiņas noplūde, fragmentēšana, maksimālās atmiņas izmantošanas problēma.
 Atmiņas noplūde ir izvēlēta, tāpēc ka ir viena no bieži sastopamām problēmām \cite{GNED}.
 Fragmentēšana un maksimālās atmiņas izmantošanas problēma ir divas problēmas, kuras pēc autores viedokļa, ir tuvas, un var tikt atkļūdotas ar atmiņas izmetes palīdzību.
-Pieeja var tikt pielietota, kad jau ir novērojamas problēmu sekas vai, kad ir vēlme pārliecināties par problēmas eksistenci, sasniedzot kādu stāvokli programmā.
+Pieeja var tikt pielietota gadījumos, kad ir novērojamas problēmu sekas vai, kad ir vēlme pārliecināties par problēmas eksistenci, sasniedzot kādu stāvokli programmā.
 %Dotās problēmas demonstrē, ka pieeja strādā un var tikt izmantota plašāk, piemēram, citu problēmu atkļūdošanai.
 
-Pieeja, kas aprakstīta bakalaura darbā, tiek izstrādāta ievērojot sekojošus ierobežojumus:
+
+
+Darba sastāv no ievada, 4 nodaļām un secinājumiem:
 \begin{itemize}
-	\item GNU C bibliotēkas izmantošana sākot ar 2.3 versiju;
-    \item a.out vai ELF atmiņas izmetes formāts;
-    \item ar atmiņu saistīto problēmu atkļūdošana.
+    \item Nodaļā "{\@nodone}" ir aplūkots atmiņas izmetes jēdziens, atmiņas izmetes ģenerēšanas un izmantošanas iespējas.
+    \item Nodaļā "{\@nodtwo}" ir aprakstīta atmiņas organizācija un  ptmalloc2 realizācija. 
+    \item Nodaļā "{\@nodthree}" ir pētītas 3 no 5 izvēlētām problēmām un identificētas to pazīmes atmiņas izmetē, nodaļā iekļauti arī pārējo 2 problēmu apraksti.
+    \item Nodaļā "{\@nodfour}" ir piedāvāta metode, kura balstīta uz iepriekš izklāstītiem jēdzieniem.
+    \item Nodaļā "{\@nodsix}" ir apkopoti darba laikā gūtie rezultāti un secinājumi.
 \end{itemize} 
-
-Darba sastāv no 4 nodaļām. Nodaļā "Jēdzieni, uz kuriem balstīta metode" ir ietverts atmiņas izmetes un atmiņas organizācijas apraksts.
-Nodaļā "Kaudzes problēmas" aprakstītas 3 izvēlētās problēmas un identificētas to pazīmes atmiņas izmetē. 
-Nodaļā "Atkļūdošanas metodes apraksts" ir piedāvāta metode, kura balstīta uz iepriekš izklāstītiem jēdzieniem.
-Nodaļā "Galvenie rezultāti un secinājumi" ir apkopoti darba laikā gūtie rezultāti un secinājumi.
-
+%Pieeja tiek izstrādāta ievērojot sekojošus ierobežojumus: %, kas aprakstīta bakalaura darbā,
+%\begin{itemize}
+%	\item GNU C bibliotēkas izmantošana sākot ar 2.3 versiju;
+  %  \item a.out vai ELF atmiņas izmetes formāts;
+    %\item ar kaudzi saistīto problēmu atkļūdošana.
+%\end{itemize} 
