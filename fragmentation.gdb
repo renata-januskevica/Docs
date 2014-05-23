@@ -1,19 +1,27 @@
-# $arg0: main arena address
-# $arg1: bin list number
-define free_chunk_list
-	# address where bin starts
-	set $start = (long *) ($arg0 + 56 + $arg1 * 8)
+# Autore: Renata Januškeviča
+# 23.05.2014
+# Lai palaistu skriptu, ir nepieciešams ielādēt skriptu gdb ar "source <script.gdb>"" komandu un izsaukt lietotāja
+# definēto komandu analyze ar 2 argumentiem:
+# $arg0: galvenās arēnas adrese
+# $arg1: skaitlis, kurš norāda gabalu skaitu, kuros tiks sadalīta kaudze
 
-	# malloc returned that address to programm
-	set $free_chunk = (long *) ($start[1] + 8)
+# $arg0: galvenās arēnas adrese
+# $arg1: bin saraksta numurs
+define free_chunk_list
+	# bin saraksta sākuma adrese
+	set $start_bin = (long *) ($arg0 + 56 + $arg1 * 8)
+	# molloc() funkcija atgriež šo adresi programmai
+	set $free_chunk = (long *) ($start_bin[1] + 8)
+	# atmiņas gabalu daudzums sarakstā
 	set $chunk_count = 0
+	# maksimāls gabala izmērs
 	set $chunk_max_size = 0
+	# gabalu kopējais skaits sarakstā
 	set $total_size = 0
-	
-	while ($free_chunk != $start)
-		# lower 3-bits are used as metadata
+
+	while ($free_chunk != $start_bin)
+		# pēdējie 3 biti netiek izmantoti izmēra glabāšanai
 		set $chunk_size = ($free_chunk[-1] & ~7) 
-		#printf "Chunk adress: 0x%x  size:%i  fd:0x%x  bk:0x%x \n", $free_chunk, $chunk_size, $free_chunk[0], $free_chunk[1]
 
 		if ($chunk_count == 0)
 			set $chunk_max_size = $chunk_size 
@@ -32,45 +40,47 @@ define free_chunk_list
 		set $free_chunk = (long *) ($free_chunk[1] + 8)
 	end
 
+	# dati par katru sarakstu
 	if ($chunk_count == 0)
- 		#printf "Bin number %i: empty\n", $arg1 + 1
+ 		printf "Bin numurs %i: tukšs\n", $arg1 + 1
  	else
- 		#printf "Bin number %i: %i chunks (%i - %i bytes), total = %i bytes\n", $arg1 + 1, $chunk_count, $chunk_min_size,     $chunk_max_size, $total_size
+ 		printf "Bin numurs %i: %i gabals (%i - %i baiti), kopumā = %i baiti\n", $arg1 + 1, $chunk_count, $chunk_min_size,     $chunk_max_size, $total_size
  	end
 end
 
-# $arg0: main arena address
+# $arg0: galvenās arēnas adrese
 define print_stat
 	set $system_mem = (long *) ($arg0 + 1096)
 	set $top_address = (long *) ($arg0 + 48)
 	set $top_size_address = (long *) ($top_address[0] + 4)
 
-	# Previous in use flag is always set for top chunk
+	# Top gabalam vienmēr ir izmantots iepriekšējais atmiņas gabals un P zīme ir vienmēr uzlikta
 	set $top_chunk_size = $top_size_address[0] - 1
-	set $live_memory = $system_mem[0] - $free_in_arena - $top_chunk_size
+	set $alloc_memory = $system_mem[0] - $free_in_arena - $top_chunk_size
 	set $used_and_freed = $system_mem[0] - $top_chunk_size
 	
-	printf "Chunk count in arena: %i,\n", $count_in_arena
-	printf "Biggest free chunk size: %i bytes (%i KiB, %i MiB),\n", $biggest_free_size, $biggest_free_size/1024, $biggest_free_size/1024/1024
-	printf "Heap segment size: %i bytes (%i KiB, %i MiB),\n", $system_mem[0], $system_mem[0]/1024, $system_mem[0]/1024/1024
-	printf "Allocated memory: %i bytes (%i KiB, %i MiB),\n", $live_memory, $live_memory/1024, $live_memory/1024/1024
-	printf "Free in bins: %i bytes (%i KiB, %i MiB),\n", $free_in_arena, $free_in_arena/1024, $free_in_arena/1024/1024
-	printf "Top chunk size: %i bytes (%i KiB, %i MiB),\n", $top_chunk_size, $top_chunk_size/1024, $top_chunk_size/1024/1024
+	printf "Gabalu skaits arēnā: %i,\n", $count_in_arena
+	printf "Lielākā gabala izmērs: %i baiti (%i KiB, %i MiB),\n", $biggest_free_size, $biggest_free_size/1024, $biggest_free_size/1024/1024
+	printf "Kaudzes segmenta izmērs: %i baiti (%i KiB, %i MiB),\n", $system_mem[0], $system_mem[0]/1024, $system_mem[0]/1024/1024
+	printf "Programmai iedalītās atmiņas daudzums: %i baiti (%i KiB, %i MiB),\n", $alloc_memory, $alloc_memory/1024, $alloc_memory/1024/1024
+	printf "Atbrīvotā atmiņa bin sarakstos: %i baiti (%i KiB, %i MiB),\n", $free_in_arena, $free_in_arena/1024, $free_in_arena/1024/1024
+	printf "Top gabala izmērs: %i baiti (%i KiB, %i MiB),\n", $top_chunk_size, $top_chunk_size/1024, $top_chunk_size/1024/1024
 end
 
-define check_peaks
+# $arg0: galvenās arēnas adrese
+# $arg1: kaudzes sadalījums apgabalos
+define check_fragm
 	set $fract_size = $used_and_freed/$arg1
-	set $heap_start = (long *) ($top_address[0] - $system_mem[0] + $top_chunk_size)
-	set $heap_pointer =  $heap_start
+	set $fract_start = (long *) ($top_address[0] - $system_mem[0] + $top_chunk_size)
+	set $heap_pointer =  $fract_start
 	set $chunk_size = 0
-	set $fract_num = 0
 
-#	printf "used and freed: %i fract: %i heap_start: %x, size: %i", $used_and_freed, $arg1, $heap_start, $fract_size
 	while ($heap_pointer != $top_address[0]) 
 		set $free_size = 0
 		set $alloc_size = 0
 
 		set $fract_fin = $heap_pointer + $fract_size/4
+		set $fract_start = $heap_pointer
 		while (($heap_pointer < $fract_fin) && ($heap_pointer != $top_address[0]))
 			set $prev_in_use = ($heap_pointer[1] & 1)
 			if ($prev_in_use == 1) 
@@ -81,22 +91,21 @@ define check_peaks
 			set $chunk_size = ($heap_pointer[1] & ~7)
 			set $heap_pointer = $heap_pointer + (($heap_pointer[1] & ~7)/4)
 		end
-		set $fract_num = $fract_num + 1
+
 		set $fragmentation = ((double) $free_size/($alloc_size + $free_size)) * 100
-		printf "Fragmentation in fraction %i: %i%%\n", $fract_num, $fragmentation
+		printf "Fragmentācija apgabalā 0x%x - 0x%x: %i%%\n", $fract_start, $fract_fin, $fragmentation
 	end
 end
 
-# $arg0: main arena address
-# $arg1: parts to devide heap
+# $arg0: galvenās arēnas adrese
+# $arg1: kaudzes sadalījums apgabalos
 define analyze
-	#set logging on
 	set $free_in_arena = 0
 	set $bin_nu = 0
 	set $biggest_free_size = 0
 	set $count_in_arena = 0
 
-	# go through all 128 normal bins
+	# Lai savāktu statistiku ejam cauri visiem 128 bin sarakstiem
 	while ($bin_nu < 127)
 		free_chunk_list $arg0 $bin_nu
 		if ($biggest_free_size < $chunk_max_size)
@@ -106,8 +115,10 @@ define analyze
 		set $free_in_arena = $free_in_arena + $total_size
 		set $count_in_arena = $count_in_arena + $chunk_count
 	end
-
+	
 	print_stat $arg0
-	check_peak $arg0 $arg1
-	#set logging off
+	if ($arg1 != 0)
+		check_fragm $arg0 $arg1
+	end
+	
 end
