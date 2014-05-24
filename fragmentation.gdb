@@ -23,7 +23,8 @@ define free_chunk_list
 
 	while ($free_chunk != $start_bin)
 		# pēdējie 3 biti netiek izmantoti izmēra glabāšanai
-		set $chunk_size = ($free_chunk[-1] & ~7) 
+        # nepieciešams atņemt -4, jo pirms katra atbrīvotā gabala atrodas iedalītais, kurš aizņem atbrīvota gabala pirmos 4 baitus
+		set $chunk_size = ($free_chunk[-1] & ~7)  - 4
 
 		if ($chunk_count == 0)
 			set $chunk_max_size = $chunk_size 
@@ -87,15 +88,16 @@ define check_fragm
 			set $prev_in_use = ($heap_pointer[1] & 1)
 			if ($prev_in_use == 1) 
 				set $alloc_size = $alloc_size + $chunk_size
+                set $chunk_size = ($heap_pointer[1] & ~7) - 4
 			else
 				set $free_size = $free_size + $chunk_size
+                set $chunk_size = ($heap_pointer[1] & ~7)
 			end
-			set $chunk_size = ($heap_pointer[1] & ~7)
 			set $heap_pointer = $heap_pointer + (($heap_pointer[1] & ~7)/4)
 		end
 
 		set $fragmentation = ((double) $free_size/($alloc_size + $free_size)) * 100
-		printf "Fragmentācija apgabalā 0x%x - 0x%x: %i%%\n", $fract_start, $fract_fin, $fragmentation
+		printf "Atbrīvoto un iedalīto gabalu attiecībā apgabalā 0x%x - 0x%x: %i%%\n", $fract_start, $fract_fin, $fragmentation
 	end
 end
 
