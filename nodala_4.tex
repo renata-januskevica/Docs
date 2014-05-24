@@ -1,151 +1,35 @@
-﻿\section{Metodes pamatprincipi}
+﻿\section{Atkļūdošanas algoritms}
 
  \begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.65]{method}
+\includegraphics[scale=0.6]{method}
 \end{center}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Uz metodi balstītā algoritma blok-shēma}}}
 \end{figure}
 
-%\label{sect:Motivation}
-\section{Detalizēts metodes apraksts}
+Blok-shēmā (sk. 4.1. attēlu) ir attēlots kaudzes atkļūdošanas algoritms.
+Šī algoritma ievaddati ir izpildāmā datne un atmiņas izmete.
+Atmiņas izmete var būt bojāta, tāpēc pirms sākt atkļūdošanas procedūru ir nepieciešams veikt atmiņas izmetes validēšanu (1).
+Šeit ir jāveic dažas pārbaudes, kuras varētu identificēt acīmredzamas kļūdas, piemēram, neatbilstību formātam vai atmiņas izmetes satura nepilnīgumu (pēc galvenes).
+Ir iespējams, ka izpildāmā datne neatbilstis atmiņas izmetei (2), tas ir, kad tiek izmantota cita izpildāmā datne vai atmiņas izmetei neatbilst izpildāmas datnes versija.
+Ir nepieciešams pārbaudīt atbilstību un jāpārliecinās, ka var piekļūt galvenās arēnas datiem.
+Pēc dotām pārbaudēm var sākt atmiņas izmetes analīzi.
+Blok-shēmā ir parādīts, ka ir nepieciešams darbināt analizatorus (3, 4, 5), kuri  izvada statistiku.
+Daudzkodolu procesoriem ir iespējams realizēt algoritmu, kur analizatori strādās paralēli, vienkodolā visi analizatori izpildīsies secīgi. 
+Analizatoru skaits nav ierobežots, taču bakalaura darba algoritms tiks nodemonstrēts ar 3 analizatoru piemēriem. 
+Katrs analizators pārbauda noteiktās kaudzes problēmas pazīmes. 
+Pēc tam tiek izvadīts kopējais rezultāts (6).
+Ja ir zināma programmai raksturīga uzvedība, tad pēc rezultāta izvadīšanas var secināt pār problēmām.
 
 
 
 
-\subsection{Atmiņas noplūdes pazīmes}
-Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdī, tad uzģenerētās datnes izmērs, atmiņas noplūdes problēmas ietekmēs rezultātā, var sasniegt vairākus gigabaitus.
-Turpmāk ir apskatīts piemērs, kurš parāda, ka pazaudētas atmiņas daudzums ietekmē atmiņas izmetes izmēru.
-Programmā (sk. 1. pielikumu), kura palaista ar 100, 100 argumentiem, kopumā ir pazaudēti 100*100 = 10000 kilobaiti. 
-Pirmais arguments noteic cik daudz gabalu nepieciešams iedalīt, otrais - kāds ir katra gabala izmērs.
-Dotajā programmā atmiņa dinamiski ir iedalīta vairākas reizes. 
-Sākumā atmiņa ir iedalīta masīvam ar norādēm arr[ ], pēc tam katram masīva elementam ir iedalīts atmiņas gabals norādītajā izmērā.
-Uz brīdi, kad ir izsaukta abort() funkcija ir jābūt norādei uz arr[ ] masīvu no procesa adrešu telpas.
-Turklāt 10000 kilobaiti ir pazaudēti, jo  katram elementam masīvā, tika piešķirta NULL vērtība. 
-Kopējais dotās programmas atmiņas izmetes izmērs pēc atmiņas izmetes ģenerēšanas bija 10404 kilobaiti.
-
-Par fiziskās atmiņas noplūdes pazīmi var uzskatīt stāvokli, kad uz atmiņas gabaliem kaudzē nav norāžu no procesa adrešu telpas.
-Par šo programmas stāvokli var pārliecināties, veicot atmiņas izmetes analīzi.
-Atmiņas izmetē atrodas kaudzes saturs visām atmiņas arēnām.
-Interpretējot katru kaudzes saturu, kā kopu ar daudziem atmiņas gabaliem, var iegūt adreses, uz kuriem malloc() funkcija atgrieza norādes procesam.
-Ja procesa adrešu telpā nav nevienas norādes uz atrastajām adresēm, tad ar lielu varbūtību var apgalvot, ka programmā ir atmiņas noplūde.
-Kamēr kļūda nav atrasta kodā, to nevar secināt, jo atmiņas izmete var būt bojāta un var neiekļaut daļu no procesa adrešu telpas.
-Šī pazīme nav raksturīga loģiskajai atmiņas noplūdei.
 
 
 
-Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā.
-Problēmai ir raksturīgs stāvoklis, kad ir daudzi atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus (izmēru, līdzīgas datu shēmas).
-Turpmāk tiks apskatīts piemērs, kurš paskaidro kā var izpausties šī pazīme.
-Piemērā ir aplūkots gadījums, kad programmā ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir izmantota virtuālā funkcija.
-Ja C++ klasē ir virtuālās funkcijas, tad kompilators izveido virtuālo funkciju tabulu (vtable), kura iekļauj rādītājus uz šī klases virtuālām funkcijām.
- Katrai klasei ir tikai viena virtuālo funkciju tabula, kuru izmanto visi klases objekti.
- Ar katru virtuālo funkciju tabulu ir saistīts virtuālo funkciju rādītājs (vpointer).
- Šīs rādītājs norāda uz virtuālo funkciju tabulu un tiek izmantots lai piekļūtu virtuālajām funkcijām.
-Klase, kurā ir virtuālā funkcija, atmiņā tiks izvietota sekojoši (sk. 3.3. attēlu).
-Ja loģiskā atmiņas noplūde notiks, tāpēc ka atmiņā neierobežoti pieaugs MyClass objektu skaits, tad pēc vpointer norādes atmiņas gabalos var identificēt doto problēmu, bet saprast kurai klasei pieder objekti var ar gdb palīdzību.
-Instrukcijas, kas ļauj apskatīties, kuram apgabalam pieder adrese jau tika aprakstītas sadaļā \ref{subsec:debugg_gdb}
-\begin{figure}[h]
-\begin{lstlisting}
-class MyClass
-{
-    virtual SomeVirtualMethod();
-
-    public:
-        void* attribute1;
-        void* attribute2;
-}
-\end{lstlisting}
-%\caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas noplūde, C++}}}
-\end{figure}
-\begin{figure}[h]
-\begin{center}
-\includegraphics[scale=0.5]{memoryleak}
-\end{center}
-\caption{\textbf{\fontsize{11}{12}\selectfont {C++ klases ar virtuālo funkciju izvietojums atmiņā }}}
-\label{fig:memoryleak}
-\end{figure}
 
 
 
-\subsection{Maksimālās atmiņas izmantošanas problēmas pazīmes}
-Atmiņas izmetē pazīme, kas varētu liecināt par problēmu, ir lielā izmēra atmiņas gabali, kuri atrodas bin sarakstos.
-Ja pēc maksimālās atmiņas izmantošanas bija novērojamā fragmentēšana, tad bin sarakstos varētu atrasties liels atmiņas gabalu skaits.
-Tāds skaits, kurš varētu tikt izveidots sadalot mazākos gabalos procesa atmiņas patēriņa pieaugumu, kas notika mēģinot sasniegt maksimumu.
-Saskaņā ar GNU C realizāciju visi atbrīvotie gabali tiek uzglabāti bin sarakstos.
-Tā kā ātrie saraksti uzglabā mazus atmiņas gabalus (līdz 64 baitiem) un nav paredzēti ilgstošai atmiņas gabalu glabāšanai, tad daudzi atmiņas gabali tiks uzglabāti parastajos sarakstos.
-
-Tālāk ir aprakstīts piemērs, kurš parāda, ka problēmas pazīme izpaužas atmiņas izmetē.
-Atmiņas izmete ir uzģenerēta, izmantojot iepriekš sagatavoto programmu (sk. 2. pielikumu).
-Sākumā tika iedalīti 100 atmiņas gabali, katrs 100 kilobaitu izmēra.
-Katrā baitā bija ierakstīta vērtība 7.
-Pēc tam bija atbrīvoti 99 gabali izņemot pēdējo.
-Beigās, lai apskatītos pazīmi, tika uzģenerēta atmiņas izmete.
-Saskaņā ar pētījumā minētām shēmām \cite{PWMS}  bija sasniegts maksimums (peaks).
-Atmiņas izmete palīdz saprast, kas notiek atmiņā.
-\begin{figure}[h]
-\begin{lstlisting}[style=customgdb]
-(gdb) p main_arena
-$3 = {mutex = 0, flags = 1, fastbinsY = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, top = 0x97ba4b8, last_remainder = 0x0,
-bins = {0x8df6198, 0x8df6198, 0xb76cf478, 0xb76cf478, 0xb76cf480, 0xb76cf480, 0xb76cf488, 0xb76cf488, 0xb76cf490, 0xb76cf490,
-0xb76cf498, 0xb76cf498, 0xb76cf4a0, 0xb76cf4a0, 0xb76cf4a8, 0xb76cf4a8, 0xb76cf4b0, 0xb76cf4b0, 0xb76cf4b8, 0xb76cf4b8,
-0xb76cf4c0, 0xb76cf4c0, 0xb76cf4c8, 0xb76cf4c8, 0xb76cf4d0, 0xb76cf4d0, 0xb76cf4d8, 0xb76cf4d8, 0xb76cf4e0, 0xb76cf4e0...},
-binmap = {0, 0, 0, 0}, next = 0xb76cf440, next_free = 0x0, system_mem = 10375168, max_system_mem = 10375168}
-(gdb) x/16wx 0x8df6198
-0x8df6198: 0x00000000 0x009ab319 0xb76cf470 0xb76cf470
-0x8df61a8: 0x00000000 0x00000000 0x07070707 0x07070707
-0x8df61b8: 0x07070707 0x07070707 0x07070707 0x07070707
-0x8df61c8: 0x07070707 0x07070707 0x07070707 0x07070707
-\end{lstlisting}
-\caption{\textbf{\fontsize{11}{12}\selectfont {bin saraksta izdruka, izmantojot atmiņas izmeti}}}
-\end{figure}
-%$
-Ar \texttt{p main\_arena} ir izdrukāta galvenās arēnas struktūra un iegūtas bin sarakstu sākuma adreses (sk. 3.4. attēlu).
-Visi bin saraksti atrodas masīvā bins.
-7 rindiņā ir komanda, kura izdrukā 16 adreses no pirmā nesakārtotā bin saraksta, kurā atrodas gabali, kuri bija nesen atbrīvoti.
-Sākot ar 8 rindiņu ir redzams atmiņas gabals, kas atrodas bin sarakstā un kura izmērs ir 0x009ab319, kas decimālajā skaitīšanas sistēmā ir vienāds ar 10138393, binārajā skaitīšanas sistēmā 100110101011001100011001.
-Tā kā 3 mazākie biti netiek izmantoti izmēra glabāšanai, tad gabala izmērs ir 10138393 - 1=10138392.
-Mūsu 99 atbrīvoto gabalu kopējais izmērs ir vienāds ar izmēru kilobaitos, kas ir sareizināts ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
-Atšķirība starp pirmā gabala izmēru bin sarakstā un atbrīvoto gabalu kopēju izmēru ir vienāda ar 10138392 - 10137600 = 792 un izskaidrojama ar to, ka katram gabalam bija iedalīti 8 baiti uzturēšanas informācijas glabāšanai (prev\_size, size).
-Pārējie 127 bin un ātrie bin saraksti, dotajā piemērā, bija tukši.
-
-\subsection{Fragmentēšanas pazīmes}
-
-Iekšējai fragmentēšanai nav pazīmju atmiņas izmetē, kuras varētu liecināt par doto problēmu.
-Lai atpazītu doto problēmu ir nepieciešams zināt cik daudz atmiņas pieprasīja lietotne.
-Izmantojot atmiņas izmeti, šo informāciju var iegūt tikai no backtrace, taču ir nepieciešams, lai lietotne beidz darbību uzreiz pēc atmiņas pieprasīšanas, citā gadījuma šī informācija var netikt iekļauta un iekšējo fragmentēšanu pārbaudīt nevar.
-
-No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels mazo\footnote{Mazs nozīme tāds, kurš nevar apmierināt turpmākos pieprasījumus pēc atmiņas.} atbrīvoto gabalu skaits.
-Šie gabali var būt saglabāti vienā no bin sarakstiem:
-\begin{itemize}
-\item Ja izmērs ir līdz 64 baitiem, nav veikta ātra saraksta saplūdināšana vai mazie gabali nevar tikt saplūdināti, tad atbrīvotie gabali tiks novietoti ātrajos sarakstos.
-Ātrajos sarakstos gabals norādīs uz nākamo gabalu un veidos garo sarakstu no visiem atmiņas gabaliem;
-\item Ja ātrie gabali tika saplūdināti vai gabali ir lielāki par 64 baitiem, tad tie tiks novietoti parastajos sarakstos.
-\end{itemize}
-\begin{figure}[h]
-\begin{lstlisting}[style=customgdb]
-0x8b30198: 0x00000000 0x00000011 0x00000000 0x00000000
-0x8b301a8: 0x00000000 0x00000021 0x00000000 0x00000000
-0x8b301b8: 0x00000000 0x00000000 0x00000000 0x00000000
-0x8b301c8: 0x00000000 0x00000011 0x08b30198 0x00000000
-0x8b301d8: 0x00000000 0x00000021 0x00000000 0x00000000
-0x8b301e8: 0x00000000 0x00000000 0x00000000 0x00000000
-0x8b301f8: 0x00000000 0x00000011 0x08b301c8 0x00000000
-0x8b30208: 0x00000000 0x00000021 0x00000000 0x00000000
-0x8b30218: 0x00000000 0x00000000 0x00000000 0x00000000
-0x8b30228: 0x00000000 0x00000011 0x08b301f8 0x00000000
-\end{lstlisting}
-\caption{\textbf{\fontsize{11}{12}\selectfont {Fragmentētā kaudze}}}
-\end{figure}
-
-Kaudze būs saskaldīta un katrs iedalītais gabals robežos ar mazāko atbrīvoto gabalu.
-Piemēra ir izdrukāts kaudzes saturs (sk. 3.5. attēlu).
-Piemērā izmantotā atmiņās izmete tika uzģenerēta izmantojot iepriekš sagatavoto programmu (sk. 3. pielikumu).
-Programmai no komandrindas tika padoti argumenti: 100, 8.
-Kaudzē atrodas iedalītie gabali 32 baitu (0x21) izmērā un atbrīvotie gabali 16 baitu (0x11) izmērā.
-Atbrīvotie gabali ir saistīti sava starpā un atrodās ātrajā sarakstā.
-Tas ir novērojams, jo lietotāju datos ātrajiem gabaliem ir uzglabāta nākama gabala adrese.
-Pēdejām gabalam ātrajā sarakstā ir uzglabāta 0x00000000 adrese.
 
 \section{Secinājumi}
 \begin{enumerate}

@@ -1,5 +1,5 @@
 ﻿Šī nodaļa palīdz saprast kopējo atmiņas organizāciju un kaudzes\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.} lomu tajā. 
-Šajā nodaļā ir aprakstīti atmiņas iedalīšanas paņēmieni, ir dots īss ieskāts GNU C bibliotēkas ptmalloc2 realizācijā un aprakstīta atmiņas pārvaldība.
+Šajā nodaļā ir aprakstīti atmiņas iedalīšanas paņēmieni, ir dots īss ieskāts GNU C bibliotēkas ptmalloc2 realizācijā un aprakstīta atmiņas pārvaldība no lietotāja un no kodola puses.
 
 \section{Atmiņas iedalīšanas paņēmieni}
 %\label{sect:Motivation}
@@ -55,14 +55,14 @@ Svarīgākie procesa segmenti  \cite {PETRSOF}:
 %\vspace{-20 pt}
 \begin{itemize}
 	\item   Teksta segments - šeit tiek uzglabāti dati, kuri tiek izmantoti tikai lasīšanai. Tās ir nokompilētas koda instrukcijas. 
-    Vairākas programmas instances var izmantot šo atmiņas apgabalu;
+    Vairākas programmas instances var izmantot šo atmiņas apgabalu.
     \item Statisko datu segments - apgabals, kurā tiek uzglabāti dati ar iepriekš zināmu izmēru. Tās ir globālie un statiskie mainīgie.
-    Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi;
+    Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi.
     \item Kaudzes segments - apgabals, no kura tiek iedalīta dinamiskā atmiņa.
     Kaudzes segmentā atrodas dinamiski iedalītā un atbrīvotā atmiņa. Kaudzes segmenta saturs ir sadalīts sīkāk, mazākos atmiņās gabalos.
     Kaudzes segments aug no mazākas adreses līdz lielākai.  Lai palielinātu kaudzes segmenta izmēru, tiek veikts brk() sistēmas izsaukums. 
     Izsaukums uzstāda kaudzes segmenta jauno beigu robežu. 
- Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 \cite{LINMAN};
+ Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 \cite{LINMAN}.
     \item Steka segments - apgabals, kurā tiek uzglabāti: funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam, ka arī lokālo mainīgo un reģistru vērtības. 
     Steks aug no lielākas adreses līdz mazākai. 
     Steks ir iedalīts priekš katras programmas instances atsevišķi.
@@ -355,8 +355,8 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 
 \section{Secinājumi}
 \begin{enumerate}
-\item Tiek aplūkota literatūra un GNU C bibliotēkas malloc pirmkods;
-\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 2.8. attēlu);
+\item Tiek aplūkota literatūra un GNU C bibliotēkas malloc pirmkods.
+\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 2.8. attēlu).
 \item Galvenie secinājumi par kaudzi:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
     \item kontrolētā atmiņas iedalīšana ir dinamiskā atmiņas iedalīšana, kura notiek programmas izpildes laikā, un atmiņa parasti tiek iedalīta no kaudzes;

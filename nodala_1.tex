@@ -1,4 +1,4 @@
-﻿Šajā nodaļa tiek aplūkots atmiņas izmetes jēdziens, aprakstītas atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
+﻿Šajā nodaļa tiek aplūkots atmiņas izmetes jēdziens, atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
 Nodaļa ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
 
  \section{Atmiņas izmetes ģenerēšana}
@@ -12,7 +12,7 @@ Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas,
 Reālajās sistēmās atmiņas izmetes tiek uzģenerētas atmiņas kļūdu dēļ. 
 Dažas no kļūdām sīkāk ir aprakstītas \ref{sec:problems} sadaļā. 
 Bet eksistē vairākas iespējas kā atmiņas izmeti var uzģenerēt patstāvīgi.
-Tas varētu būt nepieciešams programmas atkļūdošanai un programmas stāvokļa apskatīšanai.
+Tas varētu būt nepieciešams programmas stāvokļa apskatīšanai.
 Atmiņās izmeti var uzģenerēt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora.
 Turpmāk katra no iespējam tiks apskatīta sīkāk, lai atrastu piemērotāku veidu kā var uzģenerēt atmiņas izmeti, dotā darba veiktajām pētījumam.
 
@@ -108,6 +108,9 @@ Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījum
  
  Pēc noklusējuma atmiņas izmetes ģenerēšanas iespēja ir izslēgta,  \texttt{ulimit -c unlimited} komanda ļauj ieslēgt atmiņas izmetes ģenerēšanu.
 
+ 
+ 
+ 
 \section{Atkļūdošana, izmantojot atmiņas izmeti}
 Atmiņas izmete satur datus, kuri dod iespēju atrast kļūdas. Tāpēc atmiņas izmete var tikt pielietota, lai veiktu lietotnes atkļūdošanu, pēc neparedzētas programmas apstāšanās.
 Atmiņas izmetes analīze ir efektīvs veids, kā var attālināti atrast un izlabot kļūdas bez iejaukšanās un tiešas piekļuves sistēmai.
@@ -196,10 +199,3 @@ Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis, tāpēc CPU reģistru v
 
 %\subsubsection{Atmiņas izmetes pārbaude uz derīgumu}
 
-\section{Secinājumi}
-Turpmāk darbā, balstoties uz šajā nodaļā aprakstīto informāciju,  būs nepieciešams:
-\begin{enumerate}
-\item izvēlēties piemērotāko ģenerēšanas veidu, uzģenerēt atmiņas izmetes;
-\item zināt kādus datus ir iespējams iegūt no atmiņas izmetes;
-\item izmantot komandas, kuras ļauj apskatīt atmiņas izmetes datus.
-\end{enumerate}
