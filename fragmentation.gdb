@@ -61,10 +61,10 @@ define print_stat
 	set $alloc_memory = $system_mem[0] - $free_in_arena - $top_chunk_size
 	set $used_and_freed = $system_mem[0] - $top_chunk_size
 	
-	printf "Gabalu skaits arēnā: %i,\n", $count_in_arena
+	printf "Atbrīvoto gabalu skaits arēnā: %i,\n", $count_in_arena
 	printf "Lielākā gabala izmērs: %i baiti (%i KiB, %i MiB),\n", $biggest_free_size, $biggest_free_size/1024, $biggest_free_size/1024/1024
 	printf "Kaudzes segmenta izmērs: %i baiti (%i KiB, %i MiB),\n", $system_mem[0], $system_mem[0]/1024, $system_mem[0]/1024/1024
-	printf "Kopējais programmai iedalītās atmiņas daudzums: %i baiti (%i KiB, %i MiB),\n", $alloc_memory, $alloc_memory/1024, $alloc_memory/1024/1024
+	printf "Kopējais programmai iedalītais atmiņas daudzums: %i baiti (%i KiB, %i MiB),\n", $alloc_memory, $alloc_memory/1024, $alloc_memory/1024/1024
 	printf "Atbrīvotā atmiņa bin sarakstos: %i baiti (%i KiB, %i MiB),\n", $free_in_arena, $free_in_arena/1024, $free_in_arena/1024/1024
 	printf "Top gabala izmērs: %i baiti (%i KiB, %i MiB),\n", $top_chunk_size, $top_chunk_size/1024, $top_chunk_size/1024/1024
 end

@@ -108,6 +108,17 @@ Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījum
  
  Pēc noklusējuma atmiņas izmetes ģenerēšanas iespēja ir izslēgta,  \texttt{ulimit -c unlimited} komanda ļauj ieslēgt atmiņas izmetes ģenerēšanu.
 
+ \section{ Atmiņas izmetes validēšana }
+  \label{sec:validaty}
+  
+ Šīs posms nav pietiekoši labi izpētīts. Bet pirms sākt atkļudošanu ir nepieciešams pārliecināties, ka atmiņas izmete var tikt pielietota šīm nolūīkam.
+ Ģenerējot atmiņas izmeti, ir iespējams, ka datnes izmērs sasniegs vairakus gigabaitus un datne tiks nogriezta.
+ Tas notiek, jo vieta ir ierobežota un kopējot, pārsūtot vai ģenerējot atmiņas izmeti var pazaudēt daļu no datiem beigās.
+ Šo gadījumu var pārbaudīt, izdrukajot galveni ar \texttt{objdump -p <core>} komandu.
+ Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājumis par to, ka datnes izmērs neatbilst sagaidamām.
+ Šī kļūda varētu traucēt analizēt atmiņas izmeti, jo tiek sagadīts ka dati ir pilnīgi.
+ 
+ 
  
  
  

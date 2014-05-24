@@ -139,7 +139,7 @@ Atmiņas iedalīšana sākas ar malloc() vai līdzīgo funkciju izsaukumiem no p
 
 \subsection{Atmiņas arēna}
 
-Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite {MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.} 2.4. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām.
+Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. Attēlā\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite{MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.} 2.4. ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītam līnijām.
  Atmiņas arēnu  vienkāršotā veidā var attēlot kā viensaišu saistīto sarakstu, kurš sastāv no vienas vai vairākām atmiņas kaudzēm. 
  Kaudze ir lineārās apgabals, kurš iekļauj sevī iedalītus un atbrīvotus atmiņas gabalus (chunk of memory), kuri ir novietoti blakus viens otram.
  Atmiņas gabali sīkāk ir aprakstīti \ref{subsec:atminas_gabali} sadaļā.
@@ -304,7 +304,7 @@ Otrs iemesls kāpēc ir iedalīts lielāks atmiņas daudzums ir izlīdzināšana
 
 No kreisās pusēs  attēlots (sk. 2.7. attēlu) \cite{CHOFM} atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
 Abos gadījumos rādītājs chunk attēlo atmiņas gabalu sākumu. Pēc šī radītāja var iegūt iepriekšēja gabala izmēru, ja iepriekšējais gabals bija atbrīvots.
-Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk uzglabā daļu no lietotāja datiem, kas dublēti no iepriekšējā gabala. 
+Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk uzglabā iepriekšēja gabala pēdējos baitus no lietotāja datiem. 
 Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju. 
 
 

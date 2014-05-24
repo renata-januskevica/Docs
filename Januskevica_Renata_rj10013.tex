@@ -212,10 +212,14 @@ pdfkeywords={},
 \input{anotacija}
 \clearpage
 
-
+\cleardoublepage
+\pagenumbering{gobble}
 \tableofcontents
-\addtocontents{toc}{\protect\thispagestyle{empty}}
-\setcounter{page}{0}
+\cleardoublepage
+\pagenumbering{arabic}
+%\addtocontents{toc}{\protect\thispagestyle{empty}}
+
+\setcounter{page}{1}
 
 \setcounter{secnumdepth}{-1}
 \chapter{Apzīmējumu saraksts}

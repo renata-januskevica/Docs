@@ -10,22 +10,23 @@
 Blok-shēmā (sk. 4.1. attēlu) ir attēlots kaudzes atkļūdošanas algoritms.
 Šī algoritma ievaddati ir izpildāmā datne un atmiņas izmete.
 Atmiņas izmete var būt bojāta, tāpēc pirms sākt atkļūdošanas procedūru ir nepieciešams veikt atmiņas izmetes validēšanu (1).
-Šeit ir jāveic dažas pārbaudes, kuras varētu identificēt acīmredzamas kļūdas, piemēram, neatbilstību formātam vai atmiņas izmetes satura nepilnīgumu (pēc galvenes).
-Ir iespējams, ka izpildāmā datne neatbilstis atmiņas izmetei (2), tas ir, kad tiek izmantota cita izpildāmā datne vai atmiņas izmetei neatbilst izpildāmas datnes versija.
+Šeit ir jāveic dažas pārbaudes, kuras varētu identificēt acīmredzamas kļūdas, piemēram, neatbilstību formātam vai atmiņas izmetes nogriezto saturu, kurš ir sīkāk aprakstīts \ref{sec:validaty} sadaļā.
+Ir iespējams, ka izpildāmā datne neatbilstis atmiņas izmetei (2), tas ir, kad tiek izmantota cita izpildāmā datne atmiņas izmetes ģenerēšanai vai atmiņas izmetei neatbilst izpildāmas datnes versija.
 Ir nepieciešams pārbaudīt atbilstību un jāpārliecinās, ka var piekļūt galvenās arēnas datiem.
 Pēc dotām pārbaudēm var sākt atmiņas izmetes analīzi.
-Blok-shēmā ir parādīts, ka ir nepieciešams darbināt analizatorus (3, 4, 5), kuri  izvada statistiku.
+Blok-shēmā ir parādīts, ka ir nepieciešams darbināt analizatorus, kuri  pārbauda problēmu pazīmes atmiņas izmetē.
 Daudzkodolu procesoriem ir iespējams realizēt algoritmu, kur analizatori strādās paralēli, vienkodolā visi analizatori izpildīsies secīgi. 
-Analizatoru skaits nav ierobežots, taču bakalaura darba algoritms tiks nodemonstrēts ar 3 analizatoru piemēriem. 
+Analizatoru skaits nav ierobežots, taču bakalaura darba algoritms tiks nodemonstrēts ar 3 analizatoru piemēriem (3, 4, 5). 
 Katrs analizators pārbauda noteiktās kaudzes problēmas pazīmes. 
 Pēc tam tiek izvadīts kopējais rezultāts (6).
-Ja ir zināma programmai raksturīga uzvedība, tad pēc rezultāta izvadīšanas var secināt pār problēmām.
+Ja ir zināma programmai raksturīga uzvedība, tad pēc rezultāta izvadīšanas var viennozimīgi secināt pār problēmām.
 
 
 
 
-
-
+\section{Atmiņas noplūdes analizators}
+\section{Maksimālās atmiņas izmantošanas problēmas analizators}
+\section{Fragmentēšanas analizators}
 
 
 
