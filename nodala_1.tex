@@ -24,7 +24,7 @@ Turpmāk katra no iespējam tiks apskatīta sīkāk, lai atrastu piemērotāku v
 
 int main ()  {
 
-    raise(SIGSEGV); /* Signal for Invalid memory reference */
+    raise(SIGSEGV); /* signāls, kurš tiek nosūtīts, kad ir nederīga atmiņas norāde */
 	
     return 0;
 }
@@ -45,7 +45,7 @@ Atmiņas izmeti lietotāju procesiem var atrast darba mapē, jo Linux operētāj
  int main () {
      int child = fork();
      if (child == 0) {
-         abort(); /* Child */
+         abort(); /* izpilda bērna process */
      }
      return 0;
  }

@@ -46,7 +46,7 @@ int main() {
     string *str;
 
     for (int i=0; i<10001; i++) {
-        // 10000*14 bytes are lost
+        // 10000*14 baiti tiek pazaudēti
         str = new string("Hello, World!");
     }
     delete str;
@@ -245,7 +245,7 @@ Visi bin saraksti atrodas masīvā bins.
 7 rindiņā ir komanda, kura izdrukā 16 adreses no pirmā nesakārtotā bin saraksta, kurā atrodas gabali, kuri bija nesen atbrīvoti.
 Sākot ar 8 rindiņu ir redzams atmiņas gabals, kas atrodas bin sarakstā un kura izmērs ir 0x009ab319, kas decimālajā skaitīšanas sistēmā ir vienāds ar 10138393, binārajā skaitīšanas sistēmā 100110101011001100011001.
 Tā kā 3 mazākie biti netiek izmantoti izmēra glabāšanai, tad gabala izmērs ir 10138393 - 1=10138392.
-Mūsu 99 atbrīvoto gabalu kopējais izmērs ir vienāds ar izmēru kilobaitos, kas ir sareizināts ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
+Mūsu 99 atbrīvoto gabalu kopējā izmēru summa ir vienāda ar izmēru kilobaitos, kas ir sareizināta ar atbrīvoto gabalu skaitu, tātad 100*1024*99 = 10137600.
 Atšķirība starp pirmā gabala izmēru bin sarakstā un atbrīvoto gabalu kopēju izmēru ir vienāda ar 10138392 - 10137600 = 792 un izskaidrojama ar to, ka katram gabalam bija iedalīti 8 baiti uzturēšanas informācijas glabāšanai (prev\_size, size).
 Pārējie 127 bin un ātrie bin saraksti, dotajā piemērā, bija tukši.
 
@@ -285,9 +285,9 @@ Fragmentēšana var būt izrēķināta kā attiecība starp atmiņas daudzumu ka
 
      ptrl = (char *)malloc(4);
  
-     /* get value of chunk size (the second malloc_chunk element) */
+     /* tiek iegūts atmiņas gabala izmērs (otrais malloc_chunk elements) */
      chunk_size = *((char *) ptrl - sizeof(size_t));
-     /* the lower 3-bits are used as metadata */
+     /* mazākie 3 biti tiek izmantoti meta informācijas glabāšanai */
      chunk_size = chunk_size - (chunk_size & 7);
  
      printf("size = %d\n", chunk_size);
@@ -316,7 +316,7 @@ Algoritms ir sekojošs:
 
 \subsection{Fragmentēšanas pazīmes atmiņas izmetē}
 
-Iekšējai fragmentēšanai ir grūti identificēt atmiņas izmetē, kuras varētu liecināt par doto problēmu.
+Iekšējai fragmentēšanai ir grūti identificēt pazīmes atmiņas izmetē, kuras varētu liecināt par doto problēmu.
 Lai atpazītu doto problēmu ir nepieciešams zināt cik daudz atmiņas pieprasīja lietotne.
 Izmantojot atmiņas izmeti, šo informāciju var iegūt tikai no backtrace, taču šī informācija var netikt iekļauta.
 
@@ -396,11 +396,11 @@ Nodaļā tika izpētītas 3 problēmas un identificētas to pazīmes atmiņas iz
 \item Maksimālās atmiņas izmantošanas problēmas pazīmes:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
         \item atbrīvotie gabali nav vienmērīgi izkliedēti kaudzē;
-        \item pārmērīgs atbrīvoto gabalu kopējais izmērs;
+        \item pārmērīga atbrīvoto gabalu kopējā izmēru summa;
     \end{itemize}
  \item Fragmentēšanas pazīmes:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
-        \item nepietiekošs maksimālais atbrīvotais gabals pie lielā atbrīvoto gabalu kopējā izmēra.
+        \item mazs maksimālais atbrīvotais gabals bin sarakstos, kad kopējā gabalu izmēru summa ir pietiekoša.
     \end{itemize}
 \end{enumerate}
 

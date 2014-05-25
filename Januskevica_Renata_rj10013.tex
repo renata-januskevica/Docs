@@ -192,10 +192,23 @@ pdfkeywords={},
   frame=tlbr,
   framesep=4pt,
   framerule=0pt,
-  commentstyle=\itshape\color{purple!40!black},
+  commentstyle=\itshape\color{purple!40!black}
 }
 \lstset{escapechar=@,style=customc}
 
+% latviešu simboli kodā
+
+\lstset{extendedchars}
+
+\begingroup
+  \catcode0=12 %
+  \makeatletter
+  \g@addto@macro\lst@DefEC{%
+    \lst@CCECUse\lst@ProcessLetter
+    āĀčČēĒģĢīĪķĶļĻņŅšŠūŪžŽ% *** add Unicode characters ***
+    ^^00% end marker
+  }%
+\endgroup
 
 \newcommand\specialsection{%
   %\titleformat*{\chapter}{\MakeLowercase}{\fontsize{11}{12}}

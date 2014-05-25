@@ -14,23 +14,24 @@ int main(int argc, char** argv)
 {
 	int num_allocations = atoi(argv[1]);
 	int alloc_size      = atoi(argv[2]);
-	printf ("Going to allocate %i chunks, %i KiB each, %i KiB in total\n",
+	printf ("Tiks iedalīti %i gabali, %i KiB katrs, %i KiB kopumā.\n",
 	         num_allocations, alloc_size, num_allocations*alloc_size);
 
 	char** arr = new char* [num_allocations];
 	for (int i=0; i<num_allocations; i++)
 		arr[i] = new char[alloc_size*1024];
-	printf ("Allocation done\n");
+	printf ("Iedalīšana notika.\n");
 
 	for (int i=0; i<num_allocations; i++)
 		memset (arr[i], 0, alloc_size*1024);
-	printf ("Filled with data\n");
+	printf ("Atmiņa ir aizpildīta.\n");
 
 	for (int i=0; i<num_allocations; i++)
 		arr[i] = NULL;
         
-	printf ("%i KiB are lost\n", 
+	printf ("%i KiB pazaudēti.\n", 
 			num_allocations*alloc_size);
+            
 	abort();
 	delete[] arr;
 } 
@@ -51,23 +52,24 @@ int main(int argc, char** argv)
 {
 	int num_allocations = atoi(argv[1]);
 	int alloc_size      = atoi(argv[2]);
-	printf ("Going to allocate %i chunks, %i KiB each, %i KiB in total\n",
+	printf ("Tiks iedalīti %i gabali, %i KiB katrs, %i KiB kopumā.\n",
 	         num_allocations, alloc_size, num_allocations*alloc_size);
 
 	char** arr = new char* [num_allocations];
 	for (int i=0; i<num_allocations; i++)
 		arr[i] = new char[alloc_size*1024];
-	printf ("Allocation done\n");
+	printf ("Iedalīšana notika.\n");
 
 	for (int i=0; i<num_allocations; i++)
 		memset (arr[i], 7, alloc_size*1024);
-	printf ("Filled with data\n");
+	printf ("Atmiņa ir aizpildīta.\n");
 
 	for (int i=0; i<num_allocations-1; i++)
 		delete[] arr[i];
-	printf ("Released all but the last chunk is not released\n");
+	printf ("Atmiņa ir atbrīvota izņemot pēdējo gabalu.\n");
 
 	abort();
+	delete[] arr;
 } 
 \end{lstlisting}
 
@@ -85,7 +87,7 @@ int main(int argc, char** argv)
 {
 	int num_allocations = atoi(argv[1]);
 	int alloc_size      = atoi(argv[2]);
-	printf ("Going to allocate %i chunks, %i Bytes each, %i Bytes in total\n",
+	printf ("Tiks iedalīti %i gabali, %i baitu katrs, %i baitu kopumā.\n",
 	         num_allocations, alloc_size, num_allocations*alloc_size);
 
 	char** arr = new char* [num_allocations];
@@ -98,13 +100,14 @@ int main(int argc, char** argv)
 			memset (arr[i], 0, alloc_size+16);
 		}
 	}
-	printf ("Allocation done\n");
+	printf ("Iedalīšana notika.\n");
 
 	for (int i=0; i<num_allocations; i = i+2)
 		delete[] arr[i];
-	printf ("Released all\n");
+	printf ("Atmiņa ir atbrīvota.\n");
 
 	abort();
+	delete[] arr;
 } 
 \end{lstlisting}
 
