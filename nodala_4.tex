@@ -31,11 +31,42 @@ Pieeja tiek izstrādāta ievērojot sekojošus ierobežojumus: %, kas aprakstīt
 
 
 \section{Atmiņas noplūdes analizators}
+
 \section{Maksimālās atmiņas izmantošanas problēmas analizators}
+Tā kā maksimālās atmiņas izmantošanas problēma ir tuva fragmentēšanai, tad autore nolēma realizēt divus analizatorus vienā gdb skriptā.
+Šajā sadaļā tiks aprakstīta skripta maksimālās atmiņas izmantošanas problēmas daļa.
+
+
 \section{Fragmentēšanas analizators}
+Šajā sadaļā tiek aprakstīts fragmentēšanas analizators, kurš realizēts gdb skriptā.
+Fragmentēšanas problēmas novērtēšanai analizators izvada 2 svarīgākus rādītājus (sk. 4.2. attēlu): lielāko atbrīvotā gabala izmēru un kopējo summu atbrīvoto atmiņas gabalu izmēriem.
+Par problēmu liecinās izvads, kad tiks iegūts pietiekošs kopējais izmērs, bet maksimālais atbrīvotais gabals būs mazs un neapmierinās pieprasījumu.
 
+\begin{figure}[h]
+\begin{lstlisting} [style=customgdb]
+(gdb) analyze 0xb75ed440 7
+Bin numurs 1: 50 gabals(-li) (8196 - 8196 baiti), kopumā = 409800 baiti
 
+------------------------ Fragmentēšana -----------------------
+Lielākā gabala izmērs: 8196 baiti (8 KiB, 0 MiB),
+Kopējā atbrīvotā atmiņa bin sarakstos: 409800 baiti (400 KiB, 0 MiB),
+\end{lstlisting}
+\caption{\textbf{\fontsize{11}{12}\selectfont {Fragmentēšanas rādītāji}}}
+\end{figure}
 
+Lai iegūtu abus šos rādītājus ir nepieciešams apstaigāt 128 bin sarakstus un katrā saraksta iegūt visu gabalu izmērus.
+Saraksti bin atrodas galvenajā arēnā, tāpēc piekļūt tiem var zinot arēnas struktūru un tās sākuma adresi.
+Gdb skriptā katram sarakstam ir numurs no 0 līdz 127 un apstaigāšana notiek, izmantojot nobīdes no galvenās arēnas sākuma un ņemot vērā kārtējā saraksta numuru.
+Katra sarakstā var būt dažāds atmiņas gabalu skaits, bet katra atmiņas gabala struktūrā atrodas atmiņas gabala izmērs.
+Izmērs ir nepieciešams gan priekš fragmentēšanas rādītāju iegūšanas, gan priekš sarakstu apstaigāšanas. 
+Tas palīdz uzzināt, kur būs novietots nākamais atmiņas gabals.
+Saraksta apstaigāšana ir jābeidz, kad ir iegūta kārtējā saraksta sākuma adrese.
+Apstaigājot sarakstu tiek pārbaudīts vai tekošais gabala izmērs nav lielāks par maksimālo gabala izmēru un tiek atjaunināta kopējā izmēru summa.
+Gabalu apstaigāšana sarakstā ir nodrošināta ar free\_chunk\_list komandu.
+
+Pirms galveno rādītāju izdrukas tiek izdrukāta statistika par katru no bin sarakstiem. 
+Tas palīdz iegūt detalizētu statistiku par visiem sarakstiem, kuri nav tukši.
+Tas ir: skaits cik ir atbrīvoto gabalu, amplitūda (mazākais gabals, lielākais gabals), kopējais gabalu izmērs sarakstā.
 
 
 \section{Secinājumi}

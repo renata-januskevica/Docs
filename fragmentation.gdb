@@ -1,4 +1,4 @@
-#**************************************************#
+#***************************************************#
 # Autore: Renata Januškeviča
 # 23.05.2014
 # Lai palaistu skriptu, ir nepieciešams:
@@ -7,13 +7,13 @@
 # $arg0: galvenās arēnas adrese, kuru iespējams iegūt ar komandas "p &main_arena" palīdzību;
 # $arg1: skaitlis, kurš norāda cik sīki tiks sadalīta kaudze.
 # Piemēram: "analyze 0x845e000 5"
-#**************************************************#
+#***************************************************#
 
 # $arg0: galvenās arēnas adrese
 # $arg1: bin saraksta numurs
 # komanda savāc datus, kuri nepieciešami statistikai, druka informāciju par sarakstiem
 define free_chunk_list
-	# bin saraksta sākuma adrese
+	# bin kārtēja saraksta sākuma adrese
 	set $start_bin = (long *) ($arg0 + 56 + $arg1 * 8)
 	# molloc() funkcija atgriež šo adresi programmai
 	set $free_chunk = (long *) ($start_bin[1] + 8)
