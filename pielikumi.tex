@@ -101,10 +101,11 @@ int main(int argc, char** argv)
 		}
 	}
 	printf ("Iedalīšana notika.\n");
+	printf ("Atmiņa ir aizpildīta.\n");
 
 	for (int i=0; i<num_allocations; i = i+2)
 		delete[] arr[i];
-	printf ("Atmiņa ir atbrīvota.\n");
+	printf ("Atmiņa uz kuru norāda katra otra norāde ir atbrīvota.\n");
 
 	abort();
 	delete[] arr;

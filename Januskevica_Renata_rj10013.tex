@@ -29,6 +29,9 @@
 \setlength{\parindent}{1cm}
 \linespread{1.3}%It is 1,5 spacing in Word
 
+
+
+    
 \lstset{frame=tb,
   language=C,
   aboveskip=3mm,
@@ -69,7 +72,6 @@ pdfkeywords={},
 \setotherlanguages{english,russian}
 %\setmainfont{Times New Roman}
 \usepackage{fixlatvian}
-
 \newcounter{totfigures}
 \newcounter{tottables}
 
@@ -85,6 +87,7 @@ pdfkeywords={},
     \string\gdef\string\tottab{\number\value{tottables}}%
   }%
 }
+
 
 
 \pretocmd{\chapter}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}

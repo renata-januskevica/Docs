@@ -1,4 +1,4 @@
-﻿\section{Atkļūdošanas algoritms}
+﻿\section{Analizatora darbības princips}
 
  \begin{figure}[h]
 \begin{center}
@@ -10,13 +10,13 @@
 Blok-shēmā (sk. 4.1. attēlu) ir attēlots kaudzes atkļūdošanas algoritms.
 Šī algoritma ievaddati ir izpildāmā datne un atmiņas izmete.
 Atmiņas izmete var būt bojāta, tāpēc pirms sākt atkļūdošanas procedūru ir nepieciešams veikt atmiņas izmetes validēšanu (1).
-Šeit ir jāveic dažas pārbaudes, kuras varētu identificēt acīmredzamas kļūdas, piemēram, neatbilstību formātam vai atmiņas izmetes nogriezto saturu, kurš ir sīkāk aprakstīts \ref{sec:validaty} sadaļā.
+Šeit ir jāveic dažas pārbaudes, kuras varētu identificēt kļūdas, piemēram, neatbilstību formātam vai atmiņas izmetes nogriezto saturu, kurš ir sīkāk aprakstīts \ref{sec:validaty} sadaļā.
 Ir iespējams, ka izpildāmā datne neatbilstis atmiņas izmetei (2), tas ir, kad tiek izmantota cita izpildāmā datne atmiņas izmetes ģenerēšanai vai atmiņas izmetei neatbilst izpildāmas datnes versija.
 Ir nepieciešams pārbaudīt atbilstību un jāpārliecinās, ka var piekļūt galvenās arēnas datiem.
 Pēc dotām pārbaudēm var sākt atmiņas izmetes analīzi.
 Blok-shēmā ir parādīts, ka ir nepieciešams darbināt analizatorus, kuri  pārbauda problēmu pazīmes atmiņas izmetē.
 Daudzkodolu procesoriem ir iespējams realizēt algoritmu, kur analizatori strādās paralēli, vienkodolā visi analizatori izpildīsies secīgi. 
-Analizatoru skaits nav ierobežots, taču bakalaura darba algoritms tiks nodemonstrēts ar 3 analizatoru piemēriem (3, 4, 5). 
+Analizatoru skaits nav ierobežots, taču bakalaura darba algoritms tiks nodemonstrēts ar 3 analizatoru piemēriem (3. atmiņas noplūdes analizators, 4. maksimālās atmiņas izmantošanas problēmas analizators, 5. fragmentēšanas problēmas analizators). 
 Katrs analizators pārbauda noteiktās kaudzes problēmas pazīmes. 
 Pēc tam tiek izvadīts kopējais rezultāts (6).
 Ja ir zināma programmai raksturīga uzvedība, tad pēc rezultāta izvadīšanas var secināt pār problēmām.
@@ -34,13 +34,18 @@ Pieeja tiek izstrādāta ievērojot sekojošus ierobežojumus: %, kas aprakstīt
 
 \section{Maksimālās atmiņas izmantošanas problēmas analizators}
 Tā kā maksimālās atmiņas izmantošanas problēma ir tuva fragmentēšanai, tad autore nolēma realizēt divus analizatorus vienā gdb skriptā.
-Šajā sadaļā tiks aprakstīta skripta maksimālās atmiņas izmantošanas problēmas daļa.
+Šajā sadaļā tiek aprakstīts maksimālās atmiņas izmantošanas problēmas analizators (sk. 4. pielikumu).
+Skriptā, kurš realizē divu problēmu analizatorus, ir nodefinēta komanda \texttt{analyze}, kura izsauc parējās komandas.
+Šai komandai no gdb atkļūdotāja ir nepieciešams padot 2 argumentus: galvenās arēnas adresi un skaitli, kurš norāda cik sīki tiks sadalīta kaudze.
+Par problēmu liecinās atbrīvoto un iedalīto gabalu attiecība, kura tiek izrēķināta katram apgabalam kaudzē.
+Kaudzes sadalījuma lielumu noteic lietotājs, tāpēc ir iespējams izdrukāt 
+
 
 
 \section{Fragmentēšanas analizators}
-Šajā sadaļā tiek aprakstīts fragmentēšanas analizators, kurš realizēts gdb skriptā.
-Fragmentēšanas problēmas novērtēšanai analizators izvada 2 svarīgākus rādītājus (sk. 4.2. attēlu): lielāko atbrīvotā gabala izmēru un kopējo summu atbrīvoto atmiņas gabalu izmēriem.
-Par problēmu liecinās izvads, kad tiks iegūts pietiekošs kopējais izmērs, bet maksimālais atbrīvotais gabals būs mazs un neapmierinās pieprasījumu.
+Šajā sadaļā tiek aprakstīts fragmentēšanas analizators, kurš tika realizēts gdb skriptā (sk. 4. pielikumu).
+Fragmentēšanas problēmas novērtēšanai analizators izvada 2 svarīgākus rādītājus (sk. 4.2. attēlu): lielāko atbrīvotā gabala izmēru un kopējo summu no atbrīvoto atmiņas gabalu izmēriem.
+Par problēmu liecinās izvads. Kad tiks iegūts pietiekošs kopējais izmērs, bet maksimālais atbrīvotais gabals ir mazs un neapmierina pieprasījumus pēc atmiņas.
 
 \begin{figure}[h]
 \begin{lstlisting} [style=customgdb]
@@ -55,18 +60,18 @@ Kopējā atbrīvotā atmiņa bin sarakstos: 409800 baiti (400 KiB, 0 MiB),
 \end{figure}
 
 Lai iegūtu abus šos rādītājus ir nepieciešams apstaigāt 128 bin sarakstus un katrā saraksta iegūt visu gabalu izmērus.
-Saraksti bin atrodas galvenajā arēnā, tāpēc piekļūt tiem var zinot arēnas struktūru un tās sākuma adresi.
+Parastie bin saraksti atrodas galvenajā arēnā, tāpēc piekļūt tiem var, ja ir zināma arēnas struktūra un tās sākuma adrese.
 Gdb skriptā katram sarakstam ir numurs no 0 līdz 127 un apstaigāšana notiek, izmantojot nobīdes no galvenās arēnas sākuma un ņemot vērā kārtējā saraksta numuru.
-Katra sarakstā var būt dažāds atmiņas gabalu skaits, bet katra atmiņas gabala struktūrā atrodas atmiņas gabala izmērs.
+Katra sarakstā var būt dažāds atmiņas gabalu skaits, bet katra atmiņas gabala struktūrā tiek uzglabāts atmiņas gabala izmērs.
 Izmērs ir nepieciešams gan priekš fragmentēšanas rādītāju iegūšanas, gan priekš sarakstu apstaigāšanas. 
 Tas palīdz uzzināt, kur būs novietots nākamais atmiņas gabals.
-Saraksta apstaigāšana ir jābeidz, kad ir iegūta kārtējā saraksta sākuma adrese.
-Apstaigājot sarakstu tiek pārbaudīts vai tekošais gabala izmērs nav lielāks par maksimālo gabala izmēru un tiek atjaunināta kopējā izmēru summa.
+Saraksta apstaigāšana ir jābeidz, kad ir iegūta apstrādājamā saraksta sākuma adrese.
+Apstaigājot sarakstu tiek pārbaudīts vai tekošais gabala izmērs nav lielāks par maksimālo gabala izmēru sarakstā un tiek atjaunināta kopējā izmēru summa.
 Gabalu apstaigāšana sarakstā ir nodrošināta ar free\_chunk\_list komandu.
 
-Pirms galveno rādītāju izdrukas tiek izdrukāta statistika par katru no bin sarakstiem. 
-Tas palīdz iegūt detalizētu statistiku par visiem sarakstiem, kuri nav tukši.
-Tas ir: skaits cik ir atbrīvoto gabalu, amplitūda (mazākais gabals, lielākais gabals), kopējais gabalu izmērs sarakstā.
+Pirms izvadīt galvenos rādītājus, tiek izdrukāta statistika par katru no bin sarakstiem. 
+Tas palīdz iegūt detalizētu statistiku par visiem parastajiem sarakstiem, kuri nav tukši.
+Tas ir: skaits cik ir atbrīvoto gabalu sarakstā, amplitūda (mazākais gabals, lielākais gabals), kopējais gabalu izmērs sarakstā.
 
 
 \section{Secinājumi}

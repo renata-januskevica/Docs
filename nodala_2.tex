@@ -61,8 +61,8 @@ Svarīgākie procesa segmenti  \cite {PETRSOF}:
     \item Kaudzes segments - apgabals, no kura tiek iedalīta dinamiskā atmiņa.
     Kaudzes segmentā atrodas dinamiski iedalītā un atbrīvotā atmiņa. Kaudzes segmenta saturs ir sadalīts sīkāk, mazākos atmiņās gabalos.
     Kaudzes segments aug no mazākas adreses līdz lielākai.  Lai palielinātu kaudzes segmenta izmēru, tiek veikts brk() sistēmas izsaukums. 
-    Izsaukums uzstāda kaudzes segmenta jauno beigu robežu. 
- Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 \cite{LINMAN}.
+    Izsaukums uzstāda kaudzes segmenta jauno beigu robežu \cite{LINMAN}. 
+ %Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 .
     \item Steka segments - apgabals, kurā tiek uzglabāti: funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam, ka arī lokālo mainīgo un reģistru vērtības. 
     Steks aug no lielākas adreses līdz mazākai. 
     Steks ir iedalīts priekš katras programmas instances atsevišķi.
