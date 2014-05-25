@@ -202,7 +202,7 @@ Tas varētu būt nepieciešams, ja programma ir bieži izmantotas struktūras, k
 Atmiņas gabali atrodas viensaišu sarakstā un nav sakārtoti, jo katrā bin sarakstā atrodas elementi, kuriem ir vienāds izmērs.
 Lai samazinātu fragmentēšanas iespējamību, programma, kad pieprasa vai atbrīvo lielus atmiņas gabalus var sapludināt atmiņas gabalus, kuri atrodas fastbin sarakstā.
 Piekļuve tādiem atmiņas gabaliem ir ātrāka nekā piekļuve parastiem gabaliem. 
-Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb LIFO) kārtībā \cite {Binning}.
+Fastbin saraksta elementi ir apstrādāti pēdējais iekšā pirmais āra (jeb LIFO) kārtībā \cite {MALLOC}.
 Kad tiek pieprasīta atmiņa no fastbin saraksta, tad jebkurš atmiņas gabals tiek atgriezts konstantā laikā  \cite {ACCA}.
 \begin{figure}[h]
 \begin{center}
@@ -302,7 +302,7 @@ Otrs iemesls kāpēc ir iedalīts lielāks atmiņas daudzums ir izlīdzināšana
 \end{figure}
 
 
-No kreisās pusēs  attēlots (sk. 2.7. attēlu) \cite{CHOFM} atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
+No kreisās pusēs  attēlots (sk. 2.7. attēlu) \cite{MALLOC} atmiņas gabals, kurš bija iedalīts procesam, no labās, tās, kurš bija atbrīvots.
 Abos gadījumos rādītājs chunk attēlo atmiņas gabalu sākumu. Pēc šī radītāja var iegūt iepriekšēja gabala izmēru, ja iepriekšējais gabals bija atbrīvots.
 Gadījumā, kad iepriekšējais gabals ir iedalīts, tad chunk uzglabā iepriekšēja gabala pēdējos baitus no lietotāja datiem. 
 Pēc tam seko kārtēja gabala izmērs un 3 biti ar meta informāciju. 
@@ -340,11 +340,11 @@ Sākotnēji atmiņās iedalīšana sākas ar top gabalu, bet top gabals nodroši
 Top gabals var mainīt savu izmēru. Tas saraujas, kad atmiņa ir iedalīta un izstiepjas, kad atmiņa ir atbrīvota blakus top gabala objektam. 
 Ja ir pieprasīta atmiņa, kas ir lielāka par pieejamo, tad top gabals var paplašināties ar brk() izsaukuma palīdzību.
 Top gabals ir līdzīgs jebkuram citam atmiņas apgabalam. 
-Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, P kontroles zīme, kura vienmēr norāda, ka iepriekšējais gabals ir izmantots, ka arī speciāla top gabala apstrāde, lai nodrošinātu, ka top gabals vienmēr eksistē \cite {BLACKHAT}.
+Galvenā atšķirība ir lietotāja datu sekcija, kura netiek izmantota, P kontroles zīme, kura vienmēr norāda, ka iepriekšējais gabals ir izmantots, ka arī speciāla top gabala apstrāde, lai nodrošinātu, ka top gabals vienmēr eksistē \cite {MALLOC}.
 
 Last\_remainder ir vel viens atmiņas gabals ar īpašu nozīmi.
 Tas ir izmantots gadījumos, kad ir pieprasīts mazs atmiņas gabals, kas neatbilst nevienam bin saraksta elementam. 
-Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sadalīšanas, lai apmierinātu pieprasījumu pēc maza gabala  \cite {BLACKHAT}.
+Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sadalīšanas, lai apmierinātu pieprasījumu pēc maza gabala  \cite {MALLOC}.
 
 
 %\section{Atmiņas statistika}

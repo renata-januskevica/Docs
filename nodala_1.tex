@@ -62,7 +62,7 @@ Pēc abort() funkcijas izpildes, bērns beidz izpildi un uzģenerē atmiņas izm
 
 Atmiņas izmetes ģenerēšanas nolūkam var izmantot gdb komandas: \texttt{generate-core-file [file]}(sk. 1.3. attēlu) vai \texttt{gcore [file]}. Šīs komandas izveido gdb pakļautā procesa atmiņas izmeti. 
 Izmantojot gdb, var uzģenerēt atmiņas izmeti, kura atbilst kādam pārtraukuma punkta stāvoklim. 
-Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī gdb komanda ir realizēta GNU/Linux, FreeBSD, Solaris un S390 sistēmās \cite {gdb_gen_core}.
+Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī gdb komanda ir realizēta GNU/Linux, FreeBSD, Solaris un S390 sistēmās \cite {core}.
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]
 (gdb) attach <pid>
