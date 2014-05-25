@@ -5,21 +5,34 @@
 }
 
 @Misc{DHC,
-  author = {Silicon Graphics, Inc.},
+  author = "{Silicon Graphics}",
   title = {ProDev WorkShop: Debugger User's Guide, Detecting Heap Corruption},
   howpublished = {\url{http://menehune.opt.wfu.edu/Kokua/More_SGI/007-2579-009/sgi_html/ch09.html}},
   note = "[Online; resurss apskatīts 21-Mai-2014]"
 }
 
 @article{GNED,
-     author = {Gene Novark and Emery D. Berger and Benjamin G. Zorn},
-    title = {{Efﬁciently and Precisely Locating Memory Leaks and Bloat}},
-    url = {http://people.cs.umass.edu/~emery/pubs/pldi101-novark.pdf},
-    year = {2009}
- }
+ author = {Novark, Gene and Berger, Emery D. and Zorn, Benjamin G.},
+ title = {Efficiently and Precisely Locating Memory Leaks and Bloat},
+ journal = {SIGPLAN Not.},
+ issue_date = {June 2009},
+ volume = {44},
+ number = {6},
+ month = jun,
+ year = {2009},
+ issn = {0362-1340},
+ pages = {397--407},
+ numpages = {11},
+ url = {http://doi.acm.org/10.1145/1543135.1542521},
+ doi = {10.1145/1543135.1542521},
+ acmid = {1542521},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {dynamic memory allocation, heap profiling, hound, memory leak detection, virtual compaction},
+} 
 
 @Misc{TFM,
-  author = {Cameron Laird}
+  author = {Cameron Laird},
   title = {Techniques for memory debugging},
   howpublished = {\url{http://www.ibm.com/developerworks/aix/library/au-memorytechniques.html#categories}},
   note = "[Online; resurss apskatīts 20-Mai-2014]"
@@ -33,31 +46,72 @@
 }
 
 @article{MSJ,
-    author = {Mark S. Johnstone and Paul R. Wilson},
-    title = {{The Memory Fragmentation Problem: Solved?}},
-    url = {http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.45.3382&rep=rep1&type=pdf},
-    year = {1997}
+ author = {Johnstone, Mark S. and Wilson, Paul R.},
+ title = {The Memory Fragmentation Problem: Solved?},
+ journal = {SIGPLAN Not.},
+ issue_date = {March 1999},
+ volume = {34},
+ number = {3},
+ month = oct,
+ year = {1998},
+ issn = {0362-1340},
+ pages = {26--36},
+ numpages = {11},
+ url = {http://doi.acm.org/10.1145/301589.286864},
+ doi = {10.1145/301589.286864},
+ acmid = {286864},
+ publisher = {ACM},
+ address = {New York, NY, USA},
 }
 
 @article{RAN,
-    author = {B. Randell},
-    title = {{A Note on Storage Fragmentation and Program Segmentation}},
-    url = {file:///D:/Downloads/60b7d5185576948b92.pdf},
-    year = {1969}
-}
+ author = {Randell, B.},
+ title = {A Note on Storage Fragmentation and Program Segmentation},
+ journal = {Commun. ACM},
+ issue_date = {July 1969},
+ volume = {12},
+ number = {7},
+ month = jul,
+ year = {1969},
+ issn = {0001-0782},
+ pages = {365--ff.},
+ url = {http://doi.acm.org/10.1145/363156.363158},
+ doi = {10.1145/363156.363158},
+ acmid = {363158},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {addressing, paging, segmentation, storage allocation, storage fragmentation},
+} 
 
-@article{PWMS,
-    author = {Paul R. Wilson and Mark S. Johnstone and Michael Neely and David Boles},
-    title = {{Dynamic Storage Allocation, A Survey and Critical Review}},
-    url = {http://www.cs.northwestern.edu/~pdinda/icsclass/doc/dsa.pdf},
-    year = {1995}
-}
+@inproceedings{PWMS,
+ author = {Wilson, Paul R. and Johnstone, Mark S. and Neely, Michael and Boles, David},
+ title = {Dynamic Storage Allocation: A Survey and Critical Review},
+ booktitle = {Proceedings of the International Workshop on Memory Management},
+ series = {IWMM '95},
+ year = {1995},
+ isbn = {3-540-60368-9},
+ pages = {1--116},
+ numpages = {116},
+ url = {http://dl.acm.org/citation.cfm?id=645647.664690},
+ acmid = {664690},
+ publisher = {Springer-Verlag},
+ address = {London, UK, UK},
+} 
 
-@Misc{UVD,
-  title = {Using Valgrind to detect undened value errors with bit-precision},
-  howpublished = {\url{http://www.cs.columbia.edu/~junfeng/10fa-e6998/papers/memcheck.pdf}},
-  note = "[Online; resurss apskatīts 8-Mai-2014]"
-}
+@inproceedings{UVD,
+ author = {Seward, Julian and Nethercote, Nicholas},
+ title = {Using Valgrind to Detect Undefined Value Errors with Bit-precision},
+ booktitle = {Proceedings of the Annual Conference on USENIX Annual Technical Conference},
+ series = {ATEC '05},
+ year = {2005},
+ location = {Anaheim, CA},
+ pages = {2--2},
+ numpages = {1},
+ url = {http://dl.acm.org/citation.cfm?id=1247360.1247362},
+ acmid = {1247362},
+ publisher = {USENIX Association},
+ address = {Berkeley, CA, USA},
+} 
 
 @Misc{HTTM,
   author = {Microsoft},
@@ -73,17 +127,22 @@
 }
 
 @Misc{LINMAN,
-  author = {The Linux man-pages project},
+  author = "{The Linux man-pages project}",
   title = {BRK(2)},
   howpublished = {\url{http://man7.org/linux/man-pages/man2/brk.2.html}},
   note = "[Online; resurss apskatīts 25-Mai-2014]"
 }
 
-@Misc{ACCA,
-  title = {A Comprehensive Complexity Analysis of User-level Memory Allocator Algorithms},
-  howpublished = {\url{file:///D:/Downloads/104923_1.pdf}},
-  note = "[Online; resurss apskatīts 29-Apr-2014]"
-}
+@INPROCEEDINGS{ACCA,
+author={Ferreira, T.B. and Fernandes, M.A. and Matias, R.},
+booktitle={Computing System Engineering (SBESC), 2012 Brazilian Symposium on},
+title={A Comprehensive Complexity Analysis of User-Level Memory Allocator Algorithms},
+year={2012},
+month={Nov},
+pages={99-104},
+keywords={computational complexity;storage management;Ptmalloc family;allocator overhead;comprehensive complexity analysis;computer programs;software design;space complexity;space overhead;time complexity;user-level memory allocator algorithms;Algorithm design and analysis;Arrays;Complexity theory;Instruction sets;Memory management;Resource management;Memory management;analysis of algorithm;user-level allocators},
+doi={10.1109/SBESC.2012.27},
+ISSN={2324-7886},}
 
 
 @Misc{AMM,
@@ -95,7 +154,7 @@
 
 
 @Misc{MALLOC,
-  author = {Free Software Foundation, Inc.}
+  author = "{Free Software Foundation}",
   title = {malloc() realizācija},
   howpublished = {\url{https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=1120d4df8487b78a9f1ceb5394968d6ab651986e;hb=refs/heads/master}},
   note = "[Online; resurss apskatīts 25-Mai-2014]"
@@ -125,20 +184,20 @@
 
 
 @Misc{POCF,
-  author = {Free Software Foundation, Inc.}
+  author = "{Free Software Foundation}",
   title = {Autoconf, Portability of C Functions},
   howpublished = {\url{http://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/Function-Portability.html#Function-Portability}},
   note = "[Online; resurss apskatīts 25-Mai-2014]"
 }
 
 @Misc{signal,
-  author = {Panagiotis Christias},
-  title = {Standard Signals},
+  author = "{The Linux man-pages project}",
+  title = {SIGNAL(7)},
   howpublished = {\url{http://man7.org/linux/man-pages/man7/signal.7.html}},
   note = "[Online; resurss apskatīts 21-Mar-2014]"
 }
 
-@inbook{core
+@inbook{core,
  author = {Richard Stallman and Roland Pesch and Stan Shebs},
  title = {Debugging with GDB: The GNU Source-Level Debugger},
  edition = {Ninth},
@@ -148,7 +207,7 @@
  pages = {26-30}
  } 
 
-@inbook{gdb_gen_core
+@inbook{gdb_gen_core,
  author = {Richard Stallman and Roland Pesch and Stan Shebs},
  title = {Debugging with GDB: The GNU Source-Level Debugger},
  edition = {Ninth},
@@ -243,34 +302,62 @@
  edition = {Ninth},
  publisher = {Courier Kendallville},
   pages = {28}
- } 
- 
-
+ }
 
 @article{PETRSOF,
-    author = {Petr Sorfa},
-    journal = {Linux Journal},
-    posted-at = {2001-07-01 10:52:48},
-    title = {{Debugging Memory on Linux}},
-    url = {http://www.linuxjournal.com/article/4681?page=0,0},
-    year = {2001}
-}
+ author = {Sorfa, Petr},
+ title = {Debugging Memory on Linux},
+ journal = {Linux J.},
+ issue_date = {July 2001},
+ volume = {2001},
+ number = {87},
+ month = jul,
+ year = {2001},
+ issn = {1075-3583},
+ pages = {2--},
+ url = {http://dl.acm.org/citation.cfm?id=509446.509448},
+ acmid = {509448},
+ publisher = {Belltown Media},
+ address = {Houston, TX},
+} 
 
 
-@article{JMMR,
-    author = {Jonas Maebe and Michiel Ronsse and Koen De Bosschere},
-    title = {{Precise detection of memory leaks}},
-    url = {http://www.cs.virginia.edu/woda2004/papers/maebe.pdf},
-    year = {2004}
-}
+@inproceedings{JMMR,
+ author = {Xu, Guoqing and Rountev, Atanas},
+ title = {Precise Memory Leak Detection for Java Software Using Container Profiling},
+ booktitle = {Proceedings of the 30th International Conference on Software Engineering},
+ series = {ICSE '08},
+ year = {2008},
+ isbn = {978-1-60558-079-1},
+ location = {Leipzig, Germany},
+ pages = {151--160},
+ numpages = {10},
+ url = {http://doi.acm.org/10.1145/1368088.1368110},
+ doi = {10.1145/1368088.1368110},
+ acmid = {1368110},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {container profiling, leaking confidence, memory leaks},
+} 
 
-  
 @article{EDBG,
-    author = {Emery D. Berger and Benjamin G. Zorn  Kathryn S. McKinley},
-    title = {{Composing High-Performance Memory Allocators}},
-    url = {http://people.cs.umass.edu/~emery/pubs/berger-pldi2001.pdf},
-    year = {2001}
-}
+ author = {Berger, Emery D. and Zorn, Benjamin G. and McKinley, Kathryn S.},
+ title = {Composing High-performance Memory Allocators},
+ journal = {SIGPLAN Not.},
+ issue_date = {May 2001},
+ volume = {36},
+ number = {5},
+ month = may,
+ year = {2001},
+ issn = {0362-1340},
+ pages = {114--124},
+ numpages = {11},
+ url = {http://doi.acm.org/10.1145/381694.378821},
+ doi = {10.1145/381694.378821},
+ acmid = {378821},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+} 
 
 
 INPROCEEDINGS{LCA,
