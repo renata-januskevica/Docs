@@ -129,8 +129,8 @@ class MyClass
 \label{fig:memoryleak}
 \end{figure}
 
-Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā.
-Problēmai ir raksturīgs stāvoklis, kad ir daudzi atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus (izmēru, līdzīgas datu shēmas).
+Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā, bet tādi gabali patērē visu pieejamo procesam atmiņu.
+Problēmai ir raksturīgs stāvoklis, kad ir daudzi iedalītie atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus (izmēru, līdzīgas datu shēmas).
 Turpmāk tiks apskatīts piemērs, kurš paskaidro kā var izpausties šī pazīme.
 Piemērā ir aplūkots gadījums, kad programmā ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir izmantota virtuālā funkcija.
 Ja C++ klasē ir virtuālās funkcijas, tad kompilators izveido virtuālo funkciju tabulu (vtable), kura iekļauj rādītājus uz šī klases virtuālām funkcijām.
