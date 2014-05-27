@@ -1,4 +1,7 @@
-﻿\section{Analizatora darbības princips}
+﻿Šajā nodaļā ir aprakstīta metode, kura varētu tikt pielietota kaudzes atkļūdošanai. 
+Ir aplūkots metodes algoritms un 3 analizatoru realizācijas: atmiņas noplūdes analizators, maksimālās atmiņas izmantošanas problēmas analizators, fragmentēšanas problēmas analizators.
+Analizatori, kuri tika realizētie, nav gatavs risinājums atkļūdotājām, bet ir uzskatāma demonstrēšana, ka metode strādā un var tikt pielietota.
+\section{Analizatora darbības princips}
 
  \begin{figure}[h]
 \begin{center}
@@ -41,13 +44,14 @@ Pieeja tiek izstrādāta ievērojot sekojošus ierobežojumus: %, kas aprakstīt
 Tā kā maksimālās atmiņas izmantošanas problēma ir tuva fragmentēšanai, tad autore nolēma realizēt divus analizatorus vienā gdb skriptā.
 Skriptā ir nodefinēta komanda \texttt{analyze}, kura izsauc parējās komandas priekš abiem analizatoriem.
 Šai komandai no gdb atkļūdotāja ir nepieciešams padot divus argumentus: galvenās arēnas adresi un skaitli, kurš norāda cik daļās būtu jāsadala kaudze.
-Palaist skriptu var, izmantojot komandas, kuras parādītas attēlā 4.2. 
-Gdb skripts stradā 32 bitu datoru arhitektūras, taču to iespējams pielāgot arī priekš 64 bitu arhitektūras.
+Palaist skriptu var, izmantojot komandas, kuras parādītas attēlā 4.2.
+Gdb skripts strādā uz 32 bitu datoru arhitektūras, taču to iespējams pielāgot arī 64 bitu arhitektūrai.
+Skripts ir izstrādāts vienpavedienu lietotnei ar vienu galveno arēnu.
 
 \begin{figure}[h]
 \begin{lstlisting} [style=customgdb]
-(gdb) source fragmentation.gdb 
-(gdb) p &main_arena 
+(gdb) source fragmentation.gdb
+(gdb) p &main_arena
 $1 = (struct malloc_state *) 0xb75ed440
 (gdb) analyze 0xb75ed440 5
 \end{lstlisting}
@@ -60,44 +64,42 @@ Atkarībā no otrā argumenta, kaudze tiks sadalīta vienā vai vairākos atsevi
 Turpmāk darbā viens kaudzes sadalījuma rezultāts tiks nosaukts par kaudzes apgabalu.
 Katram kaudzes apgabalam tiks izrēķināta attiecība: kopējais atbrīvoto gabalu izmērs kaudzes apgabalā pret kopējo atbrīvoto un iedalīto gabalu izmēru kaudzes apgabalā.
 Šī attiecība ļauj iegūt daļu, kuru aizņem atbrīvotie gabali, no kopējā kaudzes apgabala satura.
-Zinot to, ka maksimālās atmiņas izmantošanas problēmas laikā, lielākais kopējais atbrīvoto gabalu izmērs atrodas blakus top gabalam, kļūst iespējams atrast problēmu pēc šī rādītāja.
-Jā rādītājs kaudzes apgabalam, kas atrodas blakus top, ir lielāks par rādītāju pārējos apgabalos, tad tās var liecināt par maksimālās atmiņas izmantošanas problēmu.
+Zinot to, ka maksimālās atmiņas izmantošanas problēmas laikā, lielākais kopējais atbrīvoto gabalu izmērs ir apgabalam, kurš atrodas blakus top gabalam, kļūst iespējams atrast problēmu pēc šī rādītāja.
+Jā kaudzes apgabalam, kas atrodas blakus top, rādītājs ir lielāks par rādītāju pārējos apgabalos, tad tās var liecināt par maksimālās atmiņas izmantošanas problēmu.
 Izdrukā, blakus atbrīvoto gabalu daļai, tiek norādīta atmiņas gabala sākuma un beigu adreses (sk. 4.3. attēlu).
-Pēc šīm adresēm var uzzināt atmiņas daudzumu, kurš netika atgriezts operētājsistēmai.
+Ja ir nepieciešams, tad var izdrūkat sīkako kaudzes sadalījumu, norādot lielāko otro argumentu komandai.
 
 \begin{figure}[h]
 \begin{lstlisting} [style=customgdb]
 ------------- Maksimālā atmiņas izmantošanas problēma --------
-Atbrīvoto un iedalīto gabalu attiecībā:
-Apgabals 0x845e000 - 0x85c32f4 7%
-Apgabals 0x85d5210 - 0x873a504 0%
-Apgabals 0x874c288 - 0x88b157c 0%
-Apgabals 0x88c3300 - 0x8a285f4 0%
-Apgabals 0x8a3a378 - 0x8b9f66c 0%
-Apgabals 0x8bb13f0 - 0x8d166e4 0%
-Apgabals 0x8d28468 - 0x8e8d75c 0%
+Atbrīvoto un iedalīto gabalu attiecība:
+Apgabals 0x845e000 - 0x8652238 5%
+Apgabals 0x8652238 - 0x885f2e0 0%
+Apgabals 0x885f2e0 - 0x8a6c388 0%
+Apgabals 0x8a6c388 - 0x8c79430 0%
+Apgabals 0x8c79430 - 0x8e224b8 0%
+
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Maksimālā atmiņas izmantošanas rādītājs}}}
-\end{figure} 
+\end{figure}
 
 Algoritma realizācijai bija nepieciešams apstaigāt kaudzi un sakrāt datus par katru kaudzes apgabalu.
-Sākumā tiek iegūta norāde uz kaudzi. 
-Lai to iegūtu, bija nepieciešams iegūt top gabala adresi. 
-Top gabals atrodas kaudzes beigās un zinot top adresi, kaudzes izmēru un top gabala izmēru var iegūt kaudzes sākuma adresi.
+Sākumā tiek iegūta kaudzes sākuma adrese.
+Lai to iegūtu, bija nepieciešams iegūt top gabala adresi, kaudzes izmēru un top gabala izmēru.
 Top gabals veido kaudzi, bet atmiņa netiek izmantota programmā, tāpēc top izmēru nevajag iekļaut kaudzes izmērā.
-No top adreses vajag atņemt kaudzes izmēru, jo kaudze aug no mazākas adreses uz lielāko, un pieskaitīt top gabala izmēru.
-Rezultātā tiek iegūta norāde uz kaudzes sākumu.
-Sākot ar šo norādi tiek apstaigāti visi atmiņas gabali kaudzē.
-Gabalu apstaigāšana notiek pieskaitot kaudzes norādei kartēja gabala izmēru un saglabājot vajadzīgos datus.
+No top adreses vajag atņemt kaudzes izmēru, jo kaudze aug no mazākas adreses uz lielāko un top atrodās beigās, un pieskaitīt top gabala izmēru.
+Rezultātā tiek iegūta kaudzes sākuma adrese.
+Sākot ar šo adresi tiek apstaigāti visi atmiņas gabali kaudzē.
+Gabalu apstaigāšana notiek pieskaitot kaudzes adresei kārtēja gabala izmēru un saglabājot vajadzīgos datus.
 Beigās tiek izdrukāts iegūtais rezultāts.
 
 
 
 \section{Fragmentēšanas analizators}
 Šajā sadaļā tiek aprakstīts fragmentēšanas analizators, kurš tika realizēts gdb skriptā (sk. 4. pielikumu).
-Fragmentēšanas problēmas novērtēšanai analizators izvada 2 svarīgākus rādītājus (sk. 4.4. attēlu): lielāko un kopējo atbrīvoto gabalu izmēru arēnā.
+Fragmentēšanas problēmas novērtēšanai analizators izvada 2 svarīgākus rādītājus: lielāko un kopējo atbrīvoto gabalu izmēru arēnā.
 Problēma būs novērojama, kad tiks iegūts tāds maksimālais atbrīvotais gabals, kurš nevar apmierināt pieprasījumu pēc atmiņas, ja kopējais izmērs ir pietiekošs.
-
+Piemēra redzamai programmai (sk. 4.4. attēlu), ja programma pieprasīt atmiņu vairāk nekā 8 kilobaitus un atmiņa no operētājsistēmas netiks iedalīta, tad tas varētu izraisīt sistēmas apstāšanos.
 \begin{figure}[h]
 \begin{lstlisting} [style=customgdb]
 Bin numurs 1: 50 gabals(-li) (8196 - 8196 baiti), kopumā = 409800 baiti
@@ -116,10 +118,10 @@ Katrs gabals norāda uz nākamo un iepriekšējo atmiņas gabalu, tāpēc visus 
 Pēdējais atmiņas gabals norāda uz kārtēja saraksta sākumu.
 Saraksta apstaigāšana ir jābeidz, kad ir iegūta apstrādājamā saraksta sākuma adrese.
 Katram gabalam tiek pārbaudīts vai tekošais gabala izmērs nav lielāks par maksimālo gabala izmēru sarakstā un tiek atjaunināta kopējā saraksta izmēru summa.
-Apstrādājot iegūtās vērtības, sarakstiem tiek iegūti dotie rādītāji galvenajai arēnai.
+Apstrādājot iegūtās vērtības sarakstiem, tiek iegūti dotie rādītāji galvenajai arēnai.
 Gabalu apstaigāšana sarakstā ir nodrošināta ar free\_chunk\_list komandu.
 
-Pirms izvadīt lielāko un kopējo atbrīvoto gabalu izmēru rādītājus, tiek izdrukāta statistika par katru no bin sarakstiem.
+Pirms izvadīt lielāko un kopējo atbrīvoto gabalu izmēru rādītājus, tiek izdrukāta statistika par katru no bin sarakstiem (sk. 4.4. attēlu).
 Tas palīdz iegūt detalizētu statistiku par visiem parastajiem sarakstiem, kuri nav tukši.
 Tas ir: skaits cik ir atbrīvoto gabalu sarakstā, amplitūda (mazākais gabals, lielākais gabals), kopējais gabalu izmērs sarakstā.
 

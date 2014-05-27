@@ -14,7 +14,7 @@ Dažas no kļūdām sīkāk ir aprakstītas \ref{sec:problems} sadaļā.
 Bet eksistē vairākas iespējas kā atmiņas izmeti var uzģenerēt patstāvīgi.
 Tas varētu būt nepieciešams programmas stāvokļa apskatīšanai.
 Atmiņās izmeti var uzģenerēt no programmas koda,  gdb atkļūdotāja vai komandrindas interpretatora.
-Turpmāk katra no iespējam tiks apskatīta sīkāk, lai atrastu piemērotāku veidu kā var uzģenerēt atmiņas izmeti, dotā darba veiktajām pētījumam.
+Turpmāk katra no iespējam tiks apskatīta sīkāk.
 
 \subsection{Atmiņas izmetes ģenerēšana no koda}
 Ģenerējot atmiņas izmeti no programmas koda, ir divas iespējas: process var turpināties vai beigt savu darbību pēc signāla nosūtīšanas.
@@ -111,12 +111,12 @@ Lai  uzģenerētu atmiņas izmeti ir jābūt izpildītiem sekojošiem nosacījum
  \section{ Atmiņas izmetes validēšana }
   \label{sec:validaty}
   
- Šīs posms nav pietiekoši labi izpētīts literatūrā. Bet pirms sākt atkļudošanu ir nepieciešams pārliecināties, ka atmiņas izmete var tikt pielietota šīm nolūīkam.
- Ģenerējot atmiņas izmeti, ir iespējams, ka datnes izmērs sasniegs vairakus gigabaitus un datne tiks nogriezta.
+ Šīs posms nav pietiekoši labi izpētīts literatūrā. Bet pirms sākt atkļudošanu ir nepieciešams pārliecināties, ka atmiņas izmete var tikt pielietota šīm nolūkam.
+ Ģenerējot atmiņas izmeti, ir iespējams, ka datnes izmērs sasniegs vairākus gigabaitus un datne tiks nogriezta.
  Tas notiek, jo vieta ir ierobežota un kopējot, pārsūtot vai ģenerējot atmiņas izmeti var pazaudēt daļu no datiem beigās.
  Šo gadījumu var pārbaudīt, izdrukajot galveni ar \texttt{objdump -p <core>} komandu.
- Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājumis par to, ka datnes izmērs neatbilst sagaidamām.
- Šī kļūda varētu traucēt analizēt atmiņas izmeti, jo tiek sagadīts ka dati ir pilnīgi.
+ Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājums par to, ka datnes izmērs neatbilst sagaidāmam.
+ Šī kļūda varētu traucēt analizēt atmiņas izmeti, jo tiek sagaidīts ka dati ir pilnīgi.
  
  
  

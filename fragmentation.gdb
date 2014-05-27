@@ -99,7 +99,7 @@ define div_stat
 		end
 
 		set $relation = ((double) $free_size/($alloc_size + $free_size)) * 100
-		printf "Apgabals 0x%x - 0x%x %i%%\n", $fract_start, $fract_fin, $relation
+		printf "Apgabals 0x%x - 0x%x %i%%\n", $fract_start, $heap_pointer, $relation
 	end
 end
 
