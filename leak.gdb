@@ -30,7 +30,7 @@ define get_alloc_chunk
 		if (($next_chunk[1] & 1) == 1)
 			set $malloc_pointer = $heap_pointer + 2
 
-			# notiek meklēšana
+			# tiek meklēta norāde
 			eval "shell cat gdb.core | grep %x > gdb.log", $malloc_pointer
 			shell echo set \$x=\"$(cat gdb.log)\" > gdb.log
 			# tiek nolasīta $x vērtība "
@@ -46,7 +46,7 @@ define get_alloc_chunk
 	end
 	shell rm gdb.log
 	shell rm gdb.core
-	printf "Procesa adrešu telpā tiek pazaudēti(s): %i gabali(s).\n", $unref	
+	printf "Procesa adrešu telpā tiek pazaudēts(i): %i gabals(i).\n", $unref	
 end
 
 # $arg0: galvenās arēnas adrese

@@ -16,19 +16,19 @@ Atmiņas izmete var būt bojāta, tāpēc pirms sākt atkļūdošanas procedūru
 To, kā var pārbaudīt vai izmetei ir nogriezts saturs ir aprakstīts \ref{sec:validaty} sadaļā.
 Validēšana palīdz savlaicīgi uzzināt, ka atmiņas izmete nav derīga analīzei un pārtraukt algoritma darbību.
 Nākamā pārbaude ir veikta pēc izpildāmās datnes nolasīšanas.
-Ir iespējams, ka izpildāmā datne neatbilstis atmiņas izmetei (2), tas var notikt divos gadījumos.
+Ir iespējams, ka izpildāmā datne neatbilstīs atmiņas izmetei (2), tas var notikt divos gadījumos.
 Pirmkārt, kad tiek izmantota cita izpildāmā datne atmiņas izmetes ģenerēšanai.
 Otrkārt, kad atmiņas izmetei neatbilst izpildāmās datnes versija.
 Ir nepieciešams pārbaudīt atbilstību un jāpārliecinās, ka var piekļūt galvenās arēnas datiem.
 Pēc dotām pārbaudēm var sākt atmiņas izmetes analīzi.
 Blok-shēmā ir parādīts, ka ir nepieciešams darbināt analizatorus, kuri  pārbauda problēmu pazīmes atmiņas izmetē.
 Daudzkodolu procesoriem ir iespējams realizēt algoritmu, kur analizatori strādās paralēli, vienkodolā visi analizatori izpildīsies secīgi.
-Analizatoru skaits nav ierobežots, taču bakalaura darbā algoritms tiks nodemonstrēts ar 3 analizatoru piemēriem (3. atmiņas noplūdes analizators, 4. maksimālās atmiņas izmantošanas problēmas analizators, 5. fragmentēšanas problēmas analizators).
+Analizatoru skaits nav ierobežots, taču bakalaura darbā algoritms tiks nodemonstrēts 3 analizatoru piemēros (3. atmiņas noplūdes analizators, 4. maksimālās atmiņas izmantošanas problēmas analizators, 5. fragmentēšanas problēmas analizators).
 Katrs analizators pārbauda noteiktās kaudzes problēmas pazīmes.
 Pēc tam tiek izvadīts kopējais rezultāts (6).
 Ja ir zināma programmai raksturīga uzvedība, tad pēc rezultāta izvadīšanas var secināt pār problēmām.
 
-Pieeja tiek izstrādāta ievērojot sekojošus ierobežojumus: %, kas aprakstīta bakalaura darbā,
+Pieeja tiek izstrādāta, ievērojot šādus ierobežojumus: %, kas aprakstīta bakalaura darbā,
 \begin{itemize}
 	\item GNU C bibliotēkas izmantošana sākot ar 2.3 versiju;
     \item ELF atmiņas izmetes formāts;
@@ -65,13 +65,13 @@ Nav atrasta norāde uz adresi: 9c7c4a0
 Nav atrasta norāde uz adresi: 9c954a8
 Nav atrasta norāde uz adresi: 9cae4b0
 Nav atrasta norāde uz adresi: 9cc74b8
-Procesa adrešu telpā tiek pazaudēti(s): 100 gabali(s).
+Procesa adrešu telpā tiek pazaudēts(i): 100 gabals(i).
 \end{lstlisting}
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas noplūdes atrašana, gdb skripta izvads}}}
 \end{figure} %$
 
 Skripts var kļūdaini atrast pazaudētas adreses, ja gabaliem nodrošināta piekļuve ar nobīdi.
-Tas ir, kad tiek iedalīts gabals, bet no programmas nav norādes uz gabala sākumu.
+Tas notiek, kad tiek iedalīts gabals, bet no programmas nav norādes uz gabala sākumu.
 Piemēra ir redzams, ka str norādei ir piešķirta atmiņas gabala adrese ar nobīdi (sk. 4.3. attēlu).
 Tas ir viens no speciāliem gadījumiem, kurš netiks apstrādāts skriptā. 
 Turklāt ir iespējams iegūt adresi un apskatīties datus, kuri tiek uzglabāti atmiņā.
