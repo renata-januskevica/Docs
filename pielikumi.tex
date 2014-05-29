@@ -23,15 +23,11 @@ int main(int argc, char** argv)
 	printf ("Iedalīšana notika.\n");
 
 	for (int i=0; i<num_allocations; i++)
-		memset (arr[i], 0, alloc_size*1024);
-	printf ("Atmiņa ir aizpildīta.\n");
-
-	for (int i=0; i<num_allocations; i++)
 		arr[i] = NULL;
-        
+
 	printf ("%i KiB pazaudēti.\n", 
-			num_allocations*alloc_size);
-            
+	         num_allocations*alloc_size);
+
 	abort();
 	delete[] arr;
 } 

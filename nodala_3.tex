@@ -105,6 +105,7 @@ Atmiņas izmetē atrodas kaudzes saturs visām atmiņas arēnām.
 Interpretējot katru kaudzes saturu, kā kopu ar daudziem atmiņas gabaliem, var iegūt adreses, uz kuriem malloc() funkcija atgrieza norādes procesam.
 Ja procesa adrešu telpā nav nevienas norādes uz atrastajām adresēm, tad ar lielu varbūtību var apgalvot, ka programmā ir atmiņas noplūde.
 Kamēr kļūda nav atrasta kodā, to nevar secināt, jo atmiņas izmete var būt bojāta un var neiekļaut daļu no procesa adrešu telpas.
+Ir iespējams ka procesa adrešu telpā izmantotās norādes ar nobīdi, tādā gadījumā norāde uz atmiņas gabala sākumu netiks atgriezta.
 Šī pazīme nav raksturīga loģiskajai atmiņas noplūdei.
 
 
@@ -129,7 +130,7 @@ class MyClass
 \label{fig:memoryleak}
 \end{figure}
 
-Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā, bet tādi gabali patērē visu pieejamo procesam atmiņu.
+Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā, bet tādi gabali patērē visu pieejamo atmiņu.
 Problēmai ir raksturīgs stāvoklis, kad ir daudzi iedalītie atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus (izmēru, līdzīgas datu shēmas).
 Turpmāk tiks apskatīts piemērs, kurš paskaidro kā var izpausties šī pazīme.
 Piemērā ir aplūkots gadījums, kad programmā ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir izmantota virtuālā funkcija.

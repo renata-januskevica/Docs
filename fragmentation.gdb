@@ -15,7 +15,7 @@
 define free_chunk_list
 	# bin kārtēja saraksta sākuma adrese
 	set $start_bin = (long *) ($arg0 + 56 + $arg1 * 8)
-	# molloc() funkcija atgriež šo adresi programmai
+	# molloc() funkcija atgriež šo norādi programmai
 	set $free_chunk = (long *) ($start_bin[1] + 8)
 	set $chunk_count = 0
 	set $chunk_max_size = 0
@@ -26,6 +26,7 @@ define free_chunk_list
 		set $chunk_size = ($free_chunk[-1] & ~7)
 
 		if ($chunk_count == 0)
+			# pirmajā iterācija maksimāls un minimāls izmērs ir pirmā gabala izmērs
 			set $chunk_max_size = $chunk_size 
 			set $chunk_min_size = $chunk_size
 		else

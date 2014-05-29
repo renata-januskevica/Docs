@@ -25,7 +25,7 @@ define get_alloc_chunk
 	while ($heap_pointer != $top_address[0])
 		# nākamā atmiņas gabalā atrodas kontroles zīmes, p zīme palīdz noteikt vai iepriekšējais gabals tiek iedalīts programmai
 		set $next_chunk =  $heap_pointer + (($heap_pointer[1] & ~7)/4)
-		# $x mainīgajā tiek saglabāta atrasta simbolu virkne
+		# $x mainīgajā tiek saglabāta atrasta simbolu virkne no datnes, kurā tiek uzglabāta atmiņas izmete heksadecimālājā formātā
 		set $x = 0
 		if (($next_chunk[1] & 1) == 1)
 			set $malloc_pointer = $heap_pointer + 2
@@ -33,7 +33,7 @@ define get_alloc_chunk
 			# notiek meklēšana
 			eval "shell cat gdb.core | grep %x > gdb.log", $malloc_pointer
 			shell echo set \$x=\"$(cat gdb.log)\" > gdb.log
-			# bez pēdiņas Latex turpina simbolu virkni " 
+			# tiek nolasīta $x vērtība "
 			source gdb.log
 			
 			if (sizeof($x) == 1) 
@@ -46,20 +46,20 @@ define get_alloc_chunk
 	end
 	shell rm gdb.log
 	shell rm gdb.core
-	printf "Procesa adrešu telpā tiek pazaudēta(s): %i norāde(s).\n", $unref	
+	printf "Procesa adrešu telpā tiek pazaudēti(s): %i gabali(s).\n", $unref	
 end
 
 # $arg0: galvenās arēnas adrese
 # komanda saglabā atmiņas izmeti heksadecimālā formātā un izdzēš atstarpes, jo dati var netikt izlīdzināti
 define analyze
 	set $top_address = (long *) ($arg0 + 48)
- 	if ($top_address[0] != 0)
+	if ($top_address[0] != 0)
 		shell od -t x core > gdb_tmp.core
 		shell cat gdb_tmp.core | tr -d ' ' > gdb.core
 		shell rm gdb_tmp.core
 		printf "\n------------- Atmiņas noplūde --------\n"
 		get_alloc_chunk $arg0
- 	else
+	else
 		printf "Atmiņa programmā netiek dinamiski iedalīta."
 	end
 end
