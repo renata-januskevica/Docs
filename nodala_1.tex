@@ -1,10 +1,10 @@
 ﻿Šajā nodaļā tiek aplūkots atmiņas izmetes jēdziens, atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
-Nodaļā ir aprakstīts atkļūdošanas process, kas var būt paveikts, izmantojot atmiņas izmeti.
+Nodaļā ir aprakstīts atkļūdošanas process, kas varētu būt paveikts, izmantojot atmiņas izmeti.
 
  \section{Atmiņas izmetes ģenerēšana}
 Sistēmās, kuras atbalsta POSIX standartus, ir signāli \cite{USP}, kuri, pēc noklusētās apstrādes, izraisa atmiņas izmetes ģenerēšanu un pārtrauc procesa darbību. 
 Šos signālus var atrast  \texttt{man 7 signal} komandas izvadā. 
-Signāliem, kuri izraisa izmetes ģenerēšanu, signālu tabulā \cite{signal} ir lauks ar vērtību core, kas atrodas ailē ar nosaukumu darbība (Action). 
+Signāliem, kuri izraisa izmetes ģenerēšanu, signālu tabulā \cite{signal} ir lauks ar vērtību core, kas atrodas ailē ar nosaukumu darbība (action). 
 Uzģenerētā atmiņas izmete iekļauj sevī procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, piemēram, CPU reģistrus un steka vērtības katram pavedienam, globālos un statiskos mainīgos. 
 Atmiņas izmeti var ielādēt atkļūdotājā, tādā kā gdb, lai  apskatītu programmas stāvokli uz brīdi, kad atnāca operētājsistēmas signāls \cite{core}.
 Veicot atmiņas izmetes analīzi, kļūst iespējams atrast un izlabot kļūdas, pat tad, ja nav tiešas piekļuves sistēmai. 
@@ -32,7 +32,7 @@ int main ()  {
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas izmetes ģenerēšana, pārtraucot procesa darbību}}}
 \end{figure}
 
-Ja nav nepieciešams, lai process turpinātu darbību, tad var izmantot funkcijas raise(), abort(), kā arī var apzināti pieļaut kļūdu kodā.
+Ja nav nepieciešams, lai process turpinātu darbību, tad var izmantot funkciju raise() vai abort(), kā arī var apzināti pieļaut kļūdu kodā.
 Tāda kļūda kā dalīšana ar nulli nosūta SIGFPE signālu, bet vēršanās pēc nulles radītāja - SIGSEGV signālu.
 Izmantojot funkciju raise(), ir iespējams norādīt atmiņas izmeti izraisošo signālu.
 Piemērā (sk. 1.1. attēlu) ir redzams C kods, kur funkcija raise() nosūta SIGSEGV signālu izpildāmai programmai. 
@@ -113,9 +113,9 @@ Lai  uzģenerētu atmiņas izmeti, ir jābūt izpildītiem šādiem nosacījumie
   
  Šis posms nav pietiekoši labi izpētīts literatūrā. Bet, pirms sākt atkļūdošanu, ir nepieciešams pārliecināties, ka atmiņas izmete var tikt pielietota šim nolūkam.
  Ģenerējot atmiņas izmeti, ir iespējams, ka datnes izmērs sasniegs vairākus gigabaitus un datne tiks nogriezta.
- Tas notiek, jo vieta ir ierobežota, un, kopējot, pārsūtot vai ģenerējot atmiņas izmeti, var pazaudēt daļu no datiem beigās.
+ Tas notiek, jo pieejama brīva vieta ir ierobežota, un, kopējot, pārsūtot vai ģenerējot atmiņas izmeti, var pazaudēt daļu no datiem.
  Šo gadījumu var pārbaudīt, izdrukajot galveni ar \texttt{objdump -p <core>} komandu.
- Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājums par to, ka datnes izmērs neatbilst sagaidāmam.
+ Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājums par to, ka datnes izmērs neatbilst sagaidāmām.
  Šī kļūda varētu traucēt analizēt atmiņas izmeti, jo tiek sagaidīts, ka dati ir pilnīgi.
  
  
@@ -140,7 +140,7 @@ Ja atmiņas izmetes analīzei tika izvēlēts GNU gdb atkļūdotājs, tad, pirms
 To var identificēt uzreiz pēc gdb palaišanas, ar šādas rindiņas palīdzību: \texttt{This GDB was configured as i686-linux-gnu}.  
 Lai atmiņas izmete saturētu atkļūdošanas informāciju, ir jānorāda -g opcija kompilācijas laikā.
 Atkļūdošanas informācija ir uzglabāta objektu datnē un saglabā atbilstību starp izpildāmo datni un pirmkodu, kā arī uzglabā mainīgo un funkciju datu tipus.
-Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad atmiņas izmete var izdrukāt šādu tekstu (sk. 1.5. attēlu).
+Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad var tikt izdrukāts šāds teksts (sk. 1.5. attēlu).
 
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]
@@ -201,7 +201,7 @@ Bactrace var tikt iegūts, izmantojot gdb komandu \texttt{bactrace full} vai \te
 Pēc noklusējuma daudzpavedienu lietotnēs gdb  rāda bactrace kārtējām pavedienam, bet pastāv iespēja iegūt arī bactrace izdruku citiem pavedieniem.
 Ja programma bija nokompilēta ar optimizācijas opciju, tad bactrace varētu neiekļaut funkcijas argumentus.
 Šajā gadījumā funkciju argumenti varētu tikt nodoti caur CPU reģistriem, kuru vērtības ir iespējams iegūt, izmantojot komandu \texttt{info registers} vai \texttt{i r}.
-Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis, tāpēc CPU reģistru vērtības visticamāk tiks parakstītas.
+Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis, tāpēc CPU reģistru vērtības visticamāk tiks pārrakstītas.
  Ja ir nepieciešamība, tad reģistru vērtības ir iespējams atjaunot no steka.
  %ja pēc izjaukšanas (disassembling) ir redzams, ar cik lielu nobīdi tie tika saglabāti stekā.
 %Izjaukšana (disassembling) ļauj izdrukāt asamblera instrukcijas noraidītai funkcijai. 
