@@ -53,6 +53,7 @@ end
 # komanda saglabā atmiņas izmeti heksadecimālā formātā un izdzēš atstarpes, jo dati var netikt izlīdzināti
 define analyze
 	set $top_address = (long *) ($arg0 + 48)
+
 	if ($top_address[0] != 0)
 		shell od -t x core > gdb_tmp.core
 		shell cat gdb_tmp.core | tr -d ' ' > gdb.core

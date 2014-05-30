@@ -15,7 +15,7 @@
 define free_chunk_list
 	# bin kārtēja saraksta sākuma adrese
 	set $start_bin = (long *) ($arg0 + 56 + $arg1 * 8)
-	# molloc() funkcija atgriež šo norādi programmai
+	# malloc() funkcija atgriež šo norādi programmai
 	set $free_chunk = (long *) ($start_bin[1] + 8)
 	set $chunk_count = 0
 	set $chunk_max_size = 0
@@ -86,9 +86,11 @@ define div_stat
 		set $alloc_size = 0
 		set $fract_fin = $heap_pointer + $fract_size/4
 		set $fract_start = $heap_pointer
+
 		while (($heap_pointer < $fract_fin) && ($heap_pointer != $top_address[0]))
 			set $next_chunk =  $heap_pointer + (($heap_pointer[1] & ~7)/4)
 			set $chunk_size = ($heap_pointer[1] & ~7)
+
 			if (($next_chunk[1] & 1) == 1)
 				set $alloc_size = $alloc_size + $chunk_size 
 			else
@@ -99,7 +101,6 @@ define div_stat
 
 		set $relation = ((double) $free_size/($alloc_size + $free_size)) * 100
 		printf "Apgabals 0x%x - 0x%x %i%%\n", $fract_start, $heap_pointer, $relation
-
 	end
 end
 
