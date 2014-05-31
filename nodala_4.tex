@@ -14,7 +14,7 @@ Blok-shēmā (sk. 4.1. attēlu) ir attēlots kaudzes atkļūdošanas algoritms.
 Šī algoritma ievaddati ir izpildāmā datne un atmiņas izmete.
 Atmiņas izmete var būt bojāta, tāpēc pirms sākt atkļūdošanas procedūru ir nepieciešams veikt atmiņas izmetes validēšanu (1).
 Šeit ir jāveic dažas pārbaudes, piemēram, pārbaudi uz neatbilstību formātam vai atmiņas izmetes nogriezto saturu.
-To, kā var pārbaudīt vai izmetei ir nogriezts saturs ir aprakstīts \ref{sec:validaty} sadaļā.
+To, kā var pārbaudīt vai atmiņas izmetei ir nogriezts saturs ir aprakstīts \ref{sec:validaty} sadaļā.
 Nākamā pārbaude ir veikta pēc izpildāmās datnes nolasīšanas.
 Ir iespējams, ka izpildāmā datne neatbilstīs atmiņas izmetei (2), tas var notikt divos gadījumos.
 Pirmkārt, kad tiek izmantota cita izpildāmā datne atmiņas izmetes ģenerēšanai.
@@ -31,8 +31,9 @@ Ja ir zināma programmai raksturīga uzvedība, tad pēc rezultāta izvadīšana
 
 Pieeja tiek izstrādāta, ievērojot šādus ierobežojumus: %, kas aprakstīta bakalaura darbā,
 \begin{itemize}
-	\item GNU C bibliotēkas izmantošana sākot ar 2.3 versiju;
+	\item GNU C bibliotēkas iedalitāja izmantošana;
     \item ELF atmiņas izmetes formāts;
+    \item ir nepieciešams divreiz lielāks brīvas atmiņas apjoms par izpildāmās programmas pieprasīto atmiņas apjomu;
     \item analizātori nedod pilnīgu secinājumu par problēmas esamību, bet sniedz informāciju par sistēmas stāvokli, kura ļauj izstradatājam secināt par problēmu.
 \end{itemize}
 
@@ -47,17 +48,24 @@ Skriptu ir iespējams pielāgot arī 64 bitu arhitektūrai un arhitektūrām ar 
 Analizators ir izstrādāts vienpavedienu lietotnei ar vienu galveno arēnu.
 
 Skripts atrod visus atmiņas gabalus kaudzē. 
-Katram atmiņas gabalam, tiek pārbaudīts vai tās tiek iedalīts programmai vai atbrīvots.
-Ja gabals ir atbrīvots, tad to nevajag apstrādāt.
-Tātad, var nobīdīt norādi uz nākamo atmiņas gabalu līdz tiks sasniegts top gabals.
-Katram iedalītām gabalam kaudzē tiek iegūta adrese, uz kuru būtu jānorāda norādei no procesa adrešu telpas.
-Ja norādes nav, tad programma izdrukas pazaudēto adresi.
-Pirms meklēt atmiņas adreses procesa adrešu telpā ir nepieciešams sagatavot datni ar atmiņas izmetes heksadecimālo saturu.
+Katrs atmiņas gabals tiek pārbaudīts vai tās tiek iedalīts programmai, vai atbrīvots.
+Šī informācija tiek iegūta nolasot pēdējo P kontroles bitu nākamajām atmiņas gabalam.
+Ja tekošais gabals ir atbrīvots, tad tas jau tika pievienots vienam no bin sarakstiem un to nevajag apstrādāt.
+Pēc tam, tiek nobīdīta norāde un pārbaudīts nākamais atmiņas gabals.
+Tādā veidā tiek apstrādāti visi atmiņas gabali, kuri ir novietoti pirms top gabala.
+Katram iedalītām gabalam kaudzē tiek izrēķināta adrese, kurā sākas lietotāju dati.
+Tā kā adrese ir iedalīta, tad procesa adrešu telpā ir jābūt norādei uz šo vietu atmiņā.
+Gadījumos, kad norādes nav, tad dotais apgabals ir pazaudēts un tas nozīme, ka ir atrasta atmiņas noplūdes problēma.
+Programmai iedalītās adreses tiek meklētas ar grep utilītprogrammas palīdzību.
+Lai nodrošinātu adrešu meklēšanu visā procesa adrešu telpā, atmiņas izmetes saturs tiek saglabāts heksadecimalajā formātā atsevišķajā datnē.
 Šīm nolūkam ir izmantota \texttt{od -t x} komanda, jo, atšķirībā no \texttt{xxd}, komanda ļauj bez baitu apgriešanas Intel x86 arhitektūrā iegūt korektas adreses ar  vismazāk nozīmīgākiem baitiem sākumā \cite{DPT}.
+Atmiņas izmetes heksadecimalajā saturā tiek meklētas iedalītas adreses.
+Kad adrese ir atrasta, notiek nākamas adrese meklēšana, ja nav atrasta tad tiek pieskaitīta pazaudēto gabalu statistika un izdrukāta dotā atmiņas adrese.
+Programmas izvads satur pazaudēto norāžu skaitu un pazaudēto atmiņas gabalu adreses (sk. 4.2. attēlu).
 %Realizējot šāda veida analizatoru, ir jāparedz gadījums, ka dati var netikt izlīdzināti 4 baitu robežai.
 %Skriptā, šīm nolūkam visas adreses tika saplūdinātas.
-Meklēšana notiek ar grep utilītprogrammas palīdzību.
-Programmas izvads satur pazaudēto norāžu skaitu un pazaudēto atmiņas gabalu adreses (sk. 4.2. attēlu).
+
+
 
 \begin{figure}[h]
 \begin{lstlisting} [style=customgdb]
@@ -85,7 +93,7 @@ char * str = (char *)malloc(sizeof(char) * num_elements) + 16; /* C */
 \end{figure}
 
 Atmiņas noplūdes analizators sameklē pazaudētus gabalus un ļauj atrast problēmu atmiņas izmetē.
-Parauga programmai (sk. 1. pielikumu) ar diviem argumentiem: 100, 100 skripts izvadīja, ka tiek pazaudēti 100 atmiņas gabali.
+Parauga programmai (sk. 1. pielikumu) ar diviem argumentiem 100, 100 skripts atgrieza rezultātu, ka tiek pazaudēti 100 atmiņas gabali.
 Tā kā sniegtā izdruka atbilst programmas stāvoklim,tad tiek uzskatīts, ka dotās problēmas atkļūdošanai var izmantot atmiņas izmeti.
 
 \section{Maksimālās atmiņas izmantošanas problēmas analizators}
@@ -145,8 +153,8 @@ Gabalu apstaigāšana notiek pieskaitot kaudzes adresei kārtēja gabala izmēru
 Beigās tiek izdrukāts iegūtais rezultāts, kas izrēķināts karam kaudzes apgabalam.
 Algoritms ir nodrošināts ar \texttt{div\_stat} komandas palīdzību.
 
-Maksimālās atmiņas izmantošanas analizators sniedz statistiku, kura palīdz atrast problēmu.
-Parauga programmai (sk. 2. pielikumu), kura tika palaista ar diviem argumentiem: 100, 100 skripts izvadīja, ka pēdējā kaudzes apgabalā atbrīvoto gabalu daļa no apgabala satura ir 98\%, ja kaudze tiek sadalītā 2 daļās.
+Maksimālās atmiņas izmantošanas analizators sniedz kaudzes apgabalu statistiku, kura palīdz atrast problēmu.
+Parauga programmai (sk. 2. pielikumu), kura tika palaista ar diviem argumentiem: 100, 100 skripts atgrieza rezultātu, ka pēdējā kaudzes apgabalā atbrīvoto gabalu daļa no apgabala satura ir 99\%, ja kaudze tiek sadalītā 2 daļās.
 Tā kā sniegtā izdruka atbilst programmas stāvoklim,tad tiek uzskatīts, ka dotās problēmas atkļūdošanai var izmantot atmiņas izmeti.
 
 \section{Fragmentēšanas analizators}
@@ -192,8 +200,11 @@ Atbrīvoto gabalu skaits arēnā: 50,
 
 Skripts uzkrāj kopējo statistiku par kaudzi (sk. 4.7. attēlu). Izdrukas piemēra  ir redzams, ka kopumā tika iedalīti 50 atmiņas gabali.
 Neizmantotās atmiņas daudzums (top gabala izmērs) ir 82 kilobaiti.
-2/3 no iedalītās atmiņas kaudzē tiek iedalītas programmai ar malloc() vai lidzīgam funkcijam.
+2/3 no iedalītās atmiņas kaudzē tiek iedalītas programmai ar malloc() vai līdzīgam funkcijām.
 
+Fragmentēšanas analizators sniedz statistiku, kura palīdz atrast problēmu.
+Parauga fragmentēšanas programmai (sk. 3. pielikumu) tika padoti 2 argumenti 100, 100. Skripts atgrieza rezultātu, ka lielāka gabala izmērs ir 104 baiti, bet kopējā atbrīvotā atmiņa bin sarakstos ir vienāda ar 5200 baitiem.
+Tā kā sniegtā izdruka atbilst programmas stāvoklim,tad tiek uzskatīts, ka dotās problēmas atkļūdošanai var izmantot atmiņas izmeti.
 
 
 

@@ -361,33 +361,33 @@ Ja kaudzē atrodas brīvie gabali, kuri nav lielāki par 16 baitiem un top gabal
 
 Viena kļūda programmā var sabojāt kaudzes datus. 
 Šo kļūdu ir grūti atrast, jo sekas ir novērojamas nevis tad, kad tiek pārrakstīti dati kaudzē, bet kad ir nākamais mēģinājums piekļūt pārrakstītiem datiem.
-Kaudzē ir novērojamās vairākas bojāšanas kļūdas (heap corruption) \cite{DHC}:
+Kaudzē ir novērojamas vairākas bojāšanas kļūdas (heap corruption) \cite{DHC}:
 \begin{itemize}
-\item robežu pārpildīšana (boundary overrun). Notiek, kad programma raksta aiz malloc() funkcijas robežām.
+\item robežu pārpildīšana (boundary overrun). Notiek, kad programma raksta aiz malloc() funkcijas iedalītā gabala robežām.
 Tādā veidā var pārrakstīt nākamo datu struktūru atmiņā; 
-\item rakstīšana pirms malloc() iedalītas sākuma adreses robežām;
+\item rakstīšana pirms malloc() iedalītā gabala sākuma (buffer underrun);
 \item piekļuve neinicializētam atmiņas gabalam. Programma mēģina lasīt datus no gabala, kurš nav inicializēts;
-\item piekļuve atbrīvotam gabalam. Programma mēģina lasīt vai rakstīt atmiņas gabalā, kurš bija atbrīvots;
-\item divkārša atbrīvošana. Programma atbrīvo datu struktūras, kuras jau tika atbrīvotas;
+\item piekļuve atbrīvotam gabalam  (use after free). Programma mēģina lasīt vai rakstīt atmiņas gabalā, kurš bija atbrīvots;
+\item divkārša atbrīvošana (double free). Programma atbrīvo datu struktūras, kuras jau tika atbrīvotas;
 \item programma free() funkcijai padod adresi, kura nebija atgriezta ar malloc().
 \end{itemize}
 
 
 
 \section{Kļūdas trešās puses bibliotēkās}
-Tā kā izstrādājama programma strādā, izmantojot trešās puses bibliotēkas, tad programmas uzticamība un kvalitāte ir atkarīga arī no iedalītāja trešās puses bibliotēkās.
-Ir iespējams, ka notiek problēma programmā nekorektās iedalītāja realizācijas dēļ.
+Tā kā izstrādājamā programma strādā, izmantojot trešās puses bibliotēkas, tad programmas uzticamība un kvalitāte ir atkarīga arī no iedalītāja realizācijas trešās puses bibliotēkās.
+Ir iespējams, ka notiek problēma programmā nekorektas iedalītāja realizācijas dēļ.
 Piemēram, ir iespējams apskatīt GNU C bibliotēkas pieteiktās kļūdas \cite{MUE}.
-Ja iedalītais ir uzturēts, tad iespējams, ka var piereģistrēt problēmas, lai nākamajās versijās tas tiktu izlabotas.
+Ja iedalītājs ir uzturēts, tad iespējams, ka var piereģistrēt problēmas, lai nākamajās versijās tas tiktu izlabotas.
 Izmantojot individuālo iedalītāja risinājumu, problēmas būs jāatkļūdo patstāvīgi.  
 Daži iedalītāji var būt izstrādāti ar iepriekš zināmiem ierobežojumiem, piemēram, ja iedalītāja algoritms ir efektīvs, tad tas var izmantot pārmērīgo atmiņas daudzumu.
-Cits ierobežojums ir, kad tiek izmantots mazs atmiņas daudzums, turklāt algoritms nav efektīvs.
-Šīs īpašības ir jāņem vērā, izstrādājot lietotnes, lai nerastos problēmas, kas saistītas ar trešās puses bibliotēkām.
-Ja problēma notiek iekšā trešās puses bibliotēkās, tad ir trīs iespējas, kā var izvairīties no problēmām lietotnēs: ir jāatrod ceļš, ka nepieļaut doto kļūdu, ir jāgaida atjauninājumi, kuros kļūda tiks izlabota, vai ir jānomaina tekošais iedalītājs. 
+Cits ierobežojums ir kad tiek izmantots mazs atmiņas daudzums turklāt algoritms nav efektīvs.
+Šis īpašības ir jāņem vērā izstrādājot lietotnes, lai nerastos problēmas, kas saistītas ar trešās puses bibliotēkām.
+Ja problēma notiek trešās puses bibliotēkās, tad ir trīs iespējas kā var izvairīties no problēmām lietotnēs: ir jāatrod ceļš, kā nepieļaut doto kļūdu, ir jāgaida atjauninājumi, kuros kļūda tiks izlabota, vai ir jānomaina iedalītājs. 
 
 
 \section{Secinājumi}
-Nodaļā tika izpētītas trīs problēmas un identificētas to pazīmes atmiņas izmete.
+Nodaļā tika izpētītas trīs problēmas un identificētas to pazīmes atmiņas izmetē.
 \begin{enumerate}
 \item Atmiņas noplūdes pazīmes:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
