@@ -1,5 +1,5 @@
 ﻿Šajā nodaļā ir aprakstīta metode, kura varētu tikt pielietota kaudzes atkļūdošanai. 
-Šeit ir aplūkots metodes algoritms un 3 analizatoru realizācijas: atmiņas noplūdes analizators, maksimālās atmiņas izmantošanas problēmas analizators, fragmentēšanas problēmas analizators.
+Šeit ir aplūkots metodes algoritms un trīs analizatoru realizācijas: atmiņas noplūdes analizators, maksimālās atmiņas izmantošanas problēmas analizators, fragmentēšanas problēmas analizators.
 Realizētie analizatori ir uzskatāms demonstrējums, ka metode strādā un var tikt pielietota.
 \section{Analizatora darbības princips}
 
@@ -24,7 +24,7 @@ Visās iepriekš aprakstītās pārbaudes palīdz savlaicīgi uzzināt, ka atmi�
 Pēc dotām pārbaudēm var sākt atmiņas izmetes analīzi.
 Blok-shēmā ir parādīts, ka ir nepieciešams darbināt analizatorus, kuri  pārbauda problēmu pazīmes atmiņas izmetē.
 Daudzkodolu procesoriem ir iespējams realizēt algoritmu, kur analizatori strādās paralēli, vienkodolā visi analizatori izpildīsies secīgi.
-Analizatoru skaits nav ierobežots, taču bakalaura darbā algoritms tiks nodemonstrēts 3 analizatoru piemēros (3. atmiņas noplūdes analizators, 4. maksimālās atmiņas izmantošanas problēmas analizators, 5. fragmentēšanas problēmas analizators).
+Analizatoru skaits nav ierobežots, taču bakalaura darbā algoritms tiks nodemonstrēts trijos analizatoru piemēros (3. atmiņas noplūdes analizators, 4. maksimālās atmiņas izmantošanas problēmas analizators, 5. fragmentēšanas problēmas analizators).
 Katrs analizators pārbauda noteiktās kaudzes problēmas pazīmes.
 Pēc tam tiek izvadīts kopējais rezultāts (6).
 Ja ir zināma programmai raksturīga uzvedība, tad pēc rezultāta izvadīšanas var secināt pār problēmām.
@@ -151,7 +151,7 @@ Tā kā sniegtā izdruka atbilst programmas stāvoklim,tad tiek uzskatīts, ka d
 
 \section{Fragmentēšanas analizators}
 Šajā sadaļā tiek aprakstīts fragmentēšanas analizators, kurš tika realizēts gdb skriptā (sk. 5. pielikumu).
-Fragmentēšanas problēmas novērtēšanai analizators izvada 2 svarīgākus rādītājus: lielāko un kopējo atbrīvoto gabalu izmēru arēnā.
+Fragmentēšanas problēmas novērtēšanai analizators izvada divus svarīgākus rādītājus: lielāko un kopējo atbrīvoto gabalu izmēru arēnā.
 Problēma būs novērojama, kad tiks iegūts tāds maksimālais atbrīvotais gabals, kurš nevar apmierināt pieprasījumu pēc atmiņas, ja kopējais izmērs ir pietiekošs.
 Piemēra redzamai programmai (sk. 4.6. attēlu), ja programma pieprasīs vairāk nekā 8 kilobaitus un atmiņa netiks iedalīta no operētājsistēmas, tad tas varētu izraisīt sistēmas apstāšanos.
 \begin{figure}[h]

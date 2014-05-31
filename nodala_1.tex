@@ -77,10 +77,9 @@ Neobligāts arguments \texttt{filename} nosaka atmiņas izmetes nosaukumu. Šī 
 Trešā iespēja ir nosūtīt signālu, izmantojot komandrindas interpretatoru. 
 Komanda kill var nosūtīt jebkuru signālu procesam.
 Pēc komandas  \texttt{kill -<SIGNAL\_NUMBER> <PID>} signāls ar numuru  SIGNAL\_NUMBER tiks nosūtīts procesam ar norādītu PID vērtību.
-Izmantojot shell komandrindas interpretatoru, ir  iespējams izmantot īsinājumtaustiņus signālu nosūtīšanai. 
+Izmantojot komandrindas interpretatoru, ir  iespējams izmantot īsinājumtaustiņus signālu nosūtīšanai. 
 Nospiežot Control + $\backslash$, tiks nosūtīts SIGQUIT signāls procesam, kas pašreiz ir palaists (sk. 1.4. attēlu) \cite {nosacijumi}. 
-Šajā piemērā ziņojumu - Quit (core dumped), izdruka shell. 
-Šīs komandrindas interpretators noteic, ka  sleep procesu (shell bērnu) pārtrauca SIGQUIT signāls. 
+Šajā piemērā ziņojumu - Quit (core dumped), izdruka komandrindas interpretators, kurš noteic, ka  sleep procesu pārtrauca SIGQUIT signāls. 
 Pēc šī signāla nosūtīšanās darba mapē tiek uzģenerēta atmiņas izmete. 
 
 \begin{figure}[h]
@@ -101,7 +100,7 @@ Lai  uzģenerētu atmiņas izmeti, ir jābūt izpildītiem šādiem nosacījumie
 	\item 	ja datne ar vienādu nosaukumu jau eksistē, tad uz to ir jābūt ne vairāk kā vienai stingrai saitei;
 	\item 	izvēlētai darba mapei ir jābūt reālai un jāatrodas norādītajā vietā;
 	\item 	Linux core datnes izmēra robežai {RLIMIT\_CORE} jābūt lielākai par ģenerējamā faila izmēru, { RLIMIT\_FSIZE} robežai jāļauj procesam izveidot atmiņas izmeti;
-	\item 	ir  jāatļauj lasīt binārā datne, kura tika palaista;
+	\item 	ir  jāatļauj lasīt bināro datni, kura tika palaista;
 	\item 	failu sistēmai, kurā atrodas darba mape, ir jābūt uzmontētai rakstīšanai, tai nav jābūt pilnai un ir jāsatur brīvie indeksa deskriptori;
 	\item 	binārā datne jāizpilda lietotājam, kurš ir datnes īpašnieks (group owner).
 \end{itemize} 
@@ -115,7 +114,7 @@ Lai  uzģenerētu atmiņas izmeti, ir jābūt izpildītiem šādiem nosacījumie
  Ģenerējot atmiņas izmeti, ir iespējams, ka datnes izmērs sasniegs vairākus gigabaitus un datne tiks nogriezta.
  Tas notiek, jo pieejamā brīva vieta ir ierobežota, un, kopējot, pārsūtot vai ģenerējot atmiņas izmeti, var pazaudēt daļu no datiem.
  Šo gadījumu var pārbaudīt, izdrukajot galveni ar \texttt{objdump -p <core>} komandu.
- Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājums par to, ka datnes izmērs neatbilst sagaidāmām.
+ Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājums par to, ka datnes izmērs neatbilst sagaidāmajam.
 Nogriezts saturs varētu traucēt analizēt atmiņas izmeti, jo tiek sagaidīts, ka dati ir pilnīgi.
  
  
@@ -191,15 +190,15 @@ $3 = 0x54320 <_initialize_vx+396>
 \end{figure}
 
 Atmiņas izmetes analīze sākas ar backtrace izdrukāšanu. 
-Bactrace ir pārskats, kurš attēlo, kā programma nonāca stāvoklī, kurā pabeidza savu darbību.
+Backtrace ir pārskats, kurš attēlo, kā programma nonāca stāvoklī, kurā pabeidza savu darbību.
 Tas palīdz ātri atrast instrukciju, kura bija izpildīta pēdēja un daudzos gadījumos, ļauj ātri identificēt kļūdas cēloni.
-Backrtace nesniedz patieso informāciju par funkciju, ja process tika pabeigts ārējo apstākļu dēļ, nevis tāpēc, ka bija notikusi kļūda programmā.
-Katra rindiņa satur rāmi (frame). Bactrace izdruka sākas ar rāmi, kurā iekļauta funkcija, kura bija izpildīta pēdēja. 
+Backtrace nesniedz patieso informāciju par funkciju, ja process tika pabeigts ārējo apstākļu dēļ, nevis tāpēc, ka bija notikusi kļūda programmā.
+Katra rindiņa satur rāmi (frame). Backtrace izdruka sākas ar rāmi, kurā iekļauta funkcija, kura bija izpildīta pēdēja. 
 Nākamais rāmis iekļauj funkciju, kas izsauca iepriekšējā rāmī iekļauto funkciju.
-Katrai baktrace rindiņai tiek piešķirts rāmja numurs. Katrs rāmis var iekļaut: funkcijas nosaukumu, pirmkoda datnes nosaukumu, pirmkodam atbilstošo rindiņas numuru un funkcijas argumentus. 
-Bactrace var tikt iegūts, izmantojot gdb komandu \texttt{bactrace full} vai \texttt{bt f}. 
-Pēc noklusējuma daudzpavedienu lietotnēs gdb  rāda bactrace kārtējām pavedienam, bet pastāv iespēja iegūt arī bactrace izdruku citiem pavedieniem.
-Ja programma bija nokompilēta ar optimizācijas opciju, tad bactrace varētu neiekļaut funkcijas argumentus.
+Katrai backtrace rindiņai tiek piešķirts rāmja numurs. Katrs rāmis var iekļaut: funkcijas nosaukumu, pirmkoda datnes nosaukumu, pirmkodam atbilstošo rindiņas numuru un funkcijas argumentus. 
+Backtrace var tikt iegūts, izmantojot gdb komandu \texttt{backtrace full} vai \texttt{bt f}. 
+Pēc noklusējuma daudzpavedienu lietotnēs gdb  rāda backtrace kārtējām pavedienam, bet pastāv iespēja iegūt arī backtrace izdruku citiem pavedieniem.
+Ja programma bija nokompilēta ar optimizācijas opciju, tad backtrace varētu neiekļaut funkcijas argumentus.
 Šajā gadījumā funkciju argumenti varētu tikt nodoti caur CPU reģistriem, kuru vērtības ir iespējams iegūt, izmantojot komandu \texttt{info registers} vai \texttt{i r}.
 Atmiņas izmetē atrodas pēdējais atmiņas stāvoklis, tāpēc CPU reģistru vērtības visticamāk tiks pārrakstītas.
  Ja ir nepieciešamība, tad reģistru vērtības ir iespējams atjaunot no steka.

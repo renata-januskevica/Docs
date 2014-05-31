@@ -18,7 +18,7 @@ Atmiņas noplūde notiek nepareizās lietotāja atmiņas pārvaldības dēļ, ka
 
 Atmiņas noplūdes problēmu var sadalīt divos dažādos veidos: fiziskā un loģiskā atmiņas noplūde \cite{JMMR}.
 Fiziskā atmiņas noplūde ir novērojama, kad atmiņas adreses, kuras tika iedalītas procesam,  kļūst nepieejamas, pazaudētas, tas notiek, kad procesa adrešu telpā uz iedalīto atmiņas gabalu kaudzē nenorāda neviens rādītājs.
-Šis programmas stāvoklis var būt novērojams 3 iemeslu dēļ \cite{JMMR}:
+Šis programmas stāvoklis var būt novērojams trīs iemeslu dēļ \cite{JMMR}:
 \begin{itemize}
 \item pēdēja norāde uz atmiņas gabalu ir pārrakstīta vai norāde bija palielināta, piemēram, lai sasniegtu datus ar nobīdi;
 \item norāde atrodas ārpus darbības lauka (out of scope);
@@ -355,7 +355,7 @@ Kaudzē atrodas iedalītie gabali 32 baitu (0x21) izmērā un atbrīvotie gabali
 Atbrīvotie gabali ir saistīti savā starpā un atrodas ātrajā sarakstā.
 Tas ir novērojams, jo lietotāju datos ātrajiem gabaliem ir uzglabāta nākama gabala adrese.
 Pēdējam gabalam ātrajā sarakstā ir uzglabāta 0x00000000 adrese.
-Ja kaudzē atrodas brīvie gabali, kuri nav lielāki par 16 baitiem, tad maksimālais gabals, kurš varētu tikt iedalīts, ir 16 baiti un pieprasījums pēc 32 baitiem paplašinās kaudzes segmenta izmēru vai izraisīs kļūdu.
+Ja kaudzē atrodas brīvie gabali, kuri nav lielāki par 16 baitiem un top gabala izmērs ir mazāks par 32 baitiem, tad maksimālais gabals, kurš varētu tikt iedalīts, ir 16 baiti un pieprasījums pēc 32 baitiem paplašinās kaudzes segmenta izmēru vai izraisīs kļūdu.
 
 \section{Datu kaudzes bojāšana}
 
@@ -383,11 +383,11 @@ Izmantojot individuālo iedalītāja risinājumu, problēmas būs jāatkļūdo p
 Daži iedalītāji var būt izstrādāti ar iepriekš zināmiem ierobežojumiem, piemēram, ja iedalītāja algoritms ir efektīvs, tad tas var izmantot pārmērīgo atmiņas daudzumu.
 Cits ierobežojums ir, kad tiek izmantots mazs atmiņas daudzums, turklāt algoritms nav efektīvs.
 Šīs īpašības ir jāņem vērā, izstrādājot lietotnes, lai nerastos problēmas, kas saistītas ar trešās puses bibliotēkām.
-Ja problēma notiek iekšā trešās puses bibliotēkās, tad ir 3 iespējas, kā var izvairīties no problēmām lietotnēs: ir jāatrod ceļš, ka nepieļaut doto kļūdu, ir jāgaida atjauninājumi, kuros kļūda tiks izlabota, vai ir jānomaina tekošais iedalītājs. 
+Ja problēma notiek iekšā trešās puses bibliotēkās, tad ir trīs iespējas, kā var izvairīties no problēmām lietotnēs: ir jāatrod ceļš, ka nepieļaut doto kļūdu, ir jāgaida atjauninājumi, kuros kļūda tiks izlabota, vai ir jānomaina tekošais iedalītājs. 
 
 
 \section{Secinājumi}
-Nodaļā tika izpētītas 3 problēmas un identificētas to pazīmes atmiņas izmete.
+Nodaļā tika izpētītas trīs problēmas un identificētas to pazīmes atmiņas izmete.
 \begin{enumerate}
 \item Atmiņas noplūdes pazīmes:
     \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt

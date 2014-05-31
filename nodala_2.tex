@@ -1,5 +1,5 @@
 ﻿Šī nodaļa palīdz saprast kopējo atmiņas organizāciju un kaudzes\footnote{Šī termina nozīme atšķiras no datu struktūras "kaudze", kurā elementi tiek izvēlēti saskaņā ar to prioritāti.} lomu tajā. 
-Šajā nodaļā ir aprakstīti atmiņas iedalīšanas paņēmieni, ir dots īss ieskats GNU C bibliotēkas ptmalloc2 realizācijā un aprakstīta atmiņas pārvaldība no lietotāja un no kodola puses.
+Šajā nodaļā ir aprakstīti atmiņas iedalīšanas paņēmieni, ir dots īss ieskats GNU C bibliotēkas kaudzes atmiņas iedalītāja ptmalloc2 realizācijā un aprakstīta atmiņas pārvaldība no lietotāja un no kodola puses.
 
 \section{Atmiņas iedalīšanas paņēmieni}
 %\label{sect:Motivation}
@@ -24,7 +24,7 @@ Statiskais atmiņas iedalīšanas paņēmiens nodrošina to, ka atmiņa tiek ied
 \subsection{Dinamiskā atmiņas iedalīšana}
 Dinamiskā atmiņas iedalīšana nozīmē, ka atmiņa tiek iedalīta programmas izpildes laikā.
 Tas var būt nepieciešams, kad atmiņas daudzums nav zināms programmas kompilācijas laikā. 
-Dinamiskā atmiņas iedalīšana var būt realizēta ar steka vai kaudzes palīdzību un var būt automātiskā vai kontrolētā \cite{SDMA}.
+Dinamiskā atmiņas iedalīšana var būt realizēta ar steka vai kaudzes palīdzību un var būt automātiska vai kontrolēta \cite{SDMA}.
 
 Automātiskā iedalīšana notiek, kad sākās programmas funkcijas izpilde. 
 Automātiskās atmiņas iedalīšanai, izmanto steku.
@@ -32,24 +32,24 @@ Automātiskās atmiņas iedalīšanai, izmanto steku.
 Piemēram, funkcijas argumenti un lokālie mainīgie ir saglabāti stekā un izdzēsti pēc šīs funkcijas izpildes. 
 Pēc tam atbrīvotā atmiņa var būt izmantota atkārtoti. 
 Vērtību izdzēšana vai saglabāšana notiek, nobīdot steka norādi.
-Visiem funkcijas mainīgiem var piekļūt, izmantojot steka norādes nobīdi, kas tiek uzglabāta reģistrā, piemēram,  
+Visiem funkcijas mainīgiem var piekļūt izmantojot steka norādes nobīdi, kas tiek uzglabāta reģistrā, piemēram,  
 Intel x86 procesoros, 16 bitu režīmā tas ir reģistrs \texttt{SP}, 32 bitu režīmā - \texttt{ESP} un 64 bitu režīmā - \texttt{RSP} \cite{JCL}.
 
 
 Kontrolētā atmiņas iedalīšana nozīmē, ka programma izvēlas brīvus atmiņas gabalus no pieejama segmenta telpas programmas datiem. 
 Kontrolētā jeb manuālā atmiņas iedalīšana parasti ir nodrošināta ar kaudzes palīdzību.
-Šeit nav iespējams piekļūt visiem iedalītiem atmiņas gabaliem, izmantojot vienu norādi un tās nobīdi, piemēram, kā tas tiek nodrošināts stekā. 
+Šeit nav iespējams piekļūt visiem iedalītajiem atmiņas gabaliem, izmantojot vienu norādi un tās nobīdi, piemēram, kā tas tiek nodrošināts stekā. 
 Tagad katram iedalītam atmiņas gabalam var piekļūt tikai tad, ja ir norāde uz šo iedalīto atmiņas gabalu. 
 Gadījumos, kad norādes nav, tad adreses vairāk nav sasniedzamas un kļūst pazaudētas.
 Turpmāk darbā, termins "dinamiskā atmiņa" apzīmēs atmiņu, kura tiek iedalīta, izmantojot kontrolēto atmiņas iedalīšanu.
 
 
 \section{Atmiņas pārvaldība}
-Kad tiek izpildīta jebkura programma, atmiņa tiek pārvaldīta divos veidos: ar kodola palīdzību vai ar lietotnes funkciju izsaukumiem, tādiem kā malloc().
+Kad tiek izpildīta jebkura programma, atmiņa tiek pārvaldīta divos veidos: ar kodola palīdzību vai ar C bibliotēkas funkciju izsaukumiem, tādiem kā malloc().
 
 \subsection{Kodola atmiņas pārvaldība}
 Operētājsistēmas kodols apstrādā visus atmiņas pieprasījumus, kas attiecas uz programmu vai programmas instancēm.
-Kad lietotājs sāk programmas izpildi, tad kodols iedala atmiņas apgabalu tekošam procesam.
+Kad lietotājs sāk programmas izpildi, tad kodols iedala atmiņas apgabalu tekošajam procesam.
 Šis apgabals, no procesa viedokļa, ir viena lineārā virtuālā adrešu telpa, kura ir sadalīta vairākos segmentos.
 Iedalīto virtuālo adrešu karti var atrast \texttt{/proc/<pid>/maps} datnē.
 Svarīgākie procesa segmenti  \cite {PETRSOF}:
@@ -81,7 +81,7 @@ Iedalītāju galvenie uzdevumi:
 \item nodrošināt iespēju atkārtoti izmantot atmiņu.
 \end{enumerate}
 Dažreiz tiek izveidots individuālā iedalītāja risinājums. 
-Kaut arī daži universālie iedalītāji strādā pietiekoši ātri un fragmentēšanas līmenis ir zems, individuālais risinājums var ņemt vērā lietotnei raksturīgas īpatnības, un tās nodrošinās labāko veiktspēju \cite{EDBG}.
+Kaut arī daži universālie iedalītāji strādā pietiekoši ātri un fragmentēšanas līmenis ir zems, individuālais risinājums var ņemt vērā lietotnei raksturīgas īpatnības un tādējādi nodrošināt labāko veiktspēju \cite{EDBG}.
 \begin{figure}[h]
 \begin{lstlisting} [language=C++]
 int * ptrl = new int; // C++
@@ -97,7 +97,7 @@ GNU C bibliotēkā ir iebūvēts ptmalloc2 iedalītājs.
 Turpmāk tiks apskatīta lietotāja atmiņas pārvaldība no lietotnes, izmantojot GNU C bibliotēkas funkciju palīdzību, ko nodrošina ptmalloc2.
 C valodā dinamiskā atmiņa tiek pārvaldīta ar malloc(), realloc(), free() un calloc() funkciju palīdzību \cite {PETRSOF}.
 C++ valodā ir izmantots operators new, lai pieprasītu atmiņu. 
-Attēlā 2.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai, izmantojot C un C++ kodu.
+Attēlā 2.2. ir redzama C un C++ sintakse atmiņas pieprasīšanai.
 
 
 Funkcija malloc() ir definēta malloc.c datnē GNU C bibliotēkā. 
@@ -114,7 +114,7 @@ Lielāka atšķirība starp free() un delete ir tāda, ka vecajās free() realiz
 
 Programmas rakstīšanā nejauc kopā C un C++ stilus, tāpēc C++ programmām izmanto 
 new un delete operatorus (sk. 2.3. attēlu), bet C programmām malloc() un free().
-Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad pieejams no operētājsistēmas atmiņas daudzums ar laiku samazinās.
+Ja atmiņa pēc izmantošanas netiek nekad atbrīvota, un katru reizi, izpildot vienu un to pašu koda gabalu, iedalīta no jauna, tad no operētājsistēmas pieejams atmiņas daudzums ar laiku samazinās.
 
 \begin{figure}[h]
 \begin{lstlisting}
@@ -130,14 +130,14 @@ If(ptrl != NULL)
 %Sākumā sistēma paliek arvien lēnāka, pēc tam parasti notiek sistēmas apstāšanās.
 
 
-\section{Atmiņas organizācija glibc bibliotēkā}
+\section{Atmiņas organizācija GNU C bibliotēkā}
 Darbā tiek aplūkota GNU C bibliotēkas (versija 2.3) ptmalloc2 realizācija, kuru izstrādāja Wolfram Gloger, balstoties uz Doug Lea dlmalloc realizāciju. 
 Atmiņas iedalīšana sākas ar malloc() vai līdzīgo funkciju izsaukumiem no programmas koda un tiek nodrošināta ar GNU C bibliotēkas palīdzību. 
 
 
 \subsection{Atmiņas arēna}
 
-Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. 2.4. Attēlā\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite{MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.} ir parādītas 3 arēnas, kuras ir atdalītas savā starpā ar raustītām līnijām.
+Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. 2.4. Attēlā\footnote{Attēla izveidošanai tika izmantots GNU C malloc pirmkods \cite{MALLOC} un vietnē nopublicēta shēma \cite{AMM}. Attēls demonstrē atmiņas organizāciju.} ir parādītas trīs arēnas, kuras ir atdalītas savā starpā ar raustītām līnijām.
  Atmiņas arēnu  vienkāršotā veidā var attēlot kā viensaišu saistīto sarakstu, kurš sastāv no vienas vai vairākām atmiņas kaudzēm. 
  Kaudze ir lineārās apgabals, kurš iekļauj sevī iedalītus un atbrīvotus atmiņas gabalus (chunk of memory), kuri ir novietoti blakus viens otram.
  Atmiņas gabali sīkāk ir aprakstīti \ref{subsec:atminas_gabali} sadaļā.
