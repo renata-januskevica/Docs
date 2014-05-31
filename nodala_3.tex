@@ -1,8 +1,8 @@
 ﻿ \label{sec:problems}
 Par kaudzes problēmām tiek uzskatītas problēmas, kuras rodas lietotnē nepareizās kaudzes pārvaldības dēļ: 
 \begin{itemize}
-\item nekorekta kaudzes pārvaldība ar malloc() vai citām līdzīgām funkcijām;
-\item nekorekta kaudzes pārvaldība, ko nodrošina iedalītājs.
+\item ja ir nekorekta iedalītāja izmantošana;
+\item ja ir nekorekta iedalītāja realizācija.
 \end{itemize}
 
 Nodaļā tiek aprakstītas piecas kaudzes problēmas: atmiņas noplūde, fragmentēšana, maksimālās atmiņas izmantošanas problēma, datu kaudzes bojāšana, kļūdas trešās puses bibliotēkās.
@@ -20,7 +20,7 @@ Atmiņas noplūdes problēmu var sadalīt divos dažādos veidos: fiziskā un lo
 Fiziskā atmiņas noplūde ir novērojama, kad atmiņas adreses, kuras tika iedalītas procesam,  kļūst nepieejamas, pazaudētas, tas notiek, kad procesa adrešu telpā uz iedalīto atmiņas gabalu kaudzē nenorāda neviens rādītājs.
 Šis programmas stāvoklis var būt novērojams trīs iemeslu dēļ \cite{JMMR}:
 \begin{itemize}
-\item pēdēja norāde uz atmiņas gabalu ir pārrakstīta vai norāde bija palielināta, piemēram, lai sasniegtu datus ar nobīdi;
+\item pēdējā norāde uz atmiņas gabalu ir pārrakstīta vai norāde bija palielināta, piemēram, lai sasniegtu datus ar nobīdi;
 \item norāde atrodas ārpus darbības lauka (out of scope);
 \item atmiņas bloks, kurš glabāja norādi, bija atbrīvots.
 \end{itemize}
@@ -29,7 +29,7 @@ Loģiskā atmiņas noplūde ir novērojama, kad iekšējā buferī, rindā vai c
 Loģiskā atmiņas noplūdi bieži nosauc par slēpto atmiņas noplūdi (hidden memory leak) \cite{RRUU}, jo atmiņa ir joprojām sasniedzama no programmas, bet nekad netiek atbrīvota.
 
 Abos gadījumos sekas ir vienādas.
-Sākumā tiks novērota pakāpeniskā procesa palēnināšana, jo daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
+Sākumā tiks novērota pakāpeniska procesa palēnināšana, jo daļa no informācijas tiks uzglabāta lapošanas failā (paging file).
 Kaut kāda brīdī, kad tiks iztērēta visā dinamiskā atmiņa, katrs malloc() funkcijas izsaukums būs neveiksmīgs.
 Šeit var notikt kritiskā kļūda, kuras cēlonis ir sliktā programmēšanas prakse.
 Programmētāji ne vienmēr pārbauda malloc() rezultātu pirms vērsties pēc malloc() funkcijas atgrieztās norādes.  
@@ -72,12 +72,12 @@ Programmas darbības laikā kļūst pazaudēti 10000 gabali, kuru kopējais izm�
 \item { ja servera vai citas programmas darbojās visu laiku bez apstāšanās; }
 \item { ja portatīvām ierīcēm ir ierobežots atmiņas daudzums;}
 \item { ja programmas pieprasa atmiņu uzdevumiem, kuri izpildās ilgstošu laika periodu; }
-\item { reālā laikā sistēmās, jo ir svarīgi iegūt rezultātu ierobežotajā laikā. }
+\item { reālā laika sistēmās, jo ir svarīgi iegūt rezultātu ierobežotajā laikā. }
 \end{itemize}
 
 Atmiņas noplūdes problēmu ir grūti atkļūdot,  jo nav zināmi nosacījumi, kuriem izpildoties notiek atmiņas noplūde. 
 Ja ir redzamas sekas (ir atmiņas izmete un programma pabeidza savu darbību), bet nav zināms problēmas cēlonis, tad izstrādātājiem ir nepieciešams daudz resursu, lai atkārtotu un izlabotu atmiņas noplūdi. 
-Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi kā: Valgrind, Totalview, Purify. 
+Eksistē vairāki rīki, kuri palīdz atkļūdot atmiņas noplūdes problēmu, tādi kā: Valgrind, Totalview, Purify.
 Taču tie ne vienmēr sniedz pietiekamu informāciju un bieži netiek izmantoti strādājošās sistēmās, jo piedāvātas atkļūdošanas tehnikas un rīki var palēnināt sistēmas darbību.
 Piemēram, ieslēdzot  memcheck rīku iekš Valgrind instrumentācijas ietvara, programmas izpildes ātrums palēninās aptuveni 20-30 reizes \cite{UVD}.
 
@@ -146,26 +146,26 @@ Instrukcijas, kas ļauj apskatīties, kuram apgabalam pieder adrese, jau tika ap
  \label{sec:peak_mem}
  Maksimālās atmiņas izmantošanas (peak memory utilization) problēma var notikt, kad iedalītu un atbrīvotu gabalu izmēru summa kaudzē sasniedz maksimumu procesa izpildes laikā.
 Ir svarīgi pievērst uzmanību gadījumiem, kad var tikt sasniegts maksimums.
-Piemēram, tas var notikt, kad process tiecās pie trapa virsotnes vai maksimuma punkta.
+Piemēram, tas var notikt, kad process tiecās pie rampas virsotnes vai smailes.
 
-Traps un maksimums ir shēmas, kuras raksturo programmas uzvedību un ir apkopoti pētījumā \cite{PWMS}. Atmiņas daudzums, kas tiek izmantots programmas izpildes laikā, var visu laiku mainīties.
-Kopumā tiek identificētas trīs svarīgākās atmiņas izmantošanas shēmas: traps (ramps),  maksimums (peaks),  plato (plateaus).
+Rampa un smaile ir shēmas, kuras raksturo programmas uzvedību un ir apkopotas pētījumā \cite{PWMS}. Atmiņas daudzums, kas tiek izmantots programmas izpildes laikā, var visu laiku mainīties.
+Kopumā tiek identificētas trīs svarīgākās atmiņas izmantošanas shēmas: rampa (ramp),  smaile (peak),  līdzenums (plateau).
 Citas atmiņas izmantošanas shēmas ir iespējamas, bet izpaužas ļoti reti.
 Ne visām programmām ir raksturīgas visas trīs shēmas, bet vairākumam ir raksturīga viena vai divas no tām.
 Šīs shēmas tika apkopotas, balstoties uz kvantitatīvo programmu novērtējumu \cite{PWMS}. 
 \begin{itemize}
-\item Traps. Programma uzkrāj datu struktūras monotoni. 
+\item Rampa. Programma uzkrāj datu struktūras monotoni. 
 Tas varētu notikt, tāpēc ka uzdevuma atrisināšanai ir nepieciešams paveikt daudzas darbības un pakāpeniski uzbūvēt daudzas  datu struktūras. 
 Lai atrisinātu uzdevumu, atmiņas patēriņš monotoni aug. Pēc uzdevuma atrisināšanas atmiņas patēriņš strauji samazinās.
-\item Maksimums. Šo veidu var nosaukt par trapu tikai ļoti īsa laika periodā.
+\item Smaile. Šo veidu var nosaukt par rampu tikai ļoti īsa laika periodā.
 Daudzām programmām var būt nepieciešams izveidot lielas datu struktūras kāda uzdevuma izpildīšanai.
 Pēc šī uzdevuma pabeigšanas gandrīz visa pieprasītā atmiņa var tikt atbrīvota.
 Grafiks šai shēmai izskatās kā lauztā līnija, un atmiņas patēriņš var svārstīties dramatiski.
-\item Plato. Novērojama, kad programmas ātri uzbūve datu struktūras un izmanto tās ilga laika periodā, bieži izmanto līdz programmas izpildes beigām.
+\item Līdzenums. Novērojams, kad programmas ātri uzbūve datu struktūras un izmanto tās ilga laika periodā, bieži izmanto līdz programmas izpildes beigām.
 \end{itemize}
 
 
-Maksimālās atmiņas izmantošanas problēma ir novērojama, kad liels atmiņas daudzums netiek atgriezts operētājsistēmai pēc maksimuma punkta vai trapa virsotnes sasniegšanas.
+Maksimālās atmiņas izmantošanas problēma ir novērojama, kad liels atmiņas daudzums netiek atgriezts operētājsistēmai pēc smailes vai rampas virsotnes sasniegšanas.
 Tas notiek, pat tad, ja gandrīz visa atmiņa tika atbrīvota ar free() vai delete palīdzību.
 Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš nebija paredzēts projektējumā.
 Šī situācija kļūst iespējama, ja notiek daudzi pieprasījumi pēc atmiņas, kas ir mazāki par 128 kilobaitiem.
@@ -173,7 +173,7 @@ Pieprasījumi pēc lielākiem atmiņas gabaliem tiks apstrādāti ar mmap() sist
 Pēc mmap() izsaukumiem atmiņu ir iespējams atgriezt operētājsistēmai ar munmap() palīdzību, jo atmiņa neatrodas kaudzē. 
 Izmantojot brk() sistēmas izsaukumu, kamēr netiks atbrīvots atmiņas gabals, kas atrodas beigās, atmiņa netiks atgriezta operētājsistēmai.
 
-Strādājošā sistēmā problēma ir novērojama kā pārmērīgs atmiņas patēriņš pēc trapa virsotnes vai maksimālā punkta sasniegšanas.
+Strādājošā sistēmā problēma ir novērojama kā pārmērīgs atmiņas patēriņš pēc rampas virsotnes vai smailes sasniegšanas.
 Turpmāk tiks apskatīts piemērs, kurš demonstrē to, kā izpaužas dota problēma.
 Lai kontrolētu atmiņas patēriņu, procesa izpildes laikā tika izmantota \texttt{ps} komanda.
 Procesam patērēts atmiņas daudzums iegūts no RSS un VSZ rādītājiem.
@@ -222,7 +222,7 @@ Sākumā tika iedalīti 100 atmiņas gabali, katrs 100 kilobaitu izmērā.
 Katrā baitā bija ierakstīta vērtība 7.
 Pēc tam bija atbrīvoti 99 gabali, izņemot pēdējo.
 Beigās, lai apskatītos pazīmi, tika uzģenerēta atmiņas izmete.
-Saskaņā ar pētījumā minētām shēmām \cite{PWMS}  bija sasniegts maksimums (peaks).
+Saskaņā ar pētījumā minētām shēmām \cite{PWMS}  bija sasniegta smaile (peak).
 Atmiņas izmete palīdz saprast, kas notiek atmiņā.
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]
@@ -261,7 +261,7 @@ Fragmentēšanas problēmu var iedalīt divos dažādos veidos: iekšējā un ā
 Iekšējā fragmentēšana notiek, kad tiek iedalīts lielāks atmiņas gabals nekā tika pieprasīts.
 Izlīdzināšana ir viens no iekšējās fragmentēšanas cēloņiem.
 Iekšējo fragmentēšanu ir iespējams paredzēt, jo var izskaitļot, kuram skaitlim tiks noapaļots izmērs.
-GNU C bibliotēkā notiek atmiņas gabalu izlīdzināšana 8 - ka vai 16 - reizinājumam.
+GNU C bibliotēkā atmiņas gabalu izmērs tiek izlidzināts skaitlim, kurš dalās bez atlikuma uz 8 vai 16.
 Izlīdzināšana samazina atšķirīgu gabalu izmēru skaitu kaudzē.
 Nodrošinot izlīdzināšanu, ir palielināta iekšējā, turklāt, ir samazināta ārējā fragmentēšana \cite{RAN}.
 Ārējā fragmentēšana ir nespēja iedalīt atmiņas gabalu kaudzē, kad kaudzē pietiekoši daudz brīvas atmiņas, lai apmierinātu doto pieprasījumu.
@@ -301,15 +301,15 @@ Fragmentēšana var būt izrēķināta kā attiecība starp atmiņas daudzumu ka
 \end{figure}
 
 Turpmāk ir apskatīts piemērs (sk. 3.4. attēlu), kurš demonstrē iekšējās fragmentēšanas cēloni.
-Šīs C valodā uzrakstītais kods izdruka atmiņas gabala izmēru, kurš īstenībā tiek iedalīts no kaudzes.
-Piemērā ir redzams, ka tiek iedalīti 4 baiti, bet programma izdruka beigu rezultātu - 16 baiti.
+Šis C valodā uzrakstītais kods izdruka atmiņas gabala izmēru, kurš īstenībā tiek iedalīts no kaudzes.
+Piemērā ir redzams, ka tiek iedalīti 4 baiti, bet programma izdrukā beigu rezultātu - 16 baiti.
 Dotajā piemērā iekšējā fragmentēšana ir vienāda ar 12 baitiem.
 
 Algoritms ir sekojošs: 
 \begin{enumerate}
 \item ar malloc() tiek iedalīts atmiņas apgabals;
-\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru);
-\item  tiek atņemtas A, M, P kontroles zīmes 111 = 7 un iegūts iedalītā atmiņas  gabala izmērs;
+\item  tiek iegūta size elementa vērtība (objektam ar malloc\_chunk struktūru), kur 29 biti ir paredzēti izmēra glabāšanai un 3 ir kontroles zīmes;
+\item  tiek atņemtas A, M, P kontroles zīmes, kuras ir lielākas par 0, un iegūts iedalītā atmiņas gabala izmērs;
 \item  tiek atbrīvota atmiņa.
 \end{enumerate}
 
@@ -348,12 +348,12 @@ No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels m
 Kaudze būs saskaldīta, un katrs iedalītais gabals robežos ar mazāko atbrīvoto gabalu.
 Piemērā ir izdrukāts kaudzes saturs (sk. 3.5. attēlu).
 Piemērā izmantotā atmiņās izmete tika uzģenerēta, izmantojot iepriekš sagatavoto programmu (sk. 3. pielikumu).
-Programma ir izveidotā problēmas pazīmju identificēšanai, un tāpēc ir vienkāršots problēmas attēlojums, izmantojot mazā izmēra gabalus: 32 un 16 baitu izmērā.
-Tā kā programmā uzreiz pēc iedalīšanas tiek pārtraukta, tad ātra saraksta gabali netiek saplūdināti.
+Programma ir izveidota problēmas pazīmju identificēšanai, un tāpēc ir vienkāršots problēmas attēlojums, izmantojot mazā izmēra gabalus: 32 un 16 baitu izmērā.
+Tā kā programmā uzreiz pēc iedalīšanas tiek pārtraukta, tad ātrā saraksta gabali netiek saplūdināti.
 Programmai no komandrindas tika padoti argumenti: 100, 8.
 Kaudzē atrodas iedalītie gabali 32 baitu (0x21) izmērā un atbrīvotie gabali 16 baitu (0x11) izmērā.
 Atbrīvotie gabali ir saistīti savā starpā un atrodas ātrajā sarakstā.
-Tas ir novērojams, jo lietotāju datos ātrajiem gabaliem ir uzglabāta nākama gabala adrese.
+Tas ir novērojams, jo lietotāju datos ātrajiem gabaliem ir uzglabāta nākamā gabala adrese.
 Pēdējam gabalam ātrajā sarakstā ir uzglabāta 0x00000000 adrese.
 Ja kaudzē atrodas brīvie gabali, kuri nav lielāki par 16 baitiem un top gabala izmērs ir mazāks par 32 baitiem, tad maksimālais gabals, kurš varētu tikt iedalīts, ir 16 baiti un pieprasījums pēc 32 baitiem paplašinās kaudzes segmenta izmēru vai izraisīs kļūdu.
 

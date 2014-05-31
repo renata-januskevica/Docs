@@ -151,8 +151,8 @@ Atmiņas arēnu var nosaukt par loģisko atmiņas kolekciju. 2.4. Attēlā\footn
  Ja gabals ir atbrīvots, tad tas tiek pievienots vienā no sarakstiem, uz kuriem norāda bin masīvi, kuri atrodas vienā no arēnām.
 Bin masīvs un bin saraksti sīkāk ir aprakstīti \ref{subsec:bin_saraksti} sadaļā. 
  Katrā arēnā ir rādītājs uz nākamo izveidoto arēnu. Pēdējā izveidotā arēna norāda uz galveno arēnu.
- Ja kārtēja kaudze ir izlietotā un tajā nav atmiņas, tad tiek iedalīta jauna kaudze ar fiksēto 64 MB izmēru.
-  Tādā veidā arēnas var tikt paplašinātas, izveidojot jaunās kaudzes un savienojot tās sava starpā.
+ Ja kārtējā kaudze ir izlietota un tajā nav atmiņas, tad tiek iedalīta jauna kaudze ar fiksēto 64 MB izmēru.
+  Tādā veidā arēnas var tikt paplašinātas, izveidojot jaunās kaudzes un savienojot tās savā starpā.
  Jaunai kaudzei ir norāde gan uz arēnu, kurai tā pieder, gan uz iepriekšējo kaudzi.
 
 Lai uzlabotu veiktspēju vairākpavedienu procesiem, GNU C bibliotēkā tiek izmantotas vairākas atmiņas arēnas. 
@@ -162,19 +162,19 @@ Kad vairākiem pavedieniem ir nepieciešams vienlaicīgi iedalīt atmiņu no kau
 Gadījumos, kad pavedieni izmanto atmiņu no vairākām atsevišķām arēnām (kā tas notiek ptmalloc2 realizācijā), tad vienas arēnas bloķēšana neietekmē atmiņas iedalīšanu parējās kaudzēs, kuras nepieder nobloķētai arēnai, un atmiņas iedalīšana var notikt paralēli.
 Lai nodrošinātu labāku veiktspēju, GNU C bibliotēkā tiek izmantots modelis: katram pavedienam - viena arēna. 
 Ja malloc() pirmo reizi izsaukts pavedienā, tad neatkarībā no tā vai kārtējā arēna bija nobloķēta vai nē, tiks izveidota jauna arēna.
-Arēnu skaits ir ierobežots atkarībā no kodolu skaita, 32 bitu vai 64 bitu arhitektūras un mainīga MALLOC\_ARENA\_MAX vērtības.
+Arēnu skaits ir ierobežots atkarībā no kodolu skaita, 32 bitu vai 64 bitu arhitektūras un mainīgā MALLOC\_ARENA\_MAX vērtības.
 Tā kā pavedienu skaits parasti nepārsniedz divkāršo kodolu skaitu, tad normālā gadījumā katrs pavediens izmanto atsevišķo arēnu. 
 Darbība ar arēnām notiek saskaņā ar šādu algoritmu: 
 \begin{enumerate}
 \item malloc() izsaukums vēršas pie arēnas, kurai piekļuva iepriekšējā reizē;
-\item ja arēna ir nobloķēta, tad malloc() vēršas pie nākamas izveidotās arēnas;
+\item ja arēna ir nobloķēta, tad malloc() vēršas pie nākamās izveidotās arēnas;
 \item ja nav piekļuves nevienai arēnai, tad tiek izveidota jauna arēna, un malloc() vēršas pie tās.
 \end{enumerate}
 
 Vispirms, atmiņas iedalīšana sākas no galvenās arēnas (main arena). 
 GNU C bibliotēkā ir globāls \texttt{malloc\_state} objekts - galvenā arēna, kura atšķiras no pārējām arēnām ar to, ka tā tiek paplašināta, izmantojot brk() nevis  mmap() sistēmas izsaukumu. 
 Līdz ar galvēnās arēnas paplašināšanu tiek paplašināts arī procesa kaudzes segments.
-brk() sistēmas izsaukumam ir viens arguments, kurš uzstāda procesa kaudzes segmenta jaunas beigas.
+brk() sistēmas izsaukumam ir viens arguments, kurš uzstāda kaudzes segmentam jaunas beigas.
 mmap() sistēmas izsaukums paplašina pārējās dinamiskās arēnas daudzpavedienu lietotnēs, kā arī nodrošina lielu atmiņas bloku iedalīšanu mmap apgabalā.
 Mazākais gabals, kurš pēc noklusējuma tiks iedalīts ar mmap(), ir vienāds ar 128 kilobaitiem. 
 Sākot ar GNU C bibliotēkas 2.18 versiju, mazāko gabalu, kurš tiks iedalīts ar mmap(), var uzdot ar M\_MMAP\_THRESHOLD konstanti.
@@ -190,7 +190,7 @@ Realizācijā ptmalloc2 ir masīvi, kuri uzglabā norādes uz bin sarakstiem.
 Bin saraksti ir struktūras, kuras uzglabā atbrīvotus atmiņas gabalus, līdz brīdim, kad tie tiks iedalīti procesam atkārtoti.
 Sarakstiem netiek atsevišķi iedalīta atmiņa, bet tiek izmantota kaudzes atmiņa.
 Tas kļūst iespējams, pārrakstot atmiņas gabalu struktūru.
-Ja atmiņa bija atbrīvota, tad atmiņas gabali var tikt uzglabāti vienā no bin saistītiem sarakstiem.
+Ja atmiņa bija atbrīvota, tad atmiņas gabali var tikt uzglabāti vienā no bin saistītajiem sarakstiem.
 Eksistē divi bin saraksta veidi: ātrais (fastbin) un parastais (normal bin).
 
 
@@ -277,7 +277,7 @@ Tas ir atkarīgs no tā, kāda vērtība ir piešķirta INTERNAL\_SIZE\_T makrod
 Ar INTERNAL\_SIZE\_T var uzdot iekšējo vārda izmēru (word-size), kurš pēc noklusējuma ir vienāds ar size\_t izmēru.
 Datoriem ar 64 bitu tehnoloģiju, 4 baitu vērtības piešķiršana makrodefinīcijai  var samazināt aizņemtās atmiņas daudzumu, bet ierobežo lielāko iespējamo gabala izmēru.
 Tā kā 4 baitos nevar saglabāt skaitli, kas ir vienāds vai lielāks par \(2^{32}\), tad laukā \texttt{prev\_size} un \texttt{size} vērtībai ir jābūt mazākai par šo ierobežojošo vērtību.
-Kad gabals ir iedalīts, tad uzturēšanas informācijai ir izmantotas divas INTERNAL\_SIZE\_T tipa vērtības un, kad gabals ir atbrīvots, tad  dubultsaišu saraksta uzturēšanai, papildus tiek izmantoti divi rādītāji (fd un bk) uz iepriekšējo un nākamo \texttt{malloc\_chunk} struktūras objektiem. 
+Kad gabals ir iedalīts, tad uzturēšanas informācijai ir izmantotas divas INTERNAL\_SIZE\_T tipa vērtības un, kad gabals ir atbrīvots, tad  dubultsaišu saraksta uzturēšanai, papildus tiek izmantoti divi rādītāji (bk un fd) uz iepriekšējo un nākamo \texttt{malloc\_chunk} struktūras objektiem. 
 Kopējais atmiņas gabala uzturēšanai izmantotais datu izmērs var būt 16 baiti (ja INTERNAL\_SIZE\_T un rādītāja izmērs ir 4 baiti), 24 baiti (ja INTERNAL\_SIZE\_T ir 4/8 baiti un rādītāja izmērs ir 8/4 baiti) vai 32 baiti (ja INTERNAL\_SIZE\_T un rādītāja izmērs ir 8 baiti).  
 Otrs iemesls, kāpēc ir iedalīts lielāks atmiņas daudzums, ir izlīdzināšana skaitlim, kas ir  2*sizeof(INTERNAL\_SIZE\_T) reizinājums. Šis skaitlis ir vienāds ar 8 baitu izlīdzinājumu, ja  makrodefinīcijas INTERNAL\_SIZE\_T vērtība  ir vienāda ar 4 baitiem \cite {MALLOC}.  
 
@@ -328,7 +328,7 @@ Tā kā notiek izlīdzināšana 2*sizeof(INTERNAL\_SIZE\_T), kas ir vienāda 8 -
 \end{table}
 
 Rādītājs mem ir malloc() funkcijas atgriežamā vērtība, jeb radītājs uz iedalīto atmiņas apgabalu. Iedalīts apgabals stiepjas līdz atmiņas gabala struktūras beigām.
-Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja tā ir atbrīvota, tad šeit tiks uzglabāti divi radītāji uz nākamo un iepriekšējo atbrīvotiem gabaliem, kas atrodas saistītajā sarakstā. 
+Pēc šī rādītāja var tikt uzglabāti dati, kad atmiņa ir iedalīta un, ja tā ir atbrīvota, tad šeit tiks uzglabāti divi radītāji (uz nākamo un iepriekšējo atbrīvoto gabalu). 
 
 
 Eksistē divi citi atmiņas gabali (top chunk un last\_remainder), kuriem ir īpaša nozīme. 
