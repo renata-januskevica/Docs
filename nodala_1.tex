@@ -101,7 +101,7 @@ Lai  uzģenerētu atmiņas izmeti, ir jābūt izpildītiem šādiem nosacījumie
 	\item 	ja datne ar vienādu nosaukumu jau eksistē, tad uz to ir jābūt ne vairāk kā vienai stingrai saitei;
 	\item 	izvēlētai darba mapei ir jābūt reālai un jāatrodas norādītajā vietā;
 	\item 	Linux core datnes izmēra robežai {RLIMIT\_CORE} jāpārsniedz ģenerējamā faila izmērs, { RLIMIT\_FSIZE} robežai jāļauj procesam izveidot atmiņas izmeti;
-	\item 	ir  jāatļauj lasīt binārā datne, kura ir palaista;
+	\item 	ir  jāatļauj lasīt binārā datne, kura tika palaista;
 	\item 	failu sistēmai, kurā atrodas darba mape, ir jābūt uzmontētai rakstīšanai, tai nav jābūt pilnai un ir jāsatur brīvie indeksa deskriptori;
 	\item 	binārā datne jāizpilda lietotājam, kurš ir datnes īpašnieks (group owner).
 \end{itemize} 
@@ -113,7 +113,7 @@ Lai  uzģenerētu atmiņas izmeti, ir jābūt izpildītiem šādiem nosacījumie
   
  Šis posms nav pietiekoši labi izpētīts literatūrā. Bet, pirms sākt atkļūdošanu, ir nepieciešams pārliecināties, ka atmiņas izmete var tikt pielietota šim nolūkam.
  Ģenerējot atmiņas izmeti, ir iespējams, ka datnes izmērs sasniegs vairākus gigabaitus un datne tiks nogriezta.
- Tas notiek, jo pieejama brīva vieta ir ierobežota, un, kopējot, pārsūtot vai ģenerējot atmiņas izmeti, var pazaudēt daļu no datiem.
+ Tas notiek, jo pieejamā brīva vieta ir ierobežota, un, kopējot, pārsūtot vai ģenerējot atmiņas izmeti, var pazaudēt daļu no datiem.
  Šo gadījumu var pārbaudīt, izdrukajot galveni ar \texttt{objdump -p <core>} komandu.
  Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājums par to, ka datnes izmērs neatbilst sagaidāmām.
  Šī kļūda varētu traucēt analizēt atmiņas izmeti, jo tiek sagaidīts, ka dati ir pilnīgi.
@@ -140,7 +140,7 @@ Ja atmiņas izmetes analīzei tika izvēlēts GNU gdb atkļūdotājs, tad, pirms
 To var identificēt uzreiz pēc gdb palaišanas, ar šādas rindiņas palīdzību: \texttt{This GDB was configured as i686-linux-gnu}.  
 Lai atmiņas izmete saturētu atkļūdošanas informāciju, ir jānorāda -g opcija kompilācijas laikā.
 Atkļūdošanas informācija ir uzglabāta objektu datnē un saglabā atbilstību starp izpildāmo datni un pirmkodu, kā arī uzglabā mainīgo un funkciju datu tipus.
-Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad var tikt izdrukāts šāds teksts (sk. 1.5. attēlu).
+Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad var tikt izdrukāts teksts (sk. 1.5. attēlu).
 
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]

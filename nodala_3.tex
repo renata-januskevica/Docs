@@ -9,7 +9,7 @@ Nodaļā tiek aprakstītas piecas kaudzes problēmas: atmiņas noplūde, fragmen
 Izvēlētās pirmās trīs problēmas no piecu problēmu saraksta, tiek pētītas sīkāk. 
 Katrai no trim problēmām ir identificētas pazīmes atmiņas izmetē.
 Balstoties uz zināšanām par pazīmēm turpmāk ir veidoti analizatori.
-Pārējās divas problēmas netiek detalizēti pētītas un tiek aprakstītas nodaļas beigās.
+Pārējās divas problēmas netiek detalizēti pētītas un aplūkotas nodaļas beigās.
 
 \section{Atmiņas noplūde}
 
@@ -86,7 +86,7 @@ Abi gadījumi ir izplatīti \cite{HTTM}.
 Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu.
 Pazīme, kas varētu liecināt par atmiņas noplūdi strādājošā sistēmā ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīmē, ka izmērs ir lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
 atmiņas daudzums, kas visu laiku pieaug. 
-Kad process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad šī pazīme var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, maksimālās atmiņas izmantošanas problēma vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
+Ja process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad šī pazīme var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, maksimālās atmiņas izmantošanas problēma vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
 
 \subsection{Atmiņas noplūdes pazīmes atmiņas izmetē}
 Tā kā atmiņas izmete satur procesa atmiņas attēlojumu uz procesa pārtraukšanas brīdi, tad uzģenerētās datnes izmērs, atmiņas noplūdes problēmas ietekmes rezultātā, var sasniegt vairākus gigabaitus.
@@ -105,7 +105,6 @@ Atmiņas izmetē atrodas kaudzes saturs visām atmiņas arēnām.
 Interpretējot katru kaudzes saturu, kā kopu ar daudziem atmiņas gabaliem, var iegūt adreses, uz kurām malloc() funkcija atgrieza norādes procesam.
 Ja procesa adrešu telpā nav nevienas norādes uz atrastajām adresēm, tad ar lielu varbūtību var apgalvot, ka programmā ir atmiņas noplūde.
 Kamēr kļūda nav atrasta kodā, to nevar secināt, jo atmiņas izmete var būt bojāta un var neiekļaut daļu no procesa adrešu telpas.
-Ir iespējams ka procesa adrešu telpā izmantotās norādes ar nobīdi, tādā gadījumā norāde uz atmiņas gabala sākumu netiks atgriezta.
 Šī pazīme nav raksturīga loģiskajai atmiņas noplūdei.
 
 
@@ -130,7 +129,7 @@ class MyClass
 \label{fig:memoryleak}
 \end{figure}
 
-Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā, bet tādi gabali patērē visu pieejamo atmiņu.
+Loģiskās atmiņas noplūde rezultātā visiem atmiņas gabaliem atbilst norādes procesa adrešu telpā, bet tādi gabali aizņem visu pieejamo atmiņu.
 Problēmai ir raksturīgs stāvoklis, kad ir daudzi iedalītie atmiņas gabali, kuru lietotāja datu sekcija satur līdzīgus datus (izmēru, līdzīgas datu shēmas).
 Turpmāk tiks apskatīts piemērs, kurš paskaidro, kā var izpausties šī pazīme.
 Piemērā ir aplūkots gadījums, kad programmā ir izmantoti objekti, kuri ir  C++ klases instances un klasē ir izmantota virtuālā funkcija.
@@ -319,15 +318,15 @@ Algoritms ir sekojošs:
 
 Iekšējai fragmentēšanai ir grūti identificēt pazīmes atmiņas izmetē, kuras varētu liecināt par doto problēmu.
 Lai atpazītu doto problēmu, ir nepieciešams zināt, cik daudz atmiņas pieprasīja lietotne.
-Izmantojot atmiņas izmeti, šo informāciju var iegūt tikai no backtrace, taču šī informācija var netikt iekļauta.
+Izmantojot atmiņas izmeti, šo informāciju var iegūt tikai no backtrace, taču šī informācija ne vienmēr var tikt iekļauta.
 
 No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels mazo\footnote{Mazs nozīme tāds, kurš nevar apmierināt turpmākos pieprasījumus pēc atmiņas.} atbrīvoto gabalu skaits.
 Šie gabali var būt saglabāti vienā no bin sarakstiem:
 \begin{itemize}
-\item ātrajos sarakstos. Ja izmērs ir līdz 64 baitiem, tad atbrīvotie gabali tiks novietoti ātrajos sarakstos.
+\item Ja izmērs ir līdz 64 baitiem, tad atbrīvotie gabali tiks novietoti ātrajos sarakstos.
 Ātrajos sarakstos gabals norādīs uz nākamo gabalu un veidos garo sarakstu no visiem atmiņas gabaliem.
 Ātra saraksta elementi tiek sapludināti, kad nav iespējams iedalīt lielāko gabalu;
-\item parastajos sarakstos. Ja ātrie gabali tika saplūdināti vai gabali ir lielāki par 64 baitiem;
+\item Ja ātrie gabali tika saplūdināti vai gabali ir lielāki par 64 baitiem, tad gabali tiks novietoti parastajos sarakstos;
 \end{itemize}
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]

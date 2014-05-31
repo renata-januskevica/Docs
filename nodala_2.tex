@@ -50,7 +50,8 @@ Kad tiek izpildīta jebkura programma, atmiņa tiek pārvaldīta divos veidos: a
 \subsection{Kodola atmiņas pārvaldība}
 Operētājsistēmas kodols apstrādā visus atmiņas pieprasījumus, kas attiecas uz programmu vai programmas instancēm.
 Kad lietotājs sāk programmas izpildi, tad kodols iedala atmiņas apgabalu tekošam procesam.
-Šis apgabals, no procesa viedokļa, ir viena lineārā virtuālā adrešu telpa, kura ir sadalīta vairākos segmentos. 
+Šis apgabals, no procesa viedokļa, ir viena lineārā virtuālā adrešu telpa, kura ir sadalīta vairākos segmentos.
+Iedalīto virtuālo adrešu karti var atrast \texttt{/proc/<pid>/maps} datnē.
 Svarīgākie procesa segmenti  \cite {PETRSOF}:
 %\vspace{-20 pt}
 \begin{itemize}
@@ -59,14 +60,12 @@ Svarīgākie procesa segmenti  \cite {PETRSOF}:
     \item Statisko datu segments - apgabals, kurā tiek uzglabāti dati ar iepriekš zināmu izmēru. Tie ir globālie un statiskie mainīgie.
     Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi.
     \item Kaudzes segments - apgabals, no kura tiek iedalīta dinamiskā atmiņa.
-    Kaudzes segmentā atrodas dinamiski iedalītā un atbrīvotā atmiņa. Kaudzes segmenta saturs ir sadalīts sīkāk, mazākos atmiņas gabalos.
-    Kaudzes segments aug no mazākas adreses līdz lielākai.  Lai palielinātu kaudzes segmenta izmēru, tiek veikts brk() sistēmas izsaukums. 
+    Tajā atrodas dinamiski iedalītā un atbrīvotā atmiņa. Kaudzes segmenta saturs ir sadalīts sīkāk, mazākos atmiņas gabalos un aug no mazākas adreses līdz lielākai.  Lai palielinātu kaudzes segmenta izmēru, tiek veikts brk() sistēmas izsaukums. 
     Izsaukums uzstāda kaudzes segmenta jauno beigu robežu \cite{LINMAN}. 
  %Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 .
     \item Steka segments - apgabals, kurā tiek uzglabāti: funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam, kā arī lokālo mainīgo un reģistru vērtības. 
     Steks aug no lielākas adreses līdz mazākai. 
     Steks ir iedalīts katrai programmas instancei atsevišķi.
-     Iedalīto virtuālo adrešu karti var atrast \texttt{/proc/<pid>/maps} datnē.
 \end{itemize} 
 
  
@@ -219,7 +218,7 @@ Mazā izmēra saraksts uzglabā atmiņas gabalus, kuri ir mazāki par 512 baitie
 Vairāki ātrie gabali var būt sapludināti un uzglabāti dotajā sarakstā. 
 Mazā izmēra saraksti iekļauj gabalus ar vienādu izmēru. 
 Lielā izmēra saraksts uzglabā atmiņas gabalus, kuri ir lielāki par 512 baitiem, bet mazāki par 128 kilobaitiem. 
-Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti: pirmais-iekšā, pirmais-ārā (jeb FIFO) kārtībā \cite {Binning}. 
+Lielā izmēra saraksta elementi ir sakārtoti pēc izmēra un ir iedalīti: pirmais-iekšā, pirmais-ārā (jeb FIFO) kārtībā \cite {MALLOC}. 
 Tādā veidā vienmēr tiek atgriezts gabals, kurš ir vislabāk piemērots.
 Tas ir, kad gabalam ir mazāks izmērs no pārējiem saraksta gabaliem, kurš apmierina pieprasījumu pēc atmiņas.
 Gabali, kuru izmērs ir lielāks par 128 kilobaitiem, netiek uzglabāti bin sarakstos, jo tiek iedalīti, izmantojot mmap(). 
