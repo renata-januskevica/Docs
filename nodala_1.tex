@@ -1,5 +1,5 @@
 ﻿Šajā nodaļā tiek aplūkots atmiņas izmetes jēdziens, atmiņas izmetes ģenerēšanas iespējas un nosacījumi.
-Nodaļā ir aprakstīts atkļūdošanas process, kas varētu būt paveikts, izmantojot atmiņas izmeti.
+Nodaļā ir aprakstīts atkļūdošanas process, kas varētu tikt paveikts, izmantojot atmiņas izmeti.
 
  \section{Atmiņas izmetes ģenerēšana}
 Sistēmās, kuras atbalsta POSIX standartus, ir signāli \cite{USP}, kuri, pēc noklusētās apstrādes, izraisa atmiņas izmetes ģenerēšanu un pārtrauc procesa darbību. 
@@ -100,7 +100,7 @@ Lai  uzģenerētu atmiņas izmeti, ir jābūt izpildītiem šādiem nosacījumie
 	\item   ir jānodrošina atļauja procesam rakstīt atmiņas izmeti darba mapē;
 	\item 	ja datne ar vienādu nosaukumu jau eksistē, tad uz to ir jābūt ne vairāk kā vienai stingrai saitei;
 	\item 	izvēlētai darba mapei ir jābūt reālai un jāatrodas norādītajā vietā;
-	\item 	Linux core datnes izmēra robežai {RLIMIT\_CORE} jāpārsniedz ģenerējamā faila izmērs, { RLIMIT\_FSIZE} robežai jāļauj procesam izveidot atmiņas izmeti;
+	\item 	Linux core datnes izmēra robežai {RLIMIT\_CORE} jābūt lielākai par ģenerējamā faila izmēru, { RLIMIT\_FSIZE} robežai jāļauj procesam izveidot atmiņas izmeti;
 	\item 	ir  jāatļauj lasīt binārā datne, kura tika palaista;
 	\item 	failu sistēmai, kurā atrodas darba mape, ir jābūt uzmontētai rakstīšanai, tai nav jābūt pilnai un ir jāsatur brīvie indeksa deskriptori;
 	\item 	binārā datne jāizpilda lietotājam, kurš ir datnes īpašnieks (group owner).
@@ -116,7 +116,7 @@ Lai  uzģenerētu atmiņas izmeti, ir jābūt izpildītiem šādiem nosacījumie
  Tas notiek, jo pieejamā brīva vieta ir ierobežota, un, kopējot, pārsūtot vai ģenerējot atmiņas izmeti, var pazaudēt daļu no datiem.
  Šo gadījumu var pārbaudīt, izdrukajot galveni ar \texttt{objdump -p <core>} komandu.
  Gadījumos, kad atmiņas izmete tiek nogriezta, tad tiks izvadīts brīdinājums par to, ka datnes izmērs neatbilst sagaidāmām.
- Šī kļūda varētu traucēt analizēt atmiņas izmeti, jo tiek sagaidīts, ka dati ir pilnīgi.
+Nogriezts saturs varētu traucēt analizēt atmiņas izmeti, jo tiek sagaidīts, ka dati ir pilnīgi.
  
  
  
@@ -125,7 +125,7 @@ Lai  uzģenerētu atmiņas izmeti, ir jābūt izpildītiem šādiem nosacījumie
 \section{Atkļūdošana, izmantojot atmiņas izmeti}
 Atmiņas izmete satur datus, kuri dod iespēju atrast kļūdas. Tāpēc atmiņas izmete var tikt pielietota, lai veiktu lietotnes atkļūdošanu pēc neparedzētas programmas apstāšanās.
 Atmiņas izmetes analīze ir efektīvs veids, kā var attālināti atrast un izlabot kļūdas bez iejaukšanās un tiešas piekļuves sistēmai.
-Daudzos gadījumos atmiņas izmete ir speciāli uzģenerēta datne, kura palīdz iegūt atmiņas stāvokli signāla nosūtīšanas brīdī.
+Daudzos gadījumos tā ir speciāli uzģenerēta datne, kura palīdz iegūt atmiņas stāvokli signāla nosūtīšanas brīdī.
 Atmiņas izmete ir labi piemērota kļūdu meklēšanai, kas saistītas ar nepareizo atmiņas izmantošanu lietotnē.
 
 Atmiņas izmete ir ELF, a.out vai cita formātā binārā  datne. 
@@ -140,7 +140,7 @@ Ja atmiņas izmetes analīzei tika izvēlēts GNU gdb atkļūdotājs, tad, pirms
 To var identificēt uzreiz pēc gdb palaišanas, ar šādas rindiņas palīdzību: \texttt{This GDB was configured as i686-linux-gnu}.  
 Lai atmiņas izmete saturētu atkļūdošanas informāciju, ir jānorāda -g opcija kompilācijas laikā.
 Atkļūdošanas informācija ir uzglabāta objektu datnē un saglabā atbilstību starp izpildāmo datni un pirmkodu, kā arī uzglabā mainīgo un funkciju datu tipus.
-Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad var tikt izdrukāts teksts (sk. 1.5. attēlu).
+Ja atmiņas izmete neiekļauj atkļūdošanas informāciju, tad var tikt izdrukāts šāds teksts (sk. 1.5. attēlu):
 
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]

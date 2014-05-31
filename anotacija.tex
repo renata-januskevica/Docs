@@ -26,6 +26,15 @@ Darbs sastāv no ievada, 4 nodaļam, secinājumiem un 5 pielikumiem. Tajā ir 50
 \large \textbf {The development of a heap debugging method \protect\\  based on the use of core dumps}
 \end{center}
 
+The purpose of this paper is to develop a heap debugging method which is based on core dump analysis and allows finding heap problems in the program without direct access to the system.
+The research has identified characteristics of heap memory problems in core dumps, a method for heap debugging is proposed.
+
+The method is based on GNU C library's implementation of heap memory allocator and is demonstrated using three problems of heap: memory leak, fragmentation, peak memory utilization.
+
+The proposed method was verified by implementing analyzers for each of the problems.
+The analyzers demonstrate that the proposed method is feasible for heap memory debugging.
+
+
 \thispagestyle{empty}
 	The work consists of introduction, 4 chapters, conclusions and 5 appendixes. It contains 50 pages, \totfig\ figures, \tottab\ tables and \total{citenum} references.
 

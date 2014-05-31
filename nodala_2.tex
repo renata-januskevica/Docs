@@ -60,8 +60,7 @@ Svarīgākie procesa segmenti  \cite {PETRSOF}:
     \item Statisko datu segments - apgabals, kurā tiek uzglabāti dati ar iepriekš zināmu izmēru. Tie ir globālie un statiskie mainīgie.
     Operētājsistēma iedala šī apgabala kopiju katrai programmas instancei atsevišķi.
     \item Kaudzes segments - apgabals, no kura tiek iedalīta dinamiskā atmiņa.
-    Tajā atrodas dinamiski iedalītā un atbrīvotā atmiņa. Kaudzes segmenta saturs ir sadalīts sīkāk, mazākos atmiņas gabalos un aug no mazākas adreses līdz lielākai.  Lai palielinātu kaudzes segmenta izmēru, tiek veikts brk() sistēmas izsaukums. 
-    Izsaukums uzstāda kaudzes segmenta jauno beigu robežu \cite{LINMAN}. 
+    Tajā atrodas dinamiski iedalītā un atbrīvotā atmiņa. Kaudzes segmenta saturs ir sadalīts sīkāk, mazākos atmiņas gabalos un aug no mazākas adreses līdz lielākai.  Lai palielinātu kaudzes segmenta izmēru, tiek veikts brk() sistēmas izsaukums, kurš uzstāda jauno beigu robežu kaudzes segmentam \cite{LINMAN}. 
  %Jā process nepārsniedz savu limitu, tad izsaukums atgriež 0 un kaudzes segmenta lielums tiek veiksmīgi izmainīts, pretējā gadījumā tiek atgriezta vērtība -1 .
     \item Steka segments - apgabals, kurā tiek uzglabāti: funkciju izsaukumu stāvoklis, katram funkcijas izsaukumam, kā arī lokālo mainīgo un reģistru vērtības. 
     Steks aug no lielākas adreses līdz mazākai. 
@@ -105,7 +104,7 @@ Funkcija malloc() ir definēta malloc.c datnē GNU C bibliotēkā.
 Funkcijas prototips ir definēts <stdlib.h>.
 Funkcija malloc() ļauj dinamiski iedalīt atmiņu procesam.
 Vienīgais arguments malloc() funkcijai ir baitu skaits.
-C programmai, lai saskaitītu, cik baitu ir nepieciešams pieprasīt, ir nepieciešams zināt, cik daudz vietas aizņem viens elements un kāds ir elementu skaits.
+C programmai, lai saskaitītu, cik baitu ir nepieciešams pieprasīt, vajag zināt, cik daudz vietas aizņem viens elements un kāds ir elementu skaits.
 Funkcija malloc() atgriež void tipa rādītāju, tāpēc C programmās ir nepieciešams izmantot drošo tipa pārveidotāju (typecast). 
 Tas ir nepieciešams, lai saglabātu atgriezto norādi lokālajā mainīgajā. Atmiņas inicializācija C kodā
 var būt veikta, izmantojot arī citas funkcijas, piemēram, calloc() funkciju, kura atgriež atmiņas gabalu inicializētu ar 0 vērtībām.
@@ -352,18 +351,3 @@ Last\_remainder ir dalījuma atlikums, kurš izveidojās pēc lielāka gabala sa
 %Katrai atmiņas arēnai  funkcija izdruka kopējo iedalītās atmiņas daudzumu \texttt{(system bytes)} un pašreiz izmantoto atmiņas daudzumu \texttt{(in use bytes)}.
 %Ir pieejama kopēja statistikā visām arēnām pēc abiem iepriekš minētiem parametriem, ka arī tiek izdrukāts maksimālais bloku un baitu daudzums, kurš bija iedalīts ar mmap() sistēmas izsaukumu. 
 
-\section{Secinājumi}
-\begin{enumerate}
-\item Tiek aplūkota literatūra un GNU C bibliotēkas malloc pirmkods.
-\item Ir apkopotas zināšanas un uzzīmēta ptmalloc2 iedalītāja organizācijas reprezentācija  (sk. 2.8. attēlu).
-\item Galvenie secinājumi par kaudzi:
-    \begin{itemize} \itemsep5pt \parskip5pt \parsep5pt
-    \item kontrolētā atmiņas iedalīšana ir dinamiskā atmiņas iedalīšana, kura notiek programmas izpildes laikā, un atmiņa parasti tiek iedalīta no kaudzes;
-    \item kaudzes segments ir procesa adrešu telpas apgabals, kurš var tikt paplašināts;
-    \item iedalīt atmiņu no kaudzes var no lietotnes ar malloc() vai new palīdzību;
-    \item kaudze sastāv no daudziem iedalītiem un atbrīvotiem atmiņas gabaliem.
-    Atbrīvotie gabali var būt savienoti sarakstā, pārrakstot lietotāja datus;
-    \item vienu arēnu var veidot vairākas kaudzes, kas ir savienotās savā starpā.
-    \end{itemize}
-    
-\end{enumerate}

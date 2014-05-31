@@ -165,7 +165,8 @@ Grafiks šai shēmai izskatās kā lauztā līnija, un atmiņas patēriņš var 
 \end{itemize}
 
 
-Problēma ir novērojama, kad liels atmiņas daudzums netiek atgriezts operētājsistēmai pēc izmantošanas, pat tad, ja gandrīz visa atmiņa tika atbrīvota ar free() vai delete palīdzību.
+Maksimālās atmiņas izmantošanas problēma ir novērojama, kad liels atmiņas daudzums netiek atgriezts operētājsistēmai pēc maksimuma punkta vai trapa virsotnes sasniegšanas.
+Tas notiek, pat tad, ja gandrīz visa atmiņa tika atbrīvota ar free() vai delete palīdzību.
 Rezultātā process var patērēt pārmērīgo atmiņas daudzumu, kurš nebija paredzēts projektējumā.
 Šī situācija kļūst iespējama, ja notiek daudzi pieprasījumi pēc atmiņas, kas ir mazāki par 128 kilobaitiem.
 Pieprasījumi pēc lielākiem atmiņas gabaliem tiks apstrādāti ar mmap() sistēmas izsaukumu un neizraisīs doto problēmu.
@@ -317,8 +318,8 @@ Algoritms ir sekojošs:
 \subsection{Fragmentēšanas pazīmes atmiņas izmetē}
 
 Iekšējai fragmentēšanai ir grūti identificēt pazīmes atmiņas izmetē, kuras varētu liecināt par doto problēmu.
-Lai atpazītu doto problēmu, ir nepieciešams zināt, cik daudz atmiņas pieprasīja lietotne.
-Izmantojot atmiņas izmeti, šo informāciju var iegūt tikai no backtrace, taču šī informācija ne vienmēr var tikt iekļauta.
+Lai atpazītu iekšējo fragmentēšanu, ir nepieciešams zināt, cik daudz atmiņas pieprasīja lietotne.
+Izmantojot atmiņas izmeti, šo informāciju var iegūt tikai no backtrace, taču šī informācija ne vienmēr tiks iekļauta.
 
 No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels mazo\footnote{Mazs nozīme tāds, kurš nevar apmierināt turpmākos pieprasījumus pēc atmiņas.} atbrīvoto gabalu skaits.
 Šie gabali var būt saglabāti vienā no bin sarakstiem:
@@ -347,7 +348,7 @@ No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels m
 Kaudze būs saskaldīta, un katrs iedalītais gabals robežos ar mazāko atbrīvoto gabalu.
 Piemērā ir izdrukāts kaudzes saturs (sk. 3.5. attēlu).
 Piemērā izmantotā atmiņās izmete tika uzģenerēta, izmantojot iepriekš sagatavoto programmu (sk. 3. pielikumu).
-Programma ir izveidotā problēmas pazīmju identificēšanai, un tāpēc ir vienkāršots problēmas attēlojums, izmantojot mazā izmēra gabalus: 32 un 16 baitiem.
+Programma ir izveidotā problēmas pazīmju identificēšanai, un tāpēc ir vienkāršots problēmas attēlojums, izmantojot mazā izmēra gabalus: 32 un 16 baitu izmērā.
 Tā kā programmā uzreiz pēc iedalīšanas tiek pārtraukta, tad ātra saraksta gabali netiek saplūdināti.
 Programmai no komandrindas tika padoti argumenti: 100, 8.
 Kaudzē atrodas iedalītie gabali 32 baitu (0x21) izmērā un atbrīvotie gabali 16 baitu (0x11) izmērā.
