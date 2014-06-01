@@ -1,23 +1,24 @@
-﻿Bakalaura darba mērķis bija izstrādāt kaudzes atkļūdošanas metodi, kura ir balstīta uz atmiņās izmetes analīzi un ļauj bez tiešas piekļuves sistēmai atrast kaudzes problēmas programmā.
+﻿Bakalaura darba mērķis bija izstrādāt kaudzes atkļūdošanas metodi, kura ir balstīta uz atmiņas izmetes analīzi un ļauj bez tiešas piekļuves sistēmai atrast kaudzes problēmas programmā.
 
 Darbam ir šādi galvenie rezultāti:
 \begin{itemize}
-    \item Pētījuma rezultātā tika izstrādāta kaudzes atkļūdošanas metode, kura tika nodemonstrēta darbībā, izmantojot trīs analizatoru piemērus.
-    Pēc katras analizatoru sniegtās izdrukas bija iespējams identificēt vienu no trim pētāmām kaudzes problēmām.
-    \item Lai atrastu problēmām raksturīgas pazīmes atmiņas izmetē, katrai pētāmai problēmai tika uzģenerēta atmiņas izmete.
-    Katrs atmiņas izmetes saturs tika izpētīts sīkāk ar gdb atkļūdotāja palīdzību, rezultātā tika identificētas izvēlēto problēmu pazīmes.
+    \item Pētījuma rezultātā tika izstrādāta kaudzes atkļūdošanas metode, kura tika nodemonstrēta darbībā izmantojot trīs analizatoru piemērus.
+    Pēc katra analizatora sniegtās izdrukas bija iespējams identificēt vienu no trim pētāmajām kaudzes problēmām.
+    \item Lai atrastu problēmām raksturīgas pazīmes atmiņas izmetē, katrai pētāmajai problēmai tika uzģenerēta atmiņas izmete.
+    Katras atmiņas izmetes saturs tika izpētīts sīkāk ar gdb atkļūdotāja palīdzību, rezultātā tika identificētas izvēlēto problēmu pazīmes.
     \item Tika izstrādāti un aprakstīti trīs analizatoru piemēri: atmiņas noplūdes analizators, maksimālās atmiņas izmantošanas problēmas analizators un fragmentēšanas problēmas analizators.
-    Analizatori tika izstrādāti divos gdb skriptos un tie veic savu galveno uzdevumu: sniedz izdruku par identificētām problēmu pazīmēm atmiņas izmetē. 
-    \item Darbā katrai pētāmai kaudzes problēmai aprakstīti problēmu veidi, cēloni un izpausme strādājošā sistēmā. 
-    Izmantojot pirmkodu un citus literatūras avotus ir apkopota informācija par GNU C bibliotēkas ptmalloc2 realizāciju un uzzīmēts atmiņas organizācijas attēls. 
-    \item No autores pieredzes ir aprakstīta atmiņas izmetes validēšana un atkļūdošanas procedūra, kas varētu tikt veikta, izmantojot atmiņas izmeti.
+    Analizatori tika izstrādāti divos gdb skriptos un tie veic savu galveno uzdevumu: sniedz izdruku par atrastajām problēmu pazīmēm atmiņas izmetē. 
+    \item Darbā katrai pētāmajai kaudzes problēmai aprakstīti tās veidi, cēloņi un izpausme strādājošā sistēmā. 
+    Izmantojot pirmkodu un citus literatūras avotus, ir apkopota informācija par GNU C bibliotēkas kaudzes atmiņas iedalītāja ptmalloc2 realizāciju un uzzīmēts atmiņas organizācijas attēls. 
+    Ir aprakstīta atmiņas izmetes validēšana un atkļūdošanas procedūra, kas varētu tikt pielietota atmiņas izmetes pētīšanai ar gdb atkļūdotāju.
 \end{itemize}
 %Atmiņas izmete var tikt pielietota kaudzes atkļūdošanai. %Tā kā eksistē vēl divas zināmas kaudzes problēmas, tad
 
-Balstoties uz galvenajiem darba rezultātiem var secināt, ka metode strādā un var tikt izmantota plašāk, piemēram, citu problēmu atkļūdošanai.
-Viecot pētījumu autore ieguva zināšanas par kaudzes problēmām, to pazīmēm un iedalītāja realizāciju.
+Balstoties uz galvenajiem darba rezultātiem, var secināt, ka metode strādā un var tikt izmantota plašāk, piemēram, citu problēmu atkļūdošanai.
+Veicot pētījumu autore ieguva zināšanas par kaudzes problēmām, to pazīmēm un iedalītāja realizāciju.
 Zināšanas turpmāk tiks pielietotas ikdienas darbā un atvieglos programmas atkļūdošanas procedūru problēmām, kas saistītas ar kaudzi un dinamisko atmiņas iedalīšanu. 
 
-Turpmāk iespējams turpināt darbu dotajā virzienā, jo bakalaura darbā nav izpētītas visas zināmas kaudzes problēmas un nav identificētas to pazīmes atmiņas izmetē.
-Ir iespējams izveidot analizatoru, kurš sniegs kopējo statistiku pār visām zināmam kaudzes problēmām un strādās neatkarīgi no atkļūdotāja. 
-Tā kā kaudzes problēmām var nebūt tiešo pazīmju, tad šīm analizatoram būs savs pielietojums, jo šobrīd nav zināms līdzīgs analizatora risinājums.
+Turpmāk iespējams attīstīt bakalaurā darbā pētāmo tematu, jo nav izpētītas visas zināmas kaudzes problēmas un nav identificētas to pazīmes atmiņas izmetē.
+Ir iespējams izveidot analizatoru, kurš sniegs kopējo statistiku par visām zināmām kaudzes problēmām un strādās neatkarīgi no atkļūdotāja. 
+Kaudzes problēmas ir grūti atkļūdot un nav tiešo pazīmju, kas liecinātu par problēmām, tāpēc aprakstītām analizatoram būtu savs pielietojums.
+Šobrīd nav zināms līdzīgs analizatora risinājums. Ir iespējams pētīt citas iedalītāju realizācijas, ka arī programmas ar vairākiem pavedieniem.

@@ -8,7 +8,7 @@ Par kaudzes problēmām tiek uzskatītas problēmas, kuras rodas lietotnē nepar
 Nodaļā tiek aprakstītas piecas kaudzes problēmas: atmiņas noplūde, fragmentēšana, maksimālās atmiņas izmantošanas problēma, datu kaudzes bojāšana, kļūdas trešās puses bibliotēkās.
 Izvēlētās pirmās trīs problēmas no piecu problēmu saraksta, tiek pētītas sīkāk. 
 Katrai no trim problēmām ir identificētas pazīmes atmiņas izmetē.
-Balstoties uz zināšanām par pazīmēm turpmāk ir veidoti analizatori.
+Balstoties uz zināšanām par pazīmēm, turpmāk ir veidoti analizatori.
 Pārējās divas problēmas netiek detalizēti pētītas un aplūkotas nodaļas beigās.
 
 \section{Atmiņas noplūde}
@@ -84,7 +84,7 @@ Piemēram, ieslēdzot  memcheck rīku iekš Valgrind instrumentācijas ietvara, 
 Reālajās sistēmās problēma var izpausties uzreiz pēc palaišanas, bet var kļūt novērojama tikai pēc dažiem gadiem. 
 Abi gadījumi ir izplatīti \cite{HTTM}.
 Tā kā atmiņas noplūdes rezultātā atmiņa tiek pazaudēta, tad var periodiski novērot procesa atmiņas patēriņa pieaugumu.
-Pazīme, kas varētu liecināt par atmiņas noplūdi strādājošā sistēmā ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīmē, ka izmērs ir lielāks par to, kuru paredz programmētājs un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
+Pazīme, kas varētu liecināt par atmiņas noplūdi strādājošā sistēmā ir pārmērīgs\footnote{Šajā kontekstā pārmērīgs nozīmē, ka izmērs ir lielāks par to, kuru paredz programmētājs, un tas rāda pamatotas šaubas, par atmiņas noplūdes problēmas esamību programmā.}
 atmiņas daudzums, kas visu laiku pieaug. 
 Ja process izmanto pārmērīgo atmiņu un izmantotās atmiņas daudzums nemainās, tad šī pazīme var dot tikai aptuvenu novērtējumu par dotās problēmas esamību, jo eksistē vairākas citas problēmas, piemēram, fragmentēšana, maksimālās atmiņas izmantošanas problēma vai kļūdas trešās puses bibliotēkās, kuras var palielināt izmantotās atmiņas daudzumu.
 
@@ -321,7 +321,7 @@ Iekšējai fragmentēšanai ir grūti identificēt pazīmes atmiņas izmetē, ku
 Lai atpazītu iekšējo fragmentēšanu, ir nepieciešams zināt, cik daudz atmiņas pieprasīja lietotne.
 Izmantojot atmiņas izmeti, šo informāciju var iegūt tikai no backtrace, taču šī informācija ne vienmēr tiks iekļauta.
 
-No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels mazo\footnote{Mazs nozīme tāds, kurš nevar apmierināt turpmākos pieprasījumus pēc atmiņas.} atbrīvoto gabalu skaits.
+No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels mazo\footnote{Mazs nozīmē tādu, kurš nevar apmierināt turpmākos pieprasījumus pēc atmiņas.} atbrīvoto gabalu skaits.
 Šie gabali var būt saglabāti vienā no bin sarakstiem:
 \begin{itemize}
 \item Ja izmērs ir līdz 64 baitiem, tad atbrīvotie gabali tiks novietoti ātrajos sarakstos.
@@ -347,7 +347,7 @@ No problēmas apraksta seko, ka ārējai fragmentēšanai ir raksturīgs liels m
 
 Kaudze būs saskaldīta, un katrs iedalītais gabals robežos ar mazāko atbrīvoto gabalu.
 Piemērā ir izdrukāts kaudzes saturs (sk. 3.5. attēlu).
-Piemērā izmantotā atmiņās izmete tika uzģenerēta, izmantojot iepriekš sagatavoto programmu (sk. 3. pielikumu).
+Piemērā izmantotā atmiņas izmete tika uzģenerēta, izmantojot iepriekš sagatavoto programmu (sk. 3. pielikumu).
 Programma ir izveidota problēmas pazīmju identificēšanai, un tāpēc ir vienkāršots problēmas attēlojums, izmantojot mazā izmēra gabalus: 32 un 16 baitu izmērā.
 Tā kā programmā uzreiz pēc iedalīšanas tiek pārtraukta, tad ātrā saraksta gabali netiek saplūdināti.
 Programmai no komandrindas tika padoti argumenti: 100, 8.
@@ -381,7 +381,7 @@ Piemēram, ir iespējams apskatīt GNU C bibliotēkas pieteiktās kļūdas \cite
 Ja iedalītājs ir uzturēts, tad iespējams, ka var piereģistrēt problēmas, lai nākamajās versijās tas tiktu izlabotas.
 Izmantojot individuālo iedalītāja risinājumu, problēmas būs jāatkļūdo patstāvīgi.  
 Daži iedalītāji var būt izstrādāti ar iepriekš zināmiem ierobežojumiem, piemēram, ja iedalītāja algoritms ir efektīvs, tad tas var izmantot pārmērīgo atmiņas daudzumu.
-Cits ierobežojums ir kad tiek izmantots mazs atmiņas daudzums turklāt algoritms nav efektīvs.
+Cits ierobežojums ir, kad tiek izmantots mazs atmiņas daudzums, turklāt algoritms nav efektīvs.
 Šis īpašības ir jāņem vērā izstrādājot lietotnes, lai nerastos problēmas, kas saistītas ar trešās puses bibliotēkām.
 Ja problēma notiek trešās puses bibliotēkās, tad ir trīs iespējas kā var izvairīties no problēmām lietotnēs: ir jāatrod ceļš, kā nepieļaut doto kļūdu, ir jāgaida atjauninājumi, kuros kļūda tiks izlabota, vai ir jānomaina iedalītājs. 
 

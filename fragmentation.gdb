@@ -79,7 +79,7 @@ define div_stat
 	set $chunk_size = 0
 
 	printf "\n------------- Maksimālā atmiņas izmantošanas problēma --------\n"
-	printf "Atbrīvoto un iedalīto gabalu attiecība:\n"
+	printf "Atbrīvoto gabalu attiecība pret atbrīvoto un iedalīto gabalu summu:\n"
 
 	while ($heap_pointer != $top_address[0]) 
 		set $free_size = 0
