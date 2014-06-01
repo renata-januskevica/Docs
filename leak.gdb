@@ -46,7 +46,7 @@ define get_alloc_chunk
 	end
 	shell rm gdb.log
 	shell rm gdb.core
-	printf "Procesa adrešu telpā tiek pazaudēts(i): %i gabals(i).\n", $unref	
+	printf "Ir pazaudēti: %i gabali.\n", $unref	
 end
 
 # $arg0: galvenās arēnas adrese

@@ -169,7 +169,7 @@ Tā kā segmentu robežas ir zināmas, tad kļūst iespējams izdrukāt atmiņas
 Lai izdrukātu atmiņas apgabalu, var izmantot instrukciju ar šādu formātu: \texttt{x/nfu addr}. 
 Ir nepieciešams norādīt atmiņas adresi (addr), no kuras sākt atmiņas izdruku, formātu (f), apgabala lielumu (n) un norādīt vienības lielumu (u). 
 Izmantojot doto piemēru (sk. 1.7. attēlu), tiks izdrukāti četri elementi, kuri pieder stekam, jo Intel x86 procesoros 32 bitu režīmā uz steku norāda \$esp reģistrs. 
-Formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{gdb}. 
+Formātu un vienības lielumu vajag norādīt saskaņā ar gdb pamācību \cite{core}. 
 Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x), un vienības lielums ir vārds (word) jeb 4 baiti.
 \begin{figure}[h]
 \begin{lstlisting}[style=customgdb]
@@ -178,7 +178,7 @@ Dotajā gadījumā atmiņa tiks izdrukāta heksadecimālā formātā (x), un vie
 \caption{\textbf{\fontsize{11}{12}\selectfont {Atmiņas apgabala izdrukāšana}}}
 \end{figure}
 
-Lai uzzinātu, kuram simbolam (funkcijai, mainīgam vai tipam) pieder adrese, var izmantot šādu gdb instrukciju (sk. 1.8. attēlu) \cite{gdb}.
+Lai uzzinātu, kuram simbolam (funkcijai, mainīgam vai tipam) pieder adrese, var izmantot šādu gdb instrukciju (sk. 1.8. attēlu) \cite{core}.
 Instrukcija \texttt{print} vai \texttt{p} ļauj izdrukāt datus, bet \texttt{p/a} izdrukā absolūto adresi un relatīvo jeb adresi ar nobīdi no tuvāka simbola, kuram pieder adrese.
 Tādā veidā var noteikt, kuram atmiņas apgabalam pieder nezināmā adrese.
 \begin{figure}[h]
