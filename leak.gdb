@@ -25,7 +25,7 @@ define get_alloc_chunk
 	while ($heap_pointer != $top_address[0])
 		# nākamā atmiņas gabalā atrodas kontroles zīmes, p zīme palīdz noteikt vai iepriekšējais gabals tiek iedalīts programmai
 		set $next_chunk =  $heap_pointer + (($heap_pointer[1] & ~7)/4)
-		# $x mainīgajā tiek saglabāta atrasta simbolu virkne no datnes, kurā tiek uzglabāta atmiņas izmete heksadecimālājā formātā
+		# $x mainīgajā tiek saglabāta atrasta simbolu virkne no datnes ar heksadecimālo saturu
 		set $x = 0
 		if (($next_chunk[1] & 1) == 1)
 			set $malloc_pointer = $heap_pointer + 2
@@ -50,7 +50,7 @@ define get_alloc_chunk
 end
 
 # $arg0: galvenās arēnas adrese
-# komanda saglabā atmiņas izmeti heksadecimālā formātā un izdzēš atstarpes, jo dati var netikt izlīdzināti
+# komanda saglabā atmiņas izmeti heksadecimālajā formātā un izdzēš atstarpes, jo dati var netikt izlīdzināti
 define analyze
 	set $top_address = (long *) ($arg0 + 48)
 
